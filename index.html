@@ -53,7 +53,10 @@ button:focus-visible,.dome:focus-visible{outline:3px solid var(--sun);outline-of
 .dots i{width:10px;height:10px;border-radius:50%;background:var(--sun);animation:blink 1s infinite}
 .dots i:nth-child(2){animation-delay:.2s} .dots i:nth-child(3){animation-delay:.4s}
 @keyframes blink{50%{opacity:.25}}
-.scene.tall{height:170px}
+.scene.tall{height:196px}
+.hdomes{position:absolute;left:8px;right:8px;bottom:18px;display:flex;justify-content:center;gap:12px}
+.hd{width:104px;height:82px;border-radius:52px 52px 8px 8px;background:#3b4296;border:2px solid var(--sun);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-size:13px;font-weight:700;padding-top:6px}
+.hd svg{width:28px;height:28px}
 .scene.tall .mini{right:50%;transform:translateX(50%);gap:12px;bottom:22px}
 .scene.tall .mini i{width:74px;height:58px;border-radius:37px 37px 8px 8px}
 .menu{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -86,8 +89,8 @@ button:focus-visible,.dome:focus-visible{outline:3px solid var(--sun);outline-of
 .lead{color:var(--muted)}
 
 /* step 1 */
-.sunwrap{display:grid;grid-template-columns:170px 1fr;gap:16px;align-items:center}
-.sunwrap svg{width:170px;height:170px;display:block}
+.sunwrap{display:grid;grid-template-columns:230px 1fr;gap:16px;align-items:center}
+.sunwrap svg{width:230px;height:230px;display:block;max-width:100%}
 .sunwrap figure{margin:0;text-align:center;font-size:14px;color:var(--muted)}
 .clues{display:flex;flex-direction:column;gap:8px}
 .clue{background:var(--panel);border-radius:12px;padding:8px 12px}
@@ -164,7 +167,7 @@ details ul{margin:8px 0;padding-left:20px}
 @media (max-width:600px){
   .sunwrap{grid-template-columns:1fr;justify-items:center}
   .base,.fx{grid-template-columns:repeat(2,1fr)} .fx{display:none}
-  .dome{min-height:150px} .ups{grid-template-columns:1fr} .steps{font-size:12px} .mate{flex-direction:column;text-align:center;padding:6px 4px} .mate svg{width:34px;height:34px}
+  .dome{min-height:150px} .hdomes{gap:6px} .hd{width:74px;height:74px;font-size:11px} .ups{grid-template-columns:1fr} .steps{font-size:12px} .mate{flex-direction:column;text-align:center;padding:6px 4px} .mate svg{width:34px;height:34px}
 }
 @media (prefers-reduced-motion:reduce){.dots i{animation:none}.hp i{transition:none}.scene .s.flash,.scene .wave.run,.scene .mini i.hit{animation:none}}
 </style>
@@ -185,7 +188,12 @@ details ul{margin:8px 0;padding-left:20px}
       <h1 class="big">Moon Sweet Moon</h1>
       <p class="lead">Keep your little Moon crew safe from yesterday's real Sun.</p>
     </div>
-    <div class="scene tall" aria-hidden="true"><div class="s"></div><div class="ground"></div><div class="mini"><i class="lit"></i><i class="lit"></i><i class="lit"></i><i class="lit"></i></div></div>
+    <div class="scene tall" role="img" aria-label="Your Moon base: an air room, a farm, a shelter and a lab"><div class="s"></div><div class="ground"></div><div class="hdomes">
+        <div class="hd"><svg viewBox="0 0 48 48"><path d="M6 18h22a6 6 0 1 0-6-6M6 26h30a6 6 0 1 1-6 6M6 34h14" fill="none" stroke="#9fd8ff" stroke-width="4" stroke-linecap="round"/></svg>Air room</div>
+        <div class="hd"><svg viewBox="0 0 48 48"><path d="M24 42V22" stroke="#5fe0b7" stroke-width="4" stroke-linecap="round"/><path d="M24 26C12 26 8 18 8 10c10 0 16 4 16 16zM24 22c0-10 6-14 16-14 0 10-6 14-16 14z" fill="#5fe0b7"/></svg>Farm</div>
+        <div class="hd"><svg viewBox="0 0 48 48"><path d="M24 5l16 6v12c0 10-7 17-16 20C15 40 8 33 8 23V11z" fill="none" stroke="#ffc145" stroke-width="4" stroke-linejoin="round"/></svg>Shelter</div>
+        <div class="hd"><svg viewBox="0 0 48 48"><path d="M19 6h10M21 6v12L9 38a3 3 0 0 0 2.6 4.5h24.8A3 3 0 0 0 39 38L27 18V6" fill="none" stroke="#e6a8ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 31h18" stroke="#e6a8ff" stroke-width="4" stroke-linecap="round"/></svg>Lab</div>
+      </div></div>
     <div class="crewrow" id="homeCrew"></div>
     <div class="stage" id="homeCard"></div>
     <div class="menu">
@@ -222,7 +230,7 @@ details ul{margin:8px 0;padding-left:20px}
       <li>Simplified: in the game every flare brings a storm to the base. In real life only some flares send harmful particles toward the Moon. A calm day means DONKI lists no flare for that date.</li>
       <li>Real science, squeezed: a flare's light reaches the Moon in about 8 minutes and the harmful particles come later. The game squeezes that wait into a few seconds.</li>
       <li>Game rules, not data: the storm chance meter, battery counts, food, science points, crop growth, upgrades, and the crew rules. The true part of the crew rules is that a sick crew cannot do all its work.</li>
-      <li>The Sun picture is a real photo from NASA's Solar Dynamics Observatory (SDO) for the mission date, fetched through the Helioviewer service and coloured orange by the game. If the photo cannot load, the game shows a drawing instead. The ring that marks a sunspot is placed from the NASA flare record, or estimated from the Sun's rotation on a day the spot did not fire, so it is approximate.</li>
+      <li>The Sun picture is a real photo from NASA's Solar Dynamics Observatory (SDO) for the mission date, fetched through the Helioviewer service. It is taken in ultraviolet light, which our eyes cannot see, so NASA colours it red. Bright patches are the busy regions where flares happen. If the photo cannot load, the game shows a drawing instead. The ring that marks a sunspot is placed from the NASA flare record, or estimated from the Sun's rotation on a day the spot did not fire, so it is approximate.</li>
       <li>Shifts are 8 hours each on the crew's 24 hour clock (UTC). The crew's facts are sample lines that still need checking against NASA.</li>
       <li>Your base is saved in this browser only. There is no account.</li>
     </ul>
@@ -514,7 +522,8 @@ for (const [a, b] of RANGES) for (let n = dayNum(a) + 5; n <= dayNum(b); n++) { 
 function place(loc, addLon) {
   const m = /([NS])(\d+)([EW])(\d+)/.exec(loc || ''); if (!m) return null;
   const lat = (m[1] === 'N' ? 1 : -1) * +m[2], lon = (m[3] === 'W' ? 1 : -1) * +m[4] + (addLon || 0), r = Math.PI / 180, L = Math.max(-90, Math.min(90, lon));
-  return { x: 90 + 68 * Math.cos(lat * r) * Math.sin(L * r), y: 90 - 68 * Math.sin(lat * r), vis: Math.abs(lon) <= 90 };
+  const u = Math.cos(lat * r) * Math.sin(L * r), v = Math.sin(lat * r);
+  return { x: 90 + 68 * u, y: 90 - 68 * v, u, v, vis: Math.abs(lon) <= 90 };
 }
 // Which sunspot to watch on a given day: the one behind that day's biggest flare if it has fired lately, or else the one that fired most recently.
 function watch(day) {
@@ -546,7 +555,7 @@ const TIPS = {
   shield: ['siti', 'A solar storm carries radiation. It can make people sick. Thick walls and power block it.'],
   lab: ['mei', 'Science is why we came to the Moon. But the lab only runs on power we can spare.']
 };
-const TEACH = ['Solar flares burst out of sunspots, the dark patches on the Sun.', 'A sunspot that fired before often fires again.', 'Nobody can be sure about the Sun. A forecast is a best guess.'];
+const TEACH = ['Solar flares burst out of the bright, busy patches on the Sun. Dark sunspots sit inside them.', 'A sunspot that fired before often fires again.', 'Nobody can be sure about the Sun. A forecast is a best guess.'];
 const $ = id => document.getElementById(id);
 const pick = a => a[Math.floor(Math.random() * a.length)];
 const shuffle = a => { const r = a.slice(); for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; } return r; };
@@ -635,15 +644,17 @@ function drawSun() {
     (show ? '<ellipse cx="' + x + '" cy="' + y + '" rx="11" ry="8" fill="url(#pg)"/><ellipse cx="' + (x + 13) + '" cy="' + (y + 6) + '" rx="5" ry="4" fill="url(#pg)"/>' + (firedToday ? '<ellipse cx="' + (x + 4) + '" cy="' + (y - 7) + '" rx="12" ry="5" fill="#fff8d6" opacity=".9"/>' : '') : '') + '</svg>';
   const label = name(w.ar);
   $('sunCap').textContent = show ? name(spot.ar) + (spot.est ? ' (place estimated)' : '') : w.past.length ? label + ' has turned out of view' : 'No sunspot to watch yet';
-  // Swap the drawing for a real photo of the Sun at this shift's time, if it loads. Photo: NASA SDO (HMI continuum) through the Helioviewer API.
+  // Swap the drawing for a real photo of the Sun at this shift's time, if it loads.
+  // Photo: NASA Solar Dynamics Observatory, AIA 304 (ultraviolet light), through the Helioviewer API. The view is 2700 arcseconds wide, so the Sun's edge sits about 64.7 units from the centre of this 180-unit picture.
   const key = d.iso + '-' + i, cap0 = $('sunCap').textContent, img = new Image(); S.sunKey = key;
-  const url = 'https://api.helioviewer.org/v2/takeScreenshot/?date=' + d.iso + 'T' + ['04', '12', '20'][i] + ':00:00Z&imageScale=6.25&layers=[SDO,HMI,HMI,continuum,1,100]&x1=-1250&y1=-1250&x2=1250&y2=1250&display=true&watermark=false';
+  const url = 'https://api.helioviewer.org/v2/takeScreenshot/?date=' + d.iso + 'T' + ['04', '12', '20'][i] + ':00:00Z&imageScale=5.625&layers=[SDO,AIA,AIA,304,1,100]&x1=-1350&y1=-1350&x2=1350&y2=1350&display=true&watermark=false';
   img.onload = () => {
     if (!S || S.sunKey !== key || S.step !== 'sun') return;
-    $('sunPic').innerHTML = '<svg viewBox="0 0 180 180" role="img" aria-label="Photo of the Sun on ' + d.date + '"><defs><clipPath id="cp"><circle cx="90" cy="90" r="74"/></clipPath><filter id="tint"><feColorMatrix type="matrix" values="1.3 0 0 0 0.03  0 0.85 0 0 0  0 0 0.3 0 0  0 0 0 1 0"/></filter></defs>' +
-      '<circle cx="90" cy="90" r="82" fill="#ffb52e" opacity=".18"/><image href="' + url + '" x="0" y="0" width="180" height="180" clip-path="url(#cp)" filter="url(#tint)"/>' +
-      (show ? '<circle cx="' + x + '" cy="' + y + '" r="11" fill="none" stroke="' + (firedToday ? '#ff6b5e' : '#ffffff') + '" stroke-width="2.5"/>' : '') + '</svg>';
-    $('sunCap').innerHTML = (show ? name(spot.ar) + ' is near the ring' : cap0) + '<br>Real photo: NASA SDO, coloured by the game';
+    const px = show ? 90 + 64.7 * spot.pos.u : 0, py = show ? 90 - 64.7 * spot.pos.v : 0;
+    $('sunPic').innerHTML = '<svg viewBox="0 0 180 180" role="img" aria-label="Photo of the Sun on ' + d.date + '"><defs><clipPath id="cp"><rect width="180" height="180" rx="14"/></clipPath></defs>' +
+      '<image href="' + url + '" x="0" y="0" width="180" height="180" clip-path="url(#cp)"/>' +
+      (show ? '<circle cx="' + px + '" cy="' + py + '" r="12" fill="none" stroke="' + (firedToday ? '#ffe08a' : '#ffffff') + '" stroke-width="2"' + (firedToday ? '' : ' stroke-dasharray="5 3"') + '/>' : '') + '</svg>';
+    $('sunCap').innerHTML = (show ? name(spot.ar) + ' is inside the ring' : cap0) + '<br>Real photo from NASA\'s SDO, ' + d.date;
   };
   img.src = url;
   const clues = [];
