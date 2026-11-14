@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moon Sweet Moon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Nunito:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* layout: slim status bar, a 4-step tracker, then ONE stage card that shows only the current step */
+  --deep:#12143a; --night:#1b1f4b; --panel:#272c66; --line:#3f4594;
+  --ink:#f6f3ff; --muted:#bcb9e4;
+  --sun:#ffc145; --coral:#ff6b5e; --mint:#5fe0b7;
+  --display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--deep);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.4}
+main{max-width:720px;margin:0 auto;padding:16px 16px 40px;display:flex;flex-direction:column;gap:12px}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.15;text-wrap:balance}
+h1{font-size:24px} h2{font-size:24px} h3{font-size:17px}
+p{margin:0}
+[hidden]{display:none!important}
+button{font:inherit;font-weight:700;color:var(--ink);background:var(--night);border:2px solid var(--line);border-radius:12px;padding:8px 14px;cursor:pointer}
+button:hover{border-color:var(--muted)}
+button:focus-visible,.dome:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.go{background:var(--coral);border-color:var(--coral);color:#3a0b06;font-family:var(--display);font-size:20px;padding:9px 24px}
+.go:hover{border-color:var(--ink)}
+.go:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+
+.hud{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+.hud .name{margin-right:auto}
+.hud small{display:block;color:var(--muted);font-size:14px}
+.faces{display:flex;gap:4px}
+.faces svg{width:38px;height:38px}
+.pill{background:var(--night);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:15px}
+.pill b{color:var(--sun);font-variant-numeric:tabular-nums}
+.hp{width:90px;height:10px;border-radius:5px;background:var(--night);overflow:hidden;border:1px solid var(--line)}
+.hp i{display:block;height:100%;transition:width .6s ease,background .6s ease}
+#snd{padding:3px 10px;font-size:14px;border-width:1px}
+
+.col{display:flex;flex-direction:column;gap:12px}
+.splash{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:70px 0}
+.splash.small{padding:8px 0 0}
+.splash svg{width:120px;height:120px}
+.big{font-size:40px}
+.dots{display:flex;gap:8px}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--sun);animation:blink 1s infinite}
+.dots i:nth-child(2){animation-delay:.2s} .dots i:nth-child(3){animation-delay:.4s}
+@keyframes blink{50%{opacity:.25}}
+.scene.tall{height:170px}
+.scene.tall .mini{right:50%;transform:translateX(50%);gap:12px;bottom:22px}
+.scene.tall .mini i{width:74px;height:58px;border-radius:37px 37px 8px 8px}
+.menu{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.menu button{padding:12px 6px}
+.how{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.how li{display:flex;gap:12px;align-items:center;background:var(--panel);border-radius:14px;padding:10px 14px}
+.how svg{width:40px;height:40px;flex:none}
+.how b{display:block;font-family:var(--display)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:var(--panel);border-radius:14px;padding:10px 12px}
+.stat b{display:block;font-family:var(--display);font-size:28px;color:var(--sun);line-height:1.1}
+.stat span{font-size:14px;color:var(--muted)}
+.stage ul.plain{margin:0;padding-left:20px;display:grid;gap:6px}
+.ministars{color:var(--sun);letter-spacing:2px} .ministars i{font-style:normal;color:var(--line)}
+.stage a{color:var(--sun)}
+#quit{padding:3px 10px;font-size:14px;border-width:1px}
+.crewrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mate{display:flex;gap:8px;align-items:center;background:var(--night);border:2px solid var(--line);border-radius:14px;padding:6px 10px;min-width:0}
+.mate svg{width:42px;height:42px;flex:none}
+.mate b{font-family:var(--display);display:block;line-height:1.1}
+.mate span{font-size:13px;color:var(--muted);display:block;line-height:1.2}
+.mate.s1{border-color:var(--sun)} .mate.s1 span{color:var(--sun);font-weight:700}
+.mate.s2{border-color:var(--coral)} .mate.s2 span{color:var(--coral);font-weight:700}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:14px;color:var(--muted);text-align:center}
+.steps li{padding:5px 4px;border-radius:999px;border:1px solid var(--line)}
+.steps li.on{background:var(--sun);border-color:var(--sun);color:#2a1d00;font-weight:700}
+.steps li.done{color:var(--ink)}
+
+.stage{background:var(--night);border:1px solid var(--line);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.lead{color:var(--muted)}
+
+/* step 1 */
+.sunwrap{display:grid;grid-template-columns:170px 1fr;gap:16px;align-items:center}
+.sunwrap svg{width:170px;height:170px;display:block}
+.sunwrap figure{margin:0;text-align:center;font-size:14px;color:var(--muted)}
+.clues{display:flex;flex-direction:column;gap:8px}
+.clue{background:var(--panel);border-radius:12px;padding:8px 12px}
+.clue small{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.chance{display:inline-flex;gap:4px;vertical-align:middle;margin-left:6px}
+.chance i{width:22px;height:10px;border-radius:5px;background:var(--deep)}
+.chance i.on{background:var(--coral)}
+.teach{border-left:4px solid var(--sun);padding:4px 0 4px 12px;font-weight:700}
+
+/* step 2 */
+.tip{display:flex;gap:10px;align-items:center;background:var(--panel);border-radius:14px;padding:8px 12px;min-height:64px}
+.tip svg{width:46px;height:46px;flex:none}
+.tip b{font-family:var(--display);display:block;line-height:1.1}
+.base{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:0 4px 14px;position:relative}
+.base::after{content:"";position:absolute;left:-18px;right:-18px;bottom:0;height:44px;background:#34397d;border-radius:50% 50% 0 0 / 100% 100% 0 0;z-index:0}
+.dome{position:relative;z-index:1;background:var(--panel);border:3px solid var(--line);border-radius:90px 90px 14px 14px;padding:16px 6px 10px;min-height:178px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
+.dome>svg{width:34px;height:34px}
+.dome.lit{border-color:var(--sun);background:#343a86}
+.dome.over{border-color:var(--ink);background:#3b4296}
+.dome.broken{opacity:.55;border-style:dashed;cursor:not-allowed}
+.dome .slot{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;min-height:50px;padding-top:8px}
+.crop{display:flex;gap:3px;justify-content:center}
+.crop i{width:13px;height:7px;border-radius:4px;background:var(--deep);border:1px solid var(--line)}
+.crop i.on{background:var(--mint);border-color:var(--mint)}
+.fx{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;font-size:14px;text-align:center;font-weight:700;padding:0 4px}
+.fx span{border-radius:10px;padding:4px 4px;min-height:2.9em;display:flex;align-items:center;justify-content:center}
+.fx .ok{color:var(--mint)} .fx .warn{color:var(--coral)} .fx .mid{color:var(--sun)} .fx .off{color:var(--muted)}
+.tray{display:flex;flex-wrap:wrap;align-items:center;gap:10px;min-height:64px;background:var(--deep);border:2px dashed var(--line);border-radius:16px;padding:10px 14px}
+.tray.over{border-color:var(--ink)}
+.bat{width:24px;height:40px;border-radius:7px;background:var(--sun);border:0;padding:0;position:relative;cursor:grab;touch-action:none;flex:none}
+.bat::before{content:"";position:absolute;left:7px;right:7px;top:-5px;height:6px;border-radius:3px 3px 0 0;background:var(--sun)}
+.bat::after{content:"";position:absolute;left:6px;right:6px;top:7px;bottom:7px;border-radius:3px;background:#fff;opacity:.35}
+.bat.lift{opacity:.25}
+.bat.ghost{position:fixed;z-index:50;pointer-events:none;margin:0;transform:translate(-50%,-50%) rotate(-8deg) scale(1.15)}
+.msg{min-height:1.4em;color:var(--coral);font-weight:700}
+
+/* step 3 */
+.scene{position:relative;height:150px;border-radius:16px;background:var(--deep);overflow:hidden;border:1px solid var(--line)}
+.scene .s{position:absolute;left:18px;top:18px;width:74px;height:74px;border-radius:50%;background:var(--sun)}
+.scene .s.flash{animation:flash .9s ease 2}
+.scene .wave{position:absolute;top:0;bottom:0;left:-40%;width:36%;background:var(--coral);opacity:0;border-radius:0 80px 80px 0}
+.scene .wave.run{animation:wave 1.1s ease-in forwards}
+.scene .ground{position:absolute;left:-10%;right:-10%;bottom:-30px;height:70px;background:#34397d;border-radius:50%}
+.scene .mini{position:absolute;right:16px;bottom:18px;display:flex;gap:8px}
+.scene .mini i{display:block;width:44px;height:34px;border-radius:22px 22px 5px 5px;background:var(--panel);border:2px solid var(--line)}
+.scene .mini i.lit{border-color:var(--sun);background:#3b4296}
+.scene .mini i.hit{animation:shake .5s linear 2;border-color:var(--coral)}
+.banner{font-family:var(--display);font-size:22px;line-height:1.2;min-height:2.4em;text-wrap:balance}
+@keyframes flash{50%{transform:scale(1.5);background:#fff}}
+@keyframes wave{0%{left:-40%;opacity:.75}100%{left:110%;opacity:.5}}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.emerg{background:var(--panel);border:2px solid var(--coral);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.emerg .count{font-family:var(--display);font-size:26px;color:var(--coral);font-variant-numeric:tabular-nums}
+.feed{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.feed li{background:var(--panel);border-radius:10px;padding:6px 12px;border-left:5px solid var(--muted)}
+.feed li.good{border-left-color:var(--mint)} .feed li.bad{border-left-color:var(--coral)}
+.says{display:grid;gap:8px}
+.say{display:flex;gap:10px;align-items:center;background:var(--panel);border-radius:14px;padding:8px 12px}
+.say svg{width:42px;height:42px;flex:none}
+.say b{font-family:var(--display);display:block;line-height:1.1}
+
+/* end */
+.stars{font-size:46px;letter-spacing:6px;color:var(--sun);line-height:1}
+.stars i{font-style:normal;color:var(--line)}
+.card{background:var(--panel);border-radius:14px;padding:12px 14px}
+.card h3{color:var(--sun);margin-bottom:4px}
+.ups{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.ups button{text-align:left;padding:10px 12px;background:var(--deep)}
+.ups button small{display:block;font-weight:500;color:var(--muted)}
+.tag{display:inline-block;font-size:13px;color:var(--muted);border:1px dashed var(--line);border-radius:8px;padding:2px 8px;margin-top:6px}
+details{color:var(--muted);font-size:15px}
+details summary{cursor:pointer;color:var(--ink);font-weight:700}
+details ul{margin:8px 0;padding-left:20px}
+@media (max-width:600px){
+  .sunwrap{grid-template-columns:1fr;justify-items:center}
+  .base,.fx{grid-template-columns:repeat(2,1fr)} .fx{display:none}
+  .dome{min-height:150px} .ups{grid-template-columns:1fr} .steps{font-size:12px} .mate{flex-direction:column;text-align:center;padding:6px 4px} .mate svg{width:34px;height:34px}
+}
+@media (prefers-reduced-motion:reduce){.dots i{animation:none}.hp i{transition:none}.scene .s.flash,.scene .wave.run,.scene .mini i.hit{animation:none}}
+</style>
+</head>
+<body>
+<main>
+  <section class="view" id="v-loading">
+    <div class="splash">
+      <svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="50" fill="#d9d6f0"/><circle cx="42" cy="46" r="11" fill="#bcb9e4"/><circle cx="76" cy="70" r="15" fill="#bcb9e4"/><circle cx="70" cy="34" r="6" fill="#bcb9e4"/><circle cx="40" cy="80" r="7" fill="#bcb9e4"/></svg>
+      <h1 class="big">Moon Sweet Moon</h1>
+      <p class="lead" role="status">Checking the Sun…</p>
+      <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+    </div>
+  </section>
+
+  <section class="view col" id="v-home" hidden>
+    <div class="splash small">
+      <h1 class="big">Moon Sweet Moon</h1>
+      <p class="lead">Keep your little Moon crew safe from yesterday's real Sun.</p>
+    </div>
+    <div class="scene tall" aria-hidden="true"><div class="s"></div><div class="ground"></div><div class="mini"><i class="lit"></i><i class="lit"></i><i class="lit"></i><i class="lit"></i></div></div>
+    <div class="crewrow" id="homeCrew"></div>
+    <div class="stage" id="homeCard"></div>
+    <div class="menu">
+      <button type="button" id="mHow">How to play</button>
+      <button type="button" id="mBase">My base</button>
+      <button type="button" id="mData">About the data</button>
+    </div>
+  </section>
+
+  <section class="stage view" id="v-how" hidden>
+    <h2>How to play</h2>
+    <p class="lead">Get your crew through 3 shifts. Do science to earn stars.</p>
+    <ol class="how">
+      <li><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="13" fill="#ffc145"/><ellipse cx="24" cy="23" rx="4" ry="3" fill="#7a4a00"/></svg><div><b>1. Read the Sun</b>See which sunspot fired before, and how likely a storm is.</div></li>
+      <li><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="13" y="8" width="14" height="26" rx="4" fill="#ffc145"/><rect x="17" y="4" width="6" height="5" rx="2" fill="#ffc145"/></svg><div><b>2. Share your batteries</b>Drag them into the air room, farm, shelter and lab. You never have enough for everything.</div></li>
+      <li><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M23 3L8 23h10l-2 14 16-21H21z" fill="#ff6b5e"/></svg><div><b>3. Watch the shift</b>If the Sun flashes, a storm is coming. You get one quick move.</div></li>
+      <li><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 34S6 25 6 15a7 7 0 0 1 14-3 7 7 0 0 1 14 3c0 10-14 19-14 19z" fill="#ff8f84"/></svg><div><b>4. Look after your crew</b>A hurt crew member cannot do their job. Fresh air, food and rest help them heal.</div></li>
+    </ol>
+    <div class="row" style="justify-content:flex-end"><button type="button" class="go" data-home>Back to home</button></div>
+  </section>
+
+  <section class="stage view" id="v-base" hidden>
+    <h2>My base</h2>
+    <div id="baseBody" class="col"></div>
+    <div class="row" style="justify-content:space-between"><button type="button" id="wipe">Start a new base</button><button type="button" class="go" data-home>Back to home</button></div>
+  </section>
+
+  <section class="stage view" id="v-data" hidden>
+    <h2>About the data</h2>
+    <p id="dataSrc" class="teach"></p>
+    <ul class="plain">
+      <li>Real: each flare's date, time, size class, sunspot number and place on the Sun, and the clues built from them. Source: <a href="https://ccmc.gsfc.nasa.gov/tools/DONKI">NASA DONKI</a> (Space Weather Database Of Notifications, Knowledge, Information) at CCMC.</li>
+      <li>The daily mission uses yesterday's date (UTC). The game first asks NASA for the newest records. If it cannot reach NASA, it uses its saved copy from 14 Nov 2026, and says so. Practice missions pick a saved past day.</li>
+      <li>Simplified: in the game every flare brings a storm to the base. In real life only some flares send harmful particles toward the Moon. A calm day means DONKI lists no flare for that date.</li>
+      <li>Real science, squeezed: a flare's light reaches the Moon in about 8 minutes and the harmful particles come later. The game squeezes that wait into a few seconds.</li>
+      <li>Game rules, not data: the storm chance meter, battery counts, food, science points, crop growth, upgrades, and the crew rules. The true part of the crew rules is that a sick crew cannot do all its work.</li>
+      <li>The Sun picture is a drawing. The sunspot's place on it comes from the NASA record, or is estimated from the Sun's rotation on a day the spot did not fire.</li>
+      <li>Shifts are 8 hours each on the crew's 24 hour clock (UTC). The crew's facts are sample lines that still need checking against NASA.</li>
+      <li>Your base is saved in this browser only. There is no account.</li>
+    </ul>
+    <div class="row" style="justify-content:flex-end"><button type="button" class="go" data-home>Back to home</button></div>
+  </section>
+
+  <div class="col" id="v-game" hidden>
+  <div class="hud">
+    <div class="name"><h1>Moon Sweet Moon</h1><small id="sub"></small></div>
+    <span class="pill">Food <b id="food"></b></span>
+    <span class="pill">Science <b id="sci"></b></span>
+    <button type="button" id="snd" aria-pressed="true">Sound on</button>
+    <button type="button" id="quit">Home</button>
+  </div>
+
+  <div class="crewrow" id="crewrow" aria-live="polite"></div>
+
+  <ol class="steps" id="steps"><li>1 Read the Sun</li><li>2 Power the base</li><li>3 Watch</li><li>4 What happened</li></ol>
+
+  <section class="stage" id="s-sun">
+    <h2 id="sunTitle"></h2>
+    <div class="sunwrap">
+      <figure><div id="sunPic"></div><figcaption id="sunCap"></figcaption></figure>
+      <div class="clues" id="clues"></div>
+    </div>
+    <p class="teach" id="teach"></p>
+    <div class="row" style="justify-content:flex-end"><button type="button" class="go" id="toPower">Power the base</button></div>
+  </section>
+
+  <section class="stage" id="s-power" hidden>
+    <h2 id="powTitle"></h2>
+    <div class="tip" id="tip" aria-live="polite"></div>
+    <div class="base">
+      <div class="dome zone" data-zone="air" tabindex="0" role="button" aria-label="Air room. Press to add a battery.">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 18h22a6 6 0 1 0-6-6M6 26h30a6 6 0 1 1-6 6M6 34h14" fill="none" stroke="#9fd8ff" stroke-width="4" stroke-linecap="round"/></svg>
+        <h3>Air room</h3><div class="slot" id="slot-air"></div>
+      </div>
+      <div class="dome zone" data-zone="farm" tabindex="0" role="button" aria-label="Farm dome. Press to add a battery.">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 42V22" stroke="#5fe0b7" stroke-width="4" stroke-linecap="round"/><path d="M24 26C12 26 8 18 8 10c10 0 16 4 16 16zM24 22c0-10 6-14 16-14 0 10-6 14-16 14z" fill="#5fe0b7"/></svg>
+        <h3>Farm</h3><div class="crop" id="crop"></div><div class="slot" id="slot-farm"></div>
+      </div>
+      <div class="dome zone" data-zone="shield" tabindex="0" role="button" aria-label="Storm shelter. Press to add a battery.">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5l16 6v12c0 10-7 17-16 20C15 40 8 33 8 23V11z" fill="none" stroke="#ffc145" stroke-width="4" stroke-linejoin="round"/></svg>
+        <h3>Shelter</h3><div class="slot" id="slot-shield"></div>
+      </div>
+      <div class="dome zone" data-zone="lab" tabindex="0" role="button" aria-label="Science lab. Press to add a battery.">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M19 6h10M21 6v12L9 38a3 3 0 0 0 2.6 4.5h24.8A3 3 0 0 0 39 38L27 18V6" fill="none" stroke="#e6a8ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 31h18" stroke="#e6a8ff" stroke-width="4" stroke-linecap="round"/></svg>
+        <h3>Lab</h3><div class="slot" id="slot-lab"></div>
+      </div>
+    </div>
+    <div class="fx" id="fx" aria-live="polite"></div>
+    <div class="tray zone" data-zone="tray" id="tray"></div>
+    <div class="row"><p class="msg" id="msg" role="status" style="flex:1"></p><button type="button" class="go" id="go">Start the shift</button></div>
+  </section>
+
+  <section class="stage" id="s-watch" hidden>
+    <div class="scene" aria-hidden="true"><div class="s" id="wSun"></div><div class="wave" id="wave"></div><div class="ground"></div><div class="mini" id="mini"></div></div>
+    <p class="banner" id="banner" aria-live="polite"></p>
+    <div class="emerg" id="emerg" hidden></div>
+    <ul class="feed" id="feed" aria-live="polite"></ul>
+    <div id="after" hidden>
+      <div class="says" id="says"></div>
+      <div class="row" style="margin-top:12px;justify-content:flex-end"><button type="button" class="go" id="next"></button></div>
+    </div>
+  </section>
+
+  <section class="stage" id="s-end" hidden>
+    <div style="text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center">
+      <h2 id="endTitle"></h2>
+      <div class="stars" id="stars" role="img"></div>
+      <p class="lead" id="endSub"></p>
+    </div>
+    <div class="card" id="upCard"><h3>Pick one upgrade for your base</h3><div class="ups" id="ups"></div></div>
+    <div class="card"><h3>What really happened on the Sun</h3><div id="cReal"></div></div>
+    <div class="card"><h3>What your plan did</h3><p id="cPlan"></p></div>
+    <div class="row" style="justify-content:space-between"><button type="button" id="copy">Copy my result</button><span class="lead" id="copyMsg" role="status"></span><button type="button" class="go" id="again">Back to home</button></div>
+  </section>
+
+  </div>
+</main>
+
+<script>
+/* Real solar flare records from NASA DONKI (CCMC), saved 14 Nov 2026.
+   Each line: peak time in UTC | size class | place on the Sun | sunspot region number.
+   Every date range in RANGES was fetched in full, so a day with no line is a day DONKI lists no flare for. */
+const RAW = `
+2026-01-14T20:33|M1.6|S14E70|14341
+2026-01-14T23:56|C3.8|N15E05|14340
+2026-01-16T09:09|C6.6|S17E58|14345
+2026-01-17T02:46|C4.7|S09W88|14336
+2026-01-17T10:29|M2.1|S07E36|14341
+2026-01-17T23:51|M1.1|S10E30|14341
+2026-01-18T18:09|X1.9|S15E20|14341
+2026-01-19T11:19|M1.1|S17E17|14345
+2026-01-20T05:32|C2.1|S10E70|14349
+2026-01-27T09:43|C2.9|S23E90|null
+2026-01-29T14:31|C1.2|N18W61|14350
+2026-01-31T05:12|C6.0|S04W107|14351
+2026-01-31T18:33|C7.0|N16E56|14366
+2026-02-01T02:05|M1.7|N13E46|14366
+2026-02-01T03:41|M1.0|N15E47|14366
+2026-02-01T04:20|M1.9|N13E46|14366
+2026-02-01T10:02|M6.6|N13E43|14366
+2026-02-01T10:13|M2.8|N13E43|14366
+2026-02-01T10:42|M2.4|N13E43|14366
+2026-02-01T12:12|M6.7|N13E42|14366
+2026-02-01T12:33|X1.0|N13E42|14366
+2026-02-01T12:50|M5.8|N13E41|14366
+2026-02-01T13:59|M1.2|N14E43|14366
+2026-02-01T14:25|M1.5|N13E40|14366
+2026-02-01T15:48|M1.5|N13E40|14366
+2026-02-01T16:05|M5.1|N15E42|14366
+2026-02-01T16:51|M1.2|N13E39|14366
+2026-02-01T17:35|M1.1|N13E40|14366
+2026-02-01T17:58|M2.5|N13E38|14366
+2026-02-01T18:19|M2.1|N13E38|14366
+2026-02-01T18:56|M1.9|N13E38|14366
+2026-02-01T19:22|M1.8|N13E38|14366
+2026-02-01T20:30|M2.2|N13E36|14366
+2026-02-01T23:27|M1.3|N13E35|14366
+2026-02-01T23:57|X8.1|N13E35|14366
+2026-02-02T00:36|X2.8|N13E35|14366
+2026-02-02T02:42|M4.4|N13E35|14366
+2026-02-02T02:51|M5.2|N13E35|14366
+2026-02-02T03:46|M1.9|N13E35|14366
+2026-02-02T04:47|M3.0|N16E36|14366
+2026-02-02T05:16|M1.6|N16E33|14366
+2026-02-02T05:27|M2.3|N15E33|14366
+2026-02-02T08:14|X1.6|N14E30|14366
+2026-02-02T10:24|M1.9|N14E29|14366
+2026-02-02T11:24|M6.7|N14E29|14366
+2026-02-02T13:39|M1.1|N12E31|14366
+2026-02-02T15:01|M4.0|N13E26|14366
+2026-02-02T17:10|M2.3|N14E26|14366
+2026-02-02T18:29|M2.3|N14E25|14366
+2026-02-02T20:09|M2.9|N14E24|14366
+2026-02-02T21:08|M3.3|N15E24|14366
+2026-02-02T23:27|M2.5|N12E20|14366
+2026-02-03T01:49|M1.5|N12E20|14366
+2026-02-03T02:32|M1.1|N12E20|14366
+2026-02-03T04:22|M1.7|N14E19|14366
+2026-02-03T05:55|M2.6|N14E15|14366
+2026-02-03T07:01|M7.2|N14E17|14366
+2026-02-03T07:47|M3.6|N14E17|14366
+2026-02-03T10:12|M3.6|N14E15|14366
+2026-02-03T11:04|M1.3|N14E12|14366
+2026-02-03T11:21|M1.4|N14E12|14366
+2026-02-03T14:08|X1.5|N14E13|14366
+2026-02-03T14:56|M7.2|N15E17|14366
+2026-02-03T18:08|M2.5|N14E10|14366
+2026-02-03T22:50|M2.0|N12E07|14366
+2026-02-03T23:09|M3.4|N14E08|14366
+2026-02-04T01:10|M1.2|N13E04|14366
+2026-02-04T01:39|M1.4|N14E06|14366
+2026-02-04T01:55|M1.4|N14E06|14366
+2026-02-04T02:30|M2.1|N14E05|14366
+2026-02-04T02:39|M4.9|N14E05|14366
+2026-02-04T03:55|M2.1|N14E05|14366
+2026-02-04T09:20|M1.8|N15E05|14366
+2026-02-04T10:12|M3.1|N15E05|14366
+2026-02-04T10:46|M1.5|N14E02|14366
+2026-02-04T11:05|M1.7|N13E02|14366
+2026-02-04T11:35|M1.1|N16E05|14366
+2026-02-04T12:13|X4.2|N16E06|14366
+2026-02-04T15:34|M1.8|N14W03|14366
+2026-02-05T04:21|M2.5|N14W09|14366
+2026-02-05T04:36|M2.7|N14W09|14366
+2026-02-05T06:19|M1.3|N10W14|14366
+2026-02-05T08:33|M1.0|N15W10|14366
+2026-02-05T08:46|M1.2|N14W12|14366
+2026-02-05T12:52|C6.0|S18W15|14362
+2026-02-05T13:04|M1.6|N14W15|14366
+2026-02-05T15:13|M1.8|S18W17|14362
+2026-02-05T16:30|M1.6|N14W17|14366
+2026-02-05T16:39|M1.3|N15W16|14366
+2026-02-05T17:41|M1.5|N14W17|14366
+2026-02-05T19:34|M2.2|S18W19|14362
+2026-02-05T22:17|M1.1|S23W70|14372
+2026-03-26T06:23|M3.9|N15E60|14403
+2026-03-28T04:18|M1.3|S24E70|14405
+2026-03-28T11:35|C4.1|N15E57|14404
+2026-03-30T03:19|X1.4|S27E45|14405
+2026-03-31T01:01|C1.5|N16E00|14403
+2026-03-31T10:39|C1.1|N16W05|14403
+2026-04-01T13:48|C5.3|N02E30|14409
+2026-04-01T23:28|C6.1|N20W23|14403
+2026-04-23T04:35|M1.6|N15W60|14419
+2026-04-23T04:44|M1.2|N16E40|14420
+2026-04-23T04:59|M1.2|N16E35|14420
+2026-04-23T08:48|M4.3|N15W61|14419
+2026-04-23T14:00|M1.7|N17W66|14419
+2026-04-23T17:08|M4.9|N15W67|14419
+2026-04-24T01:07|X2.4|N16W68|14419
+2026-04-24T08:13|X2.5|N16W70|14419
+2026-04-24T09:07|M1.9|S05E40|14423
+2026-04-24T13:01|M1.7|S06E38|14423
+2026-04-24T18:15|M6.4|N15W78|14419
+2026-04-25T07:59|M1.3|S05E27|14423
+2026-04-25T14:30|M1.1|N07E70|14425
+2026-04-26T00:23|M1.3|N06E64|14425
+2026-04-26T14:03|M1.4|N15W15|14420
+2026-04-26T19:24|M1.7|N17W14|14420
+2026-04-26T20:04|M2.2|N06E52|14425
+2026-04-26T22:57|M6.0|N15W18|14420
+2026-06-29T21:40|M1.4|N16W04|14479
+2026-06-30T01:16|M1.3|S07W48|14475
+2026-06-30T12:57|M5.8|S08W56|14475
+2026-06-30T20:50|X1.1|N17W18|14479
+2026-07-01T06:27|M1.1|N19W23|14479
+2026-07-01T06:43|M1.0|N20W23|14479
+2026-07-01T07:35|M1.5|N20W24|14479
+2026-07-01T08:17|M2.5|N20W24|14479
+2026-07-01T10:08|M1.3|N19W26|14479
+2026-07-01T11:25|M1.0|N13W33|14479
+2026-07-01T11:55|M1.1|N19W27|14479
+2026-07-01T12:44|M1.2|N19W27|14479
+2026-07-01T14:31|M1.1|N16W32|14479
+2026-07-01T14:54|M2.6|N16W32|14479
+2026-07-01T15:27|M1.1|S18W39|14480
+2026-07-01T19:43|M3.5|N15W32|14479
+2026-07-01T20:17|M1.0|S09W74|14475
+2026-07-01T20:22|M1.8|N20W33|14479
+2026-07-01T23:09|M8.5|S10W23|14478
+2026-07-02T00:02|M1.1|S05W19|14478
+2026-07-02T01:56|M4.2|N17W35|14479
+2026-07-02T10:26|M2.8|N17W43|14479
+2026-07-02T23:12|M1.2|N19W47|14479
+2026-07-03T13:13|M1.4|S16W63|14480
+2026-07-03T18:11|M6.7|N15W58|14479
+2026-07-03T18:59|M6.3|S07W53|14478
+2026-07-03T19:31|M1.1|N15W67|14479
+2026-07-03T20:08|M1.5|N15W68|14479
+2026-07-04T00:00|M2.0|S17W70|14480
+2026-07-04T00:23|M2.3|N15W70|14479
+2026-07-04T01:13|M2.1|N15W70|14479
+2026-07-04T02:01|M1.2|N15W72|14479
+2026-07-04T03:32|M3.7|N17W70|14479
+2026-07-04T03:42|M4.0|N17W70|14479
+2026-07-04T05:15|M1.3|N17W71|14479
+2026-07-04T08:07|M1.8|N17W71|14479
+2026-07-04T08:52|M1.0|N17W71|14479
+2026-07-04T11:12|M3.2|N17W72|14479
+2026-07-04T13:51|M3.2|N17W74|14479
+2026-07-04T16:06|M1.1|N17W74|14479
+2026-07-04T18:48|M1.9|N17W76|14479
+2026-07-04T19:36|M1.5|S06W65|14478
+2026-07-04T20:41|X1.3|S10E85|14482
+2026-07-04T21:15|M2.0|N15W78|14479
+2026-07-04T22:24|M1.1|N15W78|14479
+2026-07-04T23:49|M1.0|N15W78|14479
+2026-07-05T00:31|M1.3|N15W80|14479
+2026-07-05T04:32|M1.3|S18W85|14480
+2026-07-05T04:47|M1.0|N15W82|14479
+2026-07-05T05:39|M2.7|N15W82|14479
+2026-07-05T07:26|C9.9|N15W95|14479
+2026-07-05T11:00|M1.4|N15W85|14479
+2026-07-05T11:16|M1.6|N15W85|14479
+2026-07-05T16:32|M1.4|N16W88|14479
+2026-07-05T16:45|M1.4|N16W88|14479
+2026-07-05T17:57|M5.3|N16W89|14479
+2026-07-05T19:07|M1.4|N16W90|14479
+2026-07-05T21:22|M1.0|N16W91|14479
+2026-10-10T14:12|M1.2|N08W51|14549
+2026-10-10T15:10|M6.4|N08W54|14549
+2026-10-16T15:42|M1.3|S16W15|14551
+2026-10-19T09:03|M1.6|S15W48|14551
+2026-10-23T03:55|C1.3|N10W89|14557
+2026-10-26T08:38|C1.9|S10W70|14561
+2026-10-26T18:40|C2.8|S12W77|14561
+2026-11-05T18:33|M3.5|S08E35|14566
+2026-11-07T12:43|M1.2|S08E13|14566
+2026-11-07T17:17|M1.4|S08E10|14566
+2026-11-07T18:42|M1.9|S07E06|14566
+2026-11-08T07:46|M1.7|S07W03|14566
+2026-11-08T15:37|M1.1|S07W01|14566
+2026-11-08T18:27|M1.1|S07W04|14566
+2026-11-11T21:21|M1.7|S07W46|14566
+`;
+const RANGES = [['2026-01-13', '2026-01-20'], ['2026-01-27', '2026-02-05'], ['2026-03-25', '2026-04-01'], ['2026-04-19', '2026-04-26'], ['2026-06-25', '2026-07-05'], ['2026-10-10', '2026-11-13']];
+let FL = RAW.trim().split('\n').map(l => { const q = l.split('|'); return { iso: q[0].slice(0, 10), t: q[0].slice(11, 16), cls: q[1], loc: q[2], ar: q[3] === 'null' ? null : +q[3] }; });
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const nice = iso => +iso.slice(8) + ' ' + MON[+iso.slice(5, 7) - 1] + ' ' + iso.slice(0, 4);
+const dayNum = iso => Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8)) / 864e5;
+const isoOf = n => new Date(n * 864e5).toISOString().slice(0, 10);
+// A day is playable once we hold the 5 days before it, so the "fired before" clue is complete.
+const DAYS = [];
+for (const [a, b] of RANGES) for (let n = dayNum(a) + 5; n <= dayNum(b); n++) { const iso = isoOf(n); DAYS.push({ iso, date: nice(iso), flares: FL.filter(f => f.iso === iso) }); }
+// Where a sunspot sits on the picture, from NASA's "N13E35" style place. addLon turns it with the Sun (about 13 degrees a day).
+function place(loc, addLon) {
+  const m = /([NS])(\d+)([EW])(\d+)/.exec(loc || ''); if (!m) return null;
+  const lat = (m[1] === 'N' ? 1 : -1) * +m[2], lon = (m[3] === 'W' ? 1 : -1) * +m[4] + (addLon || 0), r = Math.PI / 180, L = Math.max(-90, Math.min(90, lon));
+  return { x: 90 + 66 * Math.cos(lat * r) * Math.sin(L * r), y: 90 - 66 * Math.sin(lat * r), vis: Math.abs(lon) <= 90 };
+}
+// Which sunspot to watch on a given day: the one behind that day's biggest flare if it has fired lately, or else the one that fired most recently.
+function watch(day) {
+  const n = dayNum(day.iso), recent = FL.filter(f => { const d = n - dayNum(f.iso); return d >= 1 && d <= 5; });
+  const lead = day.flares.length ? biggest(day.flares) : null;
+  const f0 = lead && recent.some(f => f.ar === lead.ar) ? lead : recent.length ? recent[recent.length - 1] : null;
+  if (!f0) return { ar: null, past: [], pos: null, est: false };
+  const here = day.flares.find(f => f.ar === f0.ar);
+  return { ar: f0.ar, past: recent.filter(f => f.ar === f0.ar), pos: here ? place(here.loc) : place(f0.loc, 13 * (n - dayNum(f0.iso))), est: !here };
+}
+const SIZE = { C: { word: 'small', need: 1, hurt: 20 }, M: { word: 'medium', need: 2, hurt: 40 }, X: { word: 'big', need: 3, hurt: 70 } };
+const EAT = 15, HARVEST = 35, SCI = 10, STAR2 = 30, STAR3 = 50;
+const ROOMS = ['air', 'farm', 'shield', 'lab'];
+const RNAME = { air: 'air room', farm: 'farm', shield: 'shelter', lab: 'lab' };
+const UPS = {
+  bank: { name: 'Bigger battery bank', what: '1 more battery every shift', many: true },
+  walls: { name: 'Thicker shelter walls', what: 'Storms need 1 less battery', many: true },
+  farm: { name: 'Faster farm', what: 'Lettuce grows in 3 steps, not 4' },
+  air: { name: 'Better air cleaner', what: 'The air room needs only 1 battery' }
+};
+const CREW = {
+  mei: { name: 'Nova', role: 'Plant scientist', skin: '#f2c9a1', suit: '#5fe0b7' },
+  arjun: { name: 'Kai', role: 'Power engineer', skin: '#b9794f', suit: '#ffc145' },
+  siti: { name: 'Juno', role: 'Medic', skin: '#d9a877', suit: '#ff8f84' }
+};
+const TIPS = {
+  air: ['arjun', 'We breathe out air we cannot use again. A machine cleans it, and it needs power all the time.'],
+  farm: ['mei', 'Plants give us food and a little fresh air. They need light every shift, and they take time to grow.'],
+  shield: ['siti', 'A solar storm carries radiation. It can make people sick. Thick walls and power block it.'],
+  lab: ['mei', 'Science is why we came to the Moon. But the lab only runs on power we can spare.']
+};
+const TEACH = ['Solar flares burst out of sunspots, the dark patches on the Sun.', 'A sunspot that fired before often fires again.', 'Nobody can be sure about the Sun. A forecast is a best guess.'];
+const $ = id => document.getElementById(id);
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const shuffle = a => { const r = a.slice(); for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; } return r; };
+const calmMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const sleep = ms => new Promise(r => setTimeout(r, calmMotion ? Math.min(ms, 150) : ms));
+const cap = s => s[0].toUpperCase() + s.slice(1);
+
+/* ---------- sound (only after a click) ---------- */
+let actx = null, sound = true;
+function beep(f, d, type) { if (!sound) return; try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); const o = actx.createOscillator(), g = actx.createGain(); o.type = type || 'sine'; o.frequency.value = f; g.gain.setValueAtTime(0.05, actx.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + d); o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime + d + 0.02); } catch (e) { /* sound is optional */ } }
+$('snd').addEventListener('click', () => { sound = !sound; $('snd').textContent = sound ? 'Sound on' : 'Sound off'; $('snd').setAttribute('aria-pressed', String(sound)); });
+
+/* ---------- the base that carries over (this browser only) ---------- */
+const KEY = 'spaceboleh.base.v1';
+const blank = () => ({ day: 1, crop: 0, ups: { bank: 0, walls: 0, farm: 0, air: 0 }, log: [], last: null, lastStars: 0 });
+function loadBase() { try { const d = JSON.parse(localStorage.getItem(KEY)); if (d && d.ups) return d; } catch (e) { /* no saved base */ } return blank(); }
+function saveBase() { try { localStorage.setItem(KEY, JSON.stringify(B)); } catch (e) { /* saving is optional */ } }
+let B = loadBase(), S;
+const cropNeed = () => B.ups.farm ? 3 : 4;
+const airNeed = () => B.ups.air ? 1 : 2;
+const needFor = L => Math.max(1, SIZE[L].need - B.ups.walls);
+const biggest = fl => fl.slice().sort((a, b) => 'CMX'.indexOf(b.cls[0]) - 'CMX'.indexOf(a.cls[0]) || parseFloat(b.cls.slice(1)) - parseFloat(a.cls.slice(1)))[0];
+
+const STATE = ['Fine', 'Hurt', 'Sick'];
+const COST = { mei: ['Runs the farm', 'Farm grows slowly', 'Farm stops growing'], arjun: ['Keeps the panels working', '1 fewer battery', '2 fewer batteries'], siti: ['Helps the crew heal', 'The others cannot heal', 'The others cannot heal'] };
+const ILL = {
+  arjun: ['', 'I am hurt. Next shift we get 1 fewer battery.', 'I am sick. Next shift we get 2 fewer batteries.'],
+  mei: ['', 'I am hurt. The farm will grow slowly next shift.', 'I am sick. The farm cannot grow next shift.'],
+  siti: ['', 'I am hurt. I cannot help the others heal next shift.', 'I am sick. I cannot help the others heal next shift.']
+};
+const IDS = Object.keys(CREW);
+const allSick = () => IDS.every(id => S.h[id] === 2);
+const allFine = () => IDS.every(id => S.h[id] === 0);
+function face(id, st) {
+  if (st === undefined) st = S ? S.h[id] : 0;
+  const c = CREW[id], m = ['happy', 'worried', 'sick'][st];
+  const mouth = st === 0 ? 'M21 34q6 6 12 0' : st === 1 ? 'M21 36q3-3 6 0t6 0' : 'M21 38q6-6 12 0';
+  const brows = st === 0 ? '' : '<path d="' + (st === 1 ? 'M18 21l6-2M36 21l-6-2' : 'M18 19l6 2M36 19l-6 2') + '" stroke="#3a2416" stroke-width="2" stroke-linecap="round"/>';
+  const band = st === 1 ? '<rect x="13" y="11" width="18" height="6" rx="3" fill="#fff" transform="rotate(-20 22 14)"/>' : '';
+  return '<svg viewBox="0 0 54 54" role="img" aria-label="' + c.name + ' looks ' + m + '"><circle cx="27" cy="27" r="25" fill="' + c.suit + '"/><circle cx="27" cy="28" r="19" fill="' + (st === 2 ? '#b9c79a' : c.skin) + '"/>' + band + '<circle cx="21" cy="26" r="2.6" fill="#3a2416"/><circle cx="33" cy="26" r="2.6" fill="#3a2416"/>' + brows + '<path d="' + mouth + '" fill="none" stroke="#3a2416" stroke-width="2.5" stroke-linecap="round"/></svg>';
+}
+const bats = n => Array.from({ length: n }, () => '<button type="button" class="bat" aria-label="Battery"></button>').join('');
+const used = () => ROOMS.reduce((t, k) => t + S.a[k], 0);
+const powerNow = () => Math.max(2, S.power[Math.min(S.shift, 2)] - S.h.arjun);
+const left = () => powerNow() - used();
+const grow = n => S.h.mei === 0 ? n : S.h.mei === 1 ? Math.ceil(n / 2) : 0;
+
+function newGame(mode, given) {
+  const pool = DAYS.filter(d => !S || d !== S.day), busy = pool.filter(d => d.flares.length), quiet = pool.filter(d => !d.flares.length);
+  const day = given || pick(Math.random() < 0.75 || !quiet.length ? busy : quiet);
+  const truth = [0, 1, 2].map(i => { const f = day.flares.filter(x => Math.floor(parseInt(x.t, 10) / 8) === i); return f.length ? biggest(f) : null; });
+  const chance = truth.map(f => { const r = Math.random(); return f ? (r < 0.75 ? 3 : 2) : (r < 0.65 ? 1 : r < 0.95 ? 2 : 3); });
+  S = { day, w: watch(day), truth, chance, power: shuffle([4, 5, 6]).map(n => n + B.ups.bank), shift: 0, a: { air: 0, farm: 0, shield: 0, lab: 0 }, guess: null,
+    h: { mei: 0, arjun: 0, siti: 0 }, food: 40, sci: 0, crop: B.crop || 0, broken: null, right: 0, wasted: 0, leaks: [], blocked: 0, wilted: 0, why: '', picked: false, busy: false, tip: null };
+  S.mode = mode; if (mode !== 'daily') S.crop = 0;
+  view('game'); show('sun');
+}
+
+/* ---------- screens ---------- */
+function show(step) {
+  S.step = step;
+  for (const k of ['sun', 'power', 'watch', 'end']) $('s-' + k).hidden = k !== step && !(k === 'watch' && step === 'after');
+  const idx = { sun: 0, power: 1, watch: 2, after: 3, end: 3 }[step];
+  [...$('steps').children].forEach((li, i) => { li.className = step === 'end' ? 'done' : i === idx ? 'on' : i < idx ? 'done' : ''; });
+  $('steps').hidden = step === 'end';
+  hud();
+  if (step === 'sun') drawSun();
+  if (step === 'power') { S.tip = null; drawPower(); }
+}
+function hud() {
+  $('sub').textContent = (S.mode === 'daily' ? 'Day ' + B.day : 'Practice') + ' · the Sun on ' + S.day.date + (S.step === 'end' ? '' : ' · shift ' + Math.min(S.shift + 1, 3) + ' of 3');
+  $('crewrow').innerHTML = IDS.map(id => { const st = S.h[id]; return '<div class="mate s' + st + '">' + face(id) + '<div><b>' + CREW[id].name + (st ? ' is ' + STATE[st].toLowerCase() : '') + '</b><span>' + COST[id][st] + '</span></div></div>'; }).join('');
+  $('food').textContent = Math.max(0, Math.round(S.food)); $('sci').textContent = S.sci;
+}
+function drawSun() {
+  const d = S.day, i = S.shift, w = S.w, n = dayNum(d.iso);
+  const today = d.flares.filter(f => Math.floor(parseInt(f.t, 10) / 8) < i);
+  let spot = w.pos && w.pos.vis ? { pos: w.pos, ar: w.ar, est: w.est } : null, firedToday = today.some(f => f.ar === w.ar);
+  if (!w.past.length && today.length) { const b = biggest(today), q = place(b.loc); spot = q && q.vis ? { pos: q, ar: b.ar, est: false } : null; firedToday = true; }
+  const show = !!spot, x = show ? spot.pos.x : 0, y = show ? spot.pos.y : 0, name = ar => ar ? 'Sunspot ' + ar : 'A sunspot';
+  $('sunTitle').textContent = 'Shift ' + (i + 1) + ': read the Sun';
+  $('sunPic').innerHTML = '<svg viewBox="0 0 180 180" aria-hidden="true"><defs><radialGradient id="sg"><stop offset="0" stop-color="#ffe08a"/><stop offset=".7" stop-color="#ffb52e"/><stop offset="1" stop-color="#e2731c"/></radialGradient>' +
+    '<filter id="gr" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="' + (n % 97) + '"/><feColorMatrix values="0 0 0 0 .45  0 0 0 0 .2  0 0 0 0 0  0 0 0 .35 0"/><feComposite in2="SourceGraphic" operator="in"/></filter>' +
+    '<radialGradient id="pg"><stop offset=".45" stop-color="#3a1c00"/><stop offset=".5" stop-color="#8a4a12"/><stop offset="1" stop-color="#b8691c" stop-opacity=".6"/></radialGradient></defs>' +
+    '<circle cx="90" cy="90" r="82" fill="#ffb52e" opacity=".18"/><circle cx="90" cy="90" r="70" fill="url(#sg)"/><circle cx="90" cy="90" r="70" fill="#000" filter="url(#gr)"/>' +
+    (show ? '<ellipse cx="' + x + '" cy="' + y + '" rx="11" ry="8" fill="url(#pg)"/><ellipse cx="' + (x + 13) + '" cy="' + (y + 6) + '" rx="5" ry="4" fill="url(#pg)"/>' + (firedToday ? '<ellipse cx="' + (x + 4) + '" cy="' + (y - 7) + '" rx="12" ry="5" fill="#fff8d6" opacity=".9"/>' : '') : '') + '</svg>';
+  const label = name(w.ar);
+  $('sunCap').textContent = show ? name(spot.ar) + (spot.est ? ' (place estimated)' : '') : w.past.length ? label + ' has turned out of view' : 'No sunspot to watch yet';
+  const clues = [];
+  if (w.past.length) {
+    const b = biggest(w.past), ago = n - dayNum(w.past[w.past.length - 1].iso);
+    clues.push([label + ' fired ' + (w.past.length === 1 ? 'a ' + SIZE[b.cls[0]].word + ' flare' : w.past.length + ' flares in the last 5 days, the biggest one ' + SIZE[b.cls[0]].word) + '. The last one was ' + (ago === 1 ? 'yesterday' : ago + ' days ago') + '.', 'Real NASA record']);
+  } else clues.push(['NASA lists no flares in the 5 days before this one.', 'Real NASA record']);
+  if (i > 0) clues.push([today.length ? 'Earlier today the Sun fired ' + (today.length === 1 ? 'a ' + SIZE[today[0].cls[0]].word + ' flare.' : today.length + ' flares, the biggest one ' + SIZE[biggest(today).cls[0]].word + '.') : 'The Sun has been quiet so far today.', 'Real NASA record']);
+  const c = S.chance[i];
+  clues.push(['Storm chance this shift: <b>' + ['', 'low', 'medium', 'high'][c] + '</b><span class="chance" aria-hidden="true">' + [1, 2, 3].map(k => '<i class="' + (k <= c ? 'on' : '') + '"></i>').join('') + '</span>', 'Game forecast, not real data']);
+  $('clues').innerHTML = clues.map(q => '<div class="clue">' + q[0] + '<small>' + q[1] + '</small></div>').join('');
+  $('teach').textContent = TEACH[i];
+}
+$('toPower').addEventListener('click', () => { beep(520, .1); show('power'); });
+
+function effects() {
+  const a = S.a, e = {};
+  e.air = a.air >= airNeed() ? ['ok', 'Air is fresh'] : ['warn', (a.air ? 'Need ' + (airNeed() - a.air) + ' more' : 'No air') + ': everyone gets hurt'];
+  if (a.farm === 0) e.farm = S.crop > 0 ? ['warn', 'No power: lettuce wilts!'] : ['off', 'Nothing growing'];
+  else if (S.h.mei === 2) e.farm = ['mid', 'Nova is sick: no growth'];
+  else e.farm = S.crop + grow(a.farm) >= cropNeed() ? ['ok', 'Harvest this shift!'] : ['mid', 'Grows to ' + (S.crop + grow(a.farm)) + ' of ' + cropNeed() + (S.h.mei ? ' (slow)' : '')];
+  const open = ['C', 'M', 'X'].find(L => a.shield < needFor(L));
+  e.shield = !open ? ['ok', 'Blocks every storm'] : [a.shield ? 'mid' : 'warn', 'A ' + SIZE[open].word + ' storm would hurt ' + (needFor(open) - a.shield)];
+  e.lab = a.lab ? ['ok', '+' + a.lab * SCI + ' science'] : ['off', 'No science'];
+  return e;
+}
+function drawPower() {
+  const n = S.power[S.shift] - B.ups.bank;
+  $('powTitle').innerHTML = 'Shift ' + (S.shift + 1) + ': power the base <span class="pill" style="font-family:var(--body);vertical-align:middle;white-space:nowrap">Storm chance: <b>' + ['', 'low', 'medium', 'high'][S.chance[S.shift]] + '</b></span>';
+  const t = S.tip ? TIPS[S.tip] : ['arjun', (S.h.arjun ? 'I am ' + STATE[S.h.arjun].toLowerCase() + ', so I cannot keep every panel working. ' : n === 4 ? 'Shadow on the solar panels. ' : n === 6 ? 'Bright sun on the panels! ' : '') + 'We have ' + powerNow() + ' batteries this shift. Drag them into the rooms.'];
+  $('tip').innerHTML = face(t[0]) + '<div><b>' + CREW[t[0]].name + ', ' + CREW[t[0]].role.toLowerCase() + '</b>' + t[1] + '</div>';
+  const e = effects();
+  for (const k of ROOMS) { $('slot-' + k).innerHTML = bats(S.a[k]); const d = $('slot-' + k).parentElement; d.classList.toggle('lit', S.a[k] > 0); d.classList.toggle('broken', S.broken === k); }
+  $('crop').innerHTML = Array.from({ length: cropNeed() }, (_, i) => '<i class="' + (i < S.crop ? 'on' : '') + '"></i>').join('');
+  $('fx').innerHTML = ROOMS.map(k => '<span class="' + e[k][0] + '">' + e[k][1] + '</span>').join('');
+  $('tray').innerHTML = left() ? bats(left()) + '<span class="lead">' + left() + ' left</span>' : '<span class="lead">All batteries placed. Tap one to take it back.</span>';
+  $('go').disabled = left() > 0;
+}
+function move(from, to) {
+  if (from === to) return;
+  if (to !== 'tray') S.tip = to;
+  if (to !== 'tray' && S.broken === to) { $('msg').textContent = 'The ' + RNAME[to] + ' is broken this shift.'; drawPower(); return; }
+  if (from === 'tray') { if (left() <= 0) { $('msg').textContent = 'No batteries left. Take one out of a room first.'; drawPower(); return; } } else { if (S.a[from] <= 0) return; S.a[from]--; }
+  if (to !== 'tray') S.a[to]++;
+  $('msg').textContent = ''; beep(to === 'tray' ? 300 : 440, .07); drawPower();
+}
+let drag = null, tapGuard = 0;
+const zoneAt = (x, y) => { const el = document.elementFromPoint(x, y); return el ? el.closest('.zone') : null; };
+document.addEventListener('pointerdown', e => {
+  const b = e.target.closest('.bat'); if (!b || S.step !== 'power') return;
+  e.preventDefault();
+  const g = b.cloneNode(true); g.classList.add('ghost'); g.style.left = e.clientX + 'px'; g.style.top = e.clientY + 'px'; document.body.append(g); b.classList.add('lift');
+  drag = { from: b.closest('.zone').dataset.zone, g, x: e.clientX, y: e.clientY, moved: false };
+});
+document.addEventListener('pointermove', e => {
+  if (!drag) return;
+  if (Math.hypot(e.clientX - drag.x, e.clientY - drag.y) > 6) drag.moved = true;
+  drag.g.style.left = e.clientX + 'px'; drag.g.style.top = e.clientY + 'px';
+  const z = zoneAt(e.clientX, e.clientY); document.querySelectorAll('.zone.over').forEach(n => n.classList.remove('over')); if (z) z.classList.add('over');
+});
+function drop(e) {
+  if (!drag) return;
+  const d = drag; drag = null; d.g.remove(); document.querySelectorAll('.zone.over').forEach(n => n.classList.remove('over'));
+  const z = d.moved ? zoneAt(e.clientX, e.clientY) : null;
+  if (z) move(d.from, z.dataset.zone); else if (!d.moved && d.from !== 'tray') move(d.from, 'tray'); else drawPower();
+  tapGuard = Date.now();
+}
+document.addEventListener('pointerup', drop); document.addEventListener('pointercancel', drop);
+document.querySelectorAll('.dome').forEach(r => {
+  r.addEventListener('click', e => { if (e.target.closest('.bat') || Date.now() - tapGuard < 250) return; move('tray', r.dataset.zone); });
+  r.addEventListener('keydown', e => { if (e.target === r && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); move('tray', r.dataset.zone); } });
+});
+document.addEventListener('keydown', e => { const b = e.target.closest && e.target.closest('.dome .bat'); if (b && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); move(b.closest('.zone').dataset.zone, 'tray'); } });
+
+/* ---------- step 3: watch the shift ---------- */
+function mini(hit) { $('mini').innerHTML = ROOMS.map(k => '<i class="' + (S.a[k] ? 'lit' : '') + (hit === k ? ' hit' : '') + '"></i>').join(''); }
+function feed(text, kind) { const li = document.createElement('li'); li.className = kind || ''; li.textContent = text; $('feed').append(li); }
+function emergency(f) {
+  return new Promise(res => {
+    const from = ['lab', 'farm', 'air'].filter(k => S.a[k] > 0), need = needFor(f.cls[0]);
+    if (!from.length || S.a.shield >= need) { res(null); return; }
+    let n = 7; const el = $('emerg');
+    el.innerHTML = '<div class="row" style="justify-content:space-between"><b>Quick! Move 1 battery to the shelter?</b><span class="count" id="cnt">' + n + '</span></div><p class="lead">It needs ' + need + ' for a ' + SIZE[f.cls[0]].word + ' storm and has ' + S.a.shield + '.</p><div class="row">' +
+      from.map(k => '<button type="button" data-em="' + k + '">Take from the ' + RNAME[k] + '</button>').join('') + '<button type="button" data-em="none">Keep my plan</button></div>';
+    el.hidden = false;
+    const done = v => { clearInterval(tick); el.hidden = true; el.onclick = null; res(v); };
+    const tick = setInterval(() => { n--; const c = $('cnt'); if (c) c.textContent = n; beep(700, .05, 'square'); if (n <= 0) done(null); }, 1000);
+    el.onclick = e => { const b = e.target.closest('[data-em]'); if (b) done(b.dataset.em === 'none' ? null : b.dataset.em); };
+  });
+}
+$('go').addEventListener('click', runShift);
+async function runShift() {
+  if (S.busy || left() > 0) return; S.busy = true;
+  const f = S.truth[S.shift], a = S.a, says = { mei: '', arjun: '', siti: '' }, start = { ...S.h }, hurtNow = {};
+  const hurt = id => { if (S.h[id] < 2) { S.h[id]++; hurtNow[id] = 1; } };
+  $('feed').innerHTML = ''; $('after').hidden = true; $('emerg').hidden = true; $('wSun').className = 's'; $('wave').className = 'wave';
+  show('watch'); mini(); $('banner').textContent = 'The shift begins…';
+  await sleep(900);
+  if (f) {
+    const z = SIZE[f.cls[0]];
+    $('wSun').classList.add('flash'); beep(880, .4, 'triangle');
+    $('banner').textContent = 'Flash! ' + (f.ar ? 'Sunspot ' + f.ar : 'A sunspot') + ' fired a ' + z.word + ' flare. The storm is on its way.';
+    await sleep(1400);
+    const em = await emergency(f);
+    if (em) { a[em]--; a.shield++; mini(); feed('You rushed 1 battery from the ' + RNAME[em] + ' to the shelter.'); }
+    $('wave').classList.add('run'); beep(140, .8, 'sawtooth'); await sleep(1100);
+    const need = needFor(f.cls[0]), miss = Math.max(0, need - a.shield);
+    if (!miss) { S.blocked++; $('banner').textContent = 'The storm hit, and the shelter held!'; feed('The shelter blocked the ' + z.word + ' storm.', 'good'); says.arjun = 'The shelter held. Thick walls and power kept the radiation out.'; beep(660, .2); }
+    else {
+      S.why = 'storm'; S.leaks.push({ shift: S.shift + 1, had: a.shield, need });
+      mini('shield'); $('banner').textContent = 'The storm got into the base!';
+      feed('The shelter had ' + a.shield + ' and needed ' + need + '. Radiation got in.', 'bad');
+      for (const id of shuffle(IDS.filter(id => S.h[id] < 2)).slice(0, miss)) { hurt(id); feed(CREW[id].name + ' is ' + STATE[S.h[id]].toLowerCase() + ' now.', 'bad'); }
+      says.arjun = 'A ' + z.word + ' storm needs ' + need + ' in the shelter. We had ' + a.shield + '.'; says.siti = 'Radiation makes people sick. Each missing battery hurt one of us.';
+    }
+  } else {
+    $('banner').textContent = 'The Sun stayed quiet this shift.';
+    if (a.shield >= 2) { S.wasted += a.shield; feed('The shelter power was not needed.'); says.arjun = 'No storm came. That shelter power could have done science.'; }
+    else says.arjun = 'A quiet shift. Good time to grow food and do science.';
+  }
+  hud(); await sleep(800);
+  const airOk = a.air >= airNeed();
+  if (!airOk) { S.why = 'air'; IDS.forEach(hurt); feed('The air got thin. Everyone feels worse.', 'bad'); says.siti = 'People need fresh air every minute. Thin air hurts everyone.'; hud(); await sleep(700); }
+  if (a.farm === 0) {
+    if (S.crop > 0) { S.crop = 0; S.wilted++; feed('The lettuce wilted.', 'bad'); says.mei = 'Oh no, my lettuce wilted. Plants need light every shift.'; }
+    else says.mei = 'Nothing is growing. Food takes time, so start early.';
+  } else if (grow(a.farm) === 0) { feed('Nova was sick, so the lettuce did not grow.'); says.mei = 'The lettuce stayed alive, but I was too sick to tend it.'; }
+  else {
+    S.crop += grow(a.farm);
+    if (start.mei === 1) feed('Nova was hurt, so the farm grew slowly.');
+    if (S.crop >= cropNeed()) { S.crop = 0; S.food += HARVEST; feed('Harvest! +' + HARVEST + ' food.', 'good'); says.mei = 'Harvest time! Food we grow here is food we do not carry from Earth.'; beep(784, .15); }
+    else { feed('The lettuce grew (' + S.crop + ' of ' + cropNeed() + ').', 'good'); says.mei = 'The lettuce grew. Keep the lights on and we eat soon.'; }
+  }
+  hud(); await sleep(700);
+  if (a.lab) { S.sci += a.lab * SCI; feed('The lab earned ' + a.lab * SCI + ' science points.', 'good'); beep(988, .12); hud(); await sleep(700); }
+  S.food = Math.min(100, S.food) - EAT;
+  const foodOk = S.food > 0;
+  if (!foodOk) { S.food = 0; S.why = 'food'; IDS.forEach(hurt); feed('The food ran out. Everyone feels worse.', 'bad'); says.siti = 'No food left. A hungry crew gets weak.'; }
+  const resting = IDS.filter(id => S.h[id] > 0 && !hurtNow[id]);
+  for (const id of resting) {
+    if (airOk && foodOk && (id === 'siti' || start.siti === 0)) { S.h[id]--; feed(CREW[id].name + ' rested and feels better.', 'good'); }
+    else feed(CREW[id].name + ' could not heal' + (airOk && foodOk ? ' while Juno was unwell.' : ' without fresh air and food.'));
+  }
+  for (const id of IDS) if (hurtNow[id]) says[id] = ILL[id][S.h[id]];
+  says.siti = says.siti || (allFine() ? 'Everyone feels good.' : 'Fresh air, food and rest help the crew heal.');
+  const c = S.chance[S.shift], note = f && c === 1 ? 'The forecast said low, but a storm came. A forecast is only a best guess.' : !f && c === 3 ? 'The forecast said high, but no storm came. A forecast is only a best guess.' : '';
+  S.shift++; S.a = { air: 0, farm: 0, shield: 0, lab: 0 };
+  const over = S.shift >= 3 || allSick();
+  hud(); show('after');
+  $('says').innerHTML = ['arjun', 'mei', 'siti'].map(id => '<div class="say">' + face(id) + '<div><b>' + CREW[id].name + '</b>' + says[id] + '</div></div>').join('') + (note ? '<p class="teach">' + note + '</p>' : '');
+  $('after').hidden = false; $('next').textContent = over ? 'See how you did' : 'Next shift'; $('next').dataset.over = over ? '1' : '';
+  S.busy = false; $('next').focus();
+}
+$('next').addEventListener('click', () => { if ($('next').dataset.over) showEnd(); else show('sun'); window.scrollTo(0, 0); });
+
+/* ---------- the end ---------- */
+const starCount = () => allSick() ? 0 : 1 + (S.sci >= STAR2 ? 1 : 0) + (S.sci >= STAR3 && allFine() ? 1 : 0);
+function showEnd() {
+  const win = !allSick(), n = starCount(), daily = S.mode === 'daily';
+  if (daily) { B.day++; B.crop = win ? S.crop : 0; B.last = S.day.iso; B.lastStars = n; B.log = (B.log || []).concat({ iso: S.day.iso, stars: n }).slice(-30); saveBase(); }
+  show('end'); $('sub').textContent = (daily ? 'Day ' + (B.day - 1) : 'Practice') + ' · the Sun on ' + S.day.date; $('copyMsg').textContent = '';
+  $('endTitle').textContent = win ? 'Mission complete! The crew made it.' : 'Mission unsuccessful.';
+  $('stars').innerHTML = '★'.repeat(n) + '<i>' + '★'.repeat(3 - n) + '</i>'; $('stars').setAttribute('aria-label', n + ' out of 3 stars');
+  $('endSub').textContent = win ? '1 star for finishing. 2 stars with ' + STAR2 + ' science. 3 stars with ' + STAR3 + ' science and nobody hurt at the end.' : 'Everyone was too sick to work, so the mission stopped. Your base is still there for the next crew.';
+  if (!daily) $('endSub').textContent += ' Practice missions do not change your base.';
+  const up = win && daily; $('upCard').hidden = !up; $('again').disabled = up;
+  if (up) $('ups').innerHTML = shuffle(Object.keys(UPS).filter(k => UPS[k].many || !B.ups[k])).slice(0, 2).map(k => '<button type="button" data-up="' + k + '">' + UPS[k].name + '<small>' + UPS[k].what + '</small></button>').join('');
+  const all = S.day.flares, tops = S.truth.map((f, i) => f ? 'shift ' + (i + 1) + ', <b>' + SIZE[f.cls[0]].word + '</b> (' + f.cls + ' at ' + f.t + ' UTC)' : '').filter(Boolean);
+  $('cReal').innerHTML = '<p>' + (all.length ? 'On ' + S.day.date + ' NASA recorded ' + (all.length === 1 ? '1 solar flare' : all.length + ' solar flares') + '. The biggest in each shift: ' + tops.join('; ') + '. Each size letter, C then M then X, is 10 times stronger than the one before.' : 'On ' + S.day.date + ' NASA recorded no solar flares. The Sun was quiet all day.') + '</p><span class="tag">Source: NASA DONKI flare records (CCMC), saved 14 Nov 2026.</span>';
+  let p;
+  if (S.leaks.length) { const l = S.leaks[0]; p = 'In shift ' + l.shift + ' the shelter had ' + l.had + ' and the storm needed ' + l.need + ', so it got in and hurt the crew. Shelter power has to come out of air, food or science.'; }
+  else if (!win && S.why === 'air') p = 'The air room ran short. Air comes first: without it nothing else matters.';
+  else if (!win && S.why === 'food') p = 'The food ran out. Crops need power every shift, and they take time to grow.';
+  else if (S.blocked) p = 'Your shelter was ready when the storm came. That power could not go to the lab or the farm. Real missions make this trade all the time.';
+  else p = 'No storm got in. Calm shifts are the time to grow food and do science.';
+  if (S.wilted) p += ' Your lettuce wilted when the farm lost power.';
+  if (S.wasted >= 3 && !S.leaks.length) p += ' You also powered the shelter on calm shifts, which cost you science.';
+  $('cPlan').textContent = p; beep(win ? 880 : 300, .5, 'triangle');
+}
+$('ups').addEventListener('click', e => {
+  const b = e.target.closest('[data-up]'); if (!b || S.picked) return;
+  S.picked = true; B.ups[b.dataset.up]++; saveBase();
+  $('ups').innerHTML = '<p>Added to your base: <b>' + UPS[b.dataset.up].name + '</b>.</p>'; $('again').disabled = false;
+});
+$('again').addEventListener('click', () => view('home'));
+$('quit').addEventListener('click', () => { if (!S.busy) view('home'); });
+$('copy').addEventListener('click', () => {
+  const n = starCount(), text = 'Moon Sweet Moon, the Sun on ' + S.day.date + ': ' + '★'.repeat(n) + '☆'.repeat(3 - n) + ', science ' + S.sci;
+  try { navigator.clipboard.writeText(text).then(() => { $('copyMsg').textContent = 'Copied.'; }, () => { $('copyMsg').textContent = text; }); } catch (e) { $('copyMsg').textContent = text; }
+});
+
+/* ---------- loading, home and the other pages ---------- */
+let TODAY = null;
+function view(name) {
+  for (const v of ['loading', 'home', 'how', 'base', 'data', 'game']) $('v-' + v).hidden = v !== name;
+  window.scrollTo(0, 0);
+  if (name === 'home') drawHome(); if (name === 'base') drawBase(); if (name === 'data') $('dataSrc').textContent = TODAY.note + ' The game holds ' + FL.length + ' NASA flare records.';
+}
+const starStr = n => '<span class="ministars" role="img" aria-label="' + n + ' out of 3 stars">' + '★'.repeat(n) + '<i>' + '★'.repeat(3 - n) + '</i></span>';
+function drawHome() {
+  $('homeCrew').innerHTML = IDS.map(id => '<div class="mate">' + face(id, 0) + '<div><b>' + CREW[id].name + '</b><span>' + CREW[id].role + '</span></div></div>').join('');
+  const done = B.last === TODAY.day.iso;
+  $('homeCard').innerHTML = '<h2>Today\'s mission</h2><p>' + (TODAY.src === 'archive' ? 'A saved day: the Sun on ' : 'Yesterday\'s Sun: ') + '<b>' + TODAY.day.date + '</b></p><span class="tag" style="align-self:flex-start;margin:0">' + TODAY.note + '</span>' +
+    (done ? '<p>' + starStr(B.lastStars || 0) + ' Done for today. A new Sun arrives tomorrow.</p>' : '') +
+    '<div class="row">' + (done ? '' : '<button type="button" class="go" data-act="daily">Play</button>') + '<button type="button" data-act="practice">Practice on a past day</button></div>';
+}
+$('homeCard').addEventListener('click', e => { const b = e.target.closest('[data-act]'); if (!b) return; beep(520, .1); if (b.dataset.act === 'daily') newGame('daily', TODAY.day); else newGame('practice'); });
+function drawBase() {
+  const log = B.log || [], stars = log.reduce((t, r) => t + r.stars, 0), ups = Object.keys(UPS).filter(k => B.ups[k]);
+  $('baseBody').innerHTML = '<div class="stats"><div class="stat"><b>' + log.length + '</b><span>daily missions played</span></div><div class="stat"><b>' + stars + '</b><span>stars earned</span></div><div class="stat"><b>' + ups.reduce((t, k) => t + B.ups[k], 0) + '</b><span>upgrades</span></div></div>' +
+    '<div class="card"><h3>Upgrades</h3>' + (ups.length ? '<ul class="plain">' + ups.map(k => '<li>' + UPS[k].name + (B.ups[k] > 1 ? ' ×' + B.ups[k] : '') + ': ' + UPS[k].what.toLowerCase() + '</li>').join('') + '</ul>' : '<p>None yet. Win a daily mission to pick one.</p>') + '</div>' +
+    '<div class="card"><h3>Farm</h3><p>' + (B.crop ? 'Lettuce is growing: ' + B.crop + ' of ' + cropNeed() + '.' : 'Nothing is growing right now.') + '</p></div>' +
+    '<div class="card"><h3>Recent missions</h3>' + (log.length ? '<ul class="plain">' + log.slice(-7).reverse().map(r => '<li>The Sun on ' + nice(r.iso) + ' ' + starStr(r.stars) + '</li>').join('') + '</ul>' : '<p>No missions yet.</p>') + '</div>';
+}
+$('mHow').addEventListener('click', () => view('how'));
+$('mBase').addEventListener('click', () => view('base'));
+$('mData').addEventListener('click', () => view('data'));
+document.querySelectorAll('[data-home]').forEach(b => b.addEventListener('click', () => view('home')));
+$('wipe').addEventListener('click', () => { B = blank(); saveBase(); drawBase(); });
+
+// Ask NASA DONKI for the newest flare records (yesterday and the 5 days before it).
+async function fetchLive(y) {
+  const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 6000);
+  try {
+    const r = await fetch('https://ccmc.gsfc.nasa.gov/DONKI-API/get/FLR?startDate=' + isoOf(dayNum(y) - 5) + '&endDate=' + y, { signal: ctl.signal });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const j = await r.json(); if (!Array.isArray(j)) throw new Error('unexpected reply');
+    return j.filter(e => e && e.peakTime && /^[CMX]/.test(e.classType || '')).map(e => ({ iso: e.peakTime.slice(0, 10), t: e.peakTime.slice(11, 16), cls: e.classType, loc: e.sourceLocation || '', ar: e.activeRegionNum || null }));
+  } finally { clearTimeout(to); }
+}
+async function boot() {
+  view('loading');
+  const t0 = Date.now(), y = isoOf(Math.floor(Date.now() / 864e5) - 1), from = isoOf(dayNum(y) - 5);
+  let src = 'archive', day = null;
+  try {
+    const live = await fetchLive(y);
+    FL = FL.filter(f => f.iso < from || f.iso > y).concat(live).sort((p, q) => (p.iso + p.t < q.iso + q.t ? -1 : 1));
+    day = { iso: y, date: nice(y), flares: FL.filter(f => f.iso === y) }; src = 'live';
+  } catch (e) {
+    day = DAYS.find(d => d.iso === y);
+    if (day) src = 'saved'; else day = DAYS[dayNum(y) * 7 % DAYS.length];
+  }
+  TODAY = { day, src, note: src === 'live' ? 'Live from NASA DONKI.' : src === 'saved' ? 'From the saved copy of NASA DONKI. The game could not reach NASA just now.' : 'The game could not reach NASA, so today uses a saved day from NASA DONKI.' };
+  await sleep(Math.max(0, 1300 - (Date.now() - t0)));
+  view('home');
+}
+boot();
+</script>
+</body>
+</html>
