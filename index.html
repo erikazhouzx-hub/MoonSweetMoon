@@ -222,7 +222,7 @@ details ul{margin:8px 0;padding-left:20px}
       <li>Simplified: in the game every flare brings a storm to the base. In real life only some flares send harmful particles toward the Moon. A calm day means DONKI lists no flare for that date.</li>
       <li>Real science, squeezed: a flare's light reaches the Moon in about 8 minutes and the harmful particles come later. The game squeezes that wait into a few seconds.</li>
       <li>Game rules, not data: the storm chance meter, battery counts, food, science points, crop growth, upgrades, and the crew rules. The true part of the crew rules is that a sick crew cannot do all its work.</li>
-      <li>The Sun picture is a drawing. The sunspot's place on it comes from the NASA record, or is estimated from the Sun's rotation on a day the spot did not fire.</li>
+      <li>The Sun picture is a real photo from NASA's Solar Dynamics Observatory (SDO) for the mission date, fetched through the Helioviewer service and coloured orange by the game. If the photo cannot load, the game shows a drawing instead. The ring that marks a sunspot is placed from the NASA flare record, or estimated from the Sun's rotation on a day the spot did not fire, so it is approximate.</li>
       <li>Shifts are 8 hours each on the crew's 24 hour clock (UTC). The crew's facts are sample lines that still need checking against NASA.</li>
       <li>Your base is saved in this browser only. There is no account.</li>
     </ul>
@@ -514,7 +514,7 @@ for (const [a, b] of RANGES) for (let n = dayNum(a) + 5; n <= dayNum(b); n++) { 
 function place(loc, addLon) {
   const m = /([NS])(\d+)([EW])(\d+)/.exec(loc || ''); if (!m) return null;
   const lat = (m[1] === 'N' ? 1 : -1) * +m[2], lon = (m[3] === 'W' ? 1 : -1) * +m[4] + (addLon || 0), r = Math.PI / 180, L = Math.max(-90, Math.min(90, lon));
-  return { x: 90 + 66 * Math.cos(lat * r) * Math.sin(L * r), y: 90 - 66 * Math.sin(lat * r), vis: Math.abs(lon) <= 90 };
+  return { x: 90 + 68 * Math.cos(lat * r) * Math.sin(L * r), y: 90 - 68 * Math.sin(lat * r), vis: Math.abs(lon) <= 90 };
 }
 // Which sunspot to watch on a given day: the one behind that day's biggest flare if it has fired lately, or else the one that fired most recently.
 function watch(day) {
@@ -635,6 +635,17 @@ function drawSun() {
     (show ? '<ellipse cx="' + x + '" cy="' + y + '" rx="11" ry="8" fill="url(#pg)"/><ellipse cx="' + (x + 13) + '" cy="' + (y + 6) + '" rx="5" ry="4" fill="url(#pg)"/>' + (firedToday ? '<ellipse cx="' + (x + 4) + '" cy="' + (y - 7) + '" rx="12" ry="5" fill="#fff8d6" opacity=".9"/>' : '') : '') + '</svg>';
   const label = name(w.ar);
   $('sunCap').textContent = show ? name(spot.ar) + (spot.est ? ' (place estimated)' : '') : w.past.length ? label + ' has turned out of view' : 'No sunspot to watch yet';
+  // Swap the drawing for a real photo of the Sun at this shift's time, if it loads. Photo: NASA SDO (HMI continuum) through the Helioviewer API.
+  const key = d.iso + '-' + i, cap0 = $('sunCap').textContent, img = new Image(); S.sunKey = key;
+  const url = 'https://api.helioviewer.org/v2/takeScreenshot/?date=' + d.iso + 'T' + ['04', '12', '20'][i] + ':00:00Z&imageScale=6.25&layers=[SDO,HMI,HMI,continuum,1,100]&x1=-1250&y1=-1250&x2=1250&y2=1250&display=true&watermark=false';
+  img.onload = () => {
+    if (!S || S.sunKey !== key || S.step !== 'sun') return;
+    $('sunPic').innerHTML = '<svg viewBox="0 0 180 180" role="img" aria-label="Photo of the Sun on ' + d.date + '"><defs><clipPath id="cp"><circle cx="90" cy="90" r="74"/></clipPath><filter id="tint"><feColorMatrix type="matrix" values="1.3 0 0 0 0.03  0 0.85 0 0 0  0 0 0.3 0 0  0 0 0 1 0"/></filter></defs>' +
+      '<circle cx="90" cy="90" r="82" fill="#ffb52e" opacity=".18"/><image href="' + url + '" x="0" y="0" width="180" height="180" clip-path="url(#cp)" filter="url(#tint)"/>' +
+      (show ? '<circle cx="' + x + '" cy="' + y + '" r="11" fill="none" stroke="' + (firedToday ? '#ff6b5e' : '#ffffff') + '" stroke-width="2.5"/>' : '') + '</svg>';
+    $('sunCap').innerHTML = (show ? name(spot.ar) + ' is near the ring' : cap0) + '<br>Real photo: NASA SDO, coloured by the game';
+  };
+  img.src = url;
   const clues = [];
   if (w.past.length) {
     const b = biggest(w.past), ago = n - dayNum(w.past[w.past.length - 1].iso);

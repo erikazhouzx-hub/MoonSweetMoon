@@ -32,12 +32,18 @@ How the data drives the game:
 | Where the sunspot sits on the Sun picture | The flare's recorded place on the Sun |
 | Calm days | Dates in a fetched range with no flare record |
 
+**Sun photos: NASA Solar Dynamics Observatory (SDO)**, HMI continuum images (the view that shows sunspots), fetched for the mission date through the Helioviewer API (`https://api.helioviewer.org/v2/takeScreenshot/`).
+
+- Each shift shows the real Sun at that shift's time: 04:00, 12:00 or 20:00 UTC.
+- The photo is grey in the original. The game colours it orange.
+- If the photo cannot load, the game shows a drawing instead.
+
 ## What is simplified
 
 - In the game every flare brings a storm to the base. In real life only some flares send harmful particles toward the Moon.
 - A flare's light arrives in about 8 minutes and the particles come later. The game squeezes that wait into a few seconds.
 - The storm chance meter is a game forecast, not data.
-- The Sun picture is a drawing. On a day a sunspot did not fire, its place is estimated from the Sun's rotation.
+- The ring that marks a sunspot on the photo is placed from the flare record, or estimated from the Sun's rotation on a day the spot did not fire. It is approximate.
 - Batteries, food, science points, crew rules and upgrades are game rules made to teach the trade-off.
 - The crew's facts are sample lines that still need checking against NASA sources.
 
@@ -45,5 +51,4 @@ How the data drives the game:
 
 - Spot-check the saved flare records against the NASA address above.
 - Test the live NASA request once the game is hosted.
-- Show a real photo of the Sun for the mission date.
 - Check every crew fact against a NASA source and link it.
