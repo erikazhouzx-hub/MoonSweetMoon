@@ -74,7 +74,7 @@ button:focus-visible,.dome:focus-visible{outline:3px solid var(--sun);outline-of
 .pill b{color:var(--sun);font-variant-numeric:tabular-nums}
 .hp{width:90px;height:10px;border-radius:5px;background:var(--night);overflow:hidden;border:1px solid var(--line)}
 .hp i{display:block;height:100%;transition:width .6s ease,background .6s ease}
-.snd,.spd,.skp{padding:3px 10px;font-size:14px;border-width:1px}
+.snd,.spd,.skp,.mus{padding:3px 10px;font-size:14px;border-width:1px}
 .spd[aria-pressed="true"]{background:var(--sun);border-color:var(--sun);color:#2a1d00}
 .math{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .ctl{display:flex;flex-direction:column;gap:6px}
@@ -232,17 +232,19 @@ details ul{margin:8px 0;padding-left:20px}
       <h1 class="big">Moon Sweet Moon</h1>
       <p class="lead" role="status" id="loadMsg">Checking the Sun…</p>
       <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="card" style="max-width:440px;text-align:left;margin-top:14px"><h3>Did you know?</h3><p id="factText" aria-live="polite" style="font-size:19px;min-height:3.9em"></p></div>
     </div>
   </section>
 
   <section class="view col" id="v-home" hidden>
     <div class="splash small">
       <h1 class="big">Moon Sweet Moon</h1>
-      <p class="lead">Keep your little Moon crew safe from yesterday's real Sun.</p>
-      <div class="row" style="justify-content:center"><button type="button" class="snd" aria-pressed="true">Sound on</button><button type="button" class="spd" aria-pressed="false">Voice 1x</button></div>
+      <p class="lead">Run a small outpost on the Moon. The Sun powers it, and the Sun sends the storms.</p>
+      <div class="row" style="justify-content:center"><button type="button" class="snd" aria-pressed="true">Sound on</button><button type="button" class="mus" aria-pressed="true">Music on</button><button type="button" class="spd" aria-pressed="false">Voice 1x</button></div>
     </div>
-    <h2 class="sec">Your Moon base</h2>
-    <div class="scene tall" role="group" aria-label="Your Moon base"><div class="ground"></div><div class="hdomes">
+    <div class="card" style="text-align:center"><b>Why the Sun?</b> Your Moon outpost runs on sunlight. But the Sun also fires storms, and the Moon has no air to block them. So the Sun is your power and your danger. Every mission uses what the real Sun did yesterday.</div>
+    <h2 class="sec">Your Moon outpost</h2>
+    <div class="scene tall" role="group" aria-label="Your Moon outpost"><div class="ground"></div><div class="hdomes">
         <button type="button" class="hd" data-info="Air room: it cleans the air the crew breathes. It needs 2 batteries every shift."><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 18h22a6 6 0 1 0-6-6M6 26h30a6 6 0 1 1-6 6M6 34h14" fill="none" stroke="#9fd8ff" stroke-width="4" stroke-linecap="round"/></svg>Air room</button>
         <button type="button" class="hd" data-info="Farm: it grows lettuce for the crew's meals. It needs power every shift, or the lettuce wilts."><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 42V22" stroke="#5fe0b7" stroke-width="4" stroke-linecap="round"/><path d="M24 26C12 26 8 18 8 10c10 0 16 4 16 16zM24 22c0-10 6-14 16-14 0 10-6 14-16 14z" fill="#5fe0b7"/></svg>Farm</button>
         <button type="button" class="hd" data-info="Shelter: thick walls that keep solar storms out. Bigger storms need more batteries."><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5l16 6v12c0 10-7 17-16 20C15 40 8 33 8 23V11z" fill="none" stroke="#ffc145" stroke-width="4" stroke-linejoin="round"/></svg>Shelter</button>
@@ -254,14 +256,15 @@ details ul{margin:8px 0;padding-left:20px}
     <div class="stage" id="homeCard"></div>
     <div class="menu">
       <button type="button" id="mHow">How to play</button>
-      <button type="button" id="mBase">My base</button>
+      <button type="button" id="mBase">My outpost</button>
       <button type="button" id="mData">About the data</button>
     </div>
   </section>
 
   <section class="stage view" id="v-how" hidden>
     <div class="row" style="justify-content:space-between"><h2>How to play</h2><button type="button" id="howRead">Read it to me</button></div>
-    <p class="teach">Your job: keep 3 crew members healthy for 3 shifts, and run experiments to earn stars.</p>
+    <p class="teach">You run an outpost on the Moon. Your job: keep 3 crew members healthy for 3 shifts, and run experiments to earn stars.</p>
+    <p>Why the Sun matters: solar panels turn sunlight into the power your outpost runs on. But the Sun also fires storms, and the Moon has no air to block them. So the Sun is your power and your danger.</p>
 
     <h3>How a mission goes</h3>
     <ol class="how">
@@ -293,9 +296,9 @@ details ul{margin:8px 0;padding-left:20px}
   </section>
 
   <section class="stage view" id="v-base" hidden>
-    <h2>My base</h2>
+    <h2>My outpost</h2>
     <div id="baseBody" class="col"></div>
-    <div class="row" style="justify-content:space-between"><button type="button" id="wipe">Start a new base</button><button type="button" class="go" data-home>Back to home</button></div>
+    <div class="row" style="justify-content:space-between"><button type="button" id="wipe">Start a new outpost</button><button type="button" class="go" data-home>Back to home</button></div>
   </section>
 
   <section class="stage view" id="v-data" hidden>
@@ -304,14 +307,15 @@ details ul{margin:8px 0;padding-left:20px}
     <ul class="plain">
       <li>Real: each flare's date, time, size class, sunspot number and place on the Sun, and the clues built from them. Source: <a href="https://ccmc.gsfc.nasa.gov/tools/DONKI">NASA DONKI</a> (Space Weather Database Of Notifications, Knowledge, Information) at CCMC.</li>
       <li>The daily mission uses yesterday's date (UTC). The game first asks NASA for the newest records. If it cannot reach NASA, it uses its saved copy from 14 Nov 2026, and says so. Practice missions pick a saved past day.</li>
-      <li>Simplified: in the game every flare brings a storm to the base. In real life only some flares send harmful particles toward the Moon. A calm day means DONKI lists no flare for that date.</li>
+      <li>Simplified: in the game every flare brings a storm to the outpost. In real life only some flares send harmful particles toward the Moon. A calm day means DONKI lists no flare for that date.</li>
       <li>Real science, squeezed: a flare's light reaches the Moon in about 8 minutes and the harmful particles come later. The game squeezes that wait into a few seconds.</li>
-      <li>Batteries: the base makes 5 a shift, loses 1 when a shadow falls on the solar panels, and gains 1 in bright sun. That is a game rule. It is based on a real idea, that near the Moon's poles the Sun stays low so hills cast long shadows, which still needs checking against NASA.</li>
+      <li>Batteries: the outpost makes 5 a shift, loses 1 when a shadow falls on the solar panels, and gains 1 in bright sun. That is a game rule. It is based on a real idea, that near the Moon's poles the Sun stays low so hills cast long shadows, which still needs checking against NASA.</li>
       <li>Game rules, not data: the storm chance meter, battery counts, meals, experiments, crop growth, upgrades, and the crew rules. They are small whole numbers so a child can count them: 3 crew eat 1 meal each per shift, and 1 lab battery runs 1 experiment. The true part of the crew rules is that a sick crew cannot do all its work.</li>
       <li>The Sun picture is a real photo from NASA's Solar Dynamics Observatory (SDO) for the mission date, fetched through the Helioviewer service. It is taken in ultraviolet light, which our eyes cannot see, so NASA colours it red. Bright patches are the busy regions where flares happen. If the photo cannot load, the game shows a drawing instead. The ring that marks a sunspot is placed from the NASA flare record, or estimated from the Sun's rotation on a day the spot did not fire, so it is approximate.</li>
-      <li>Shifts are 8 hours each on the crew's 24 hour clock (UTC). The crew's facts are sample lines that still need checking against NASA.</li>
+      <li>Shifts are 8 hours each on the crew's 24 hour clock (UTC). The crew's facts and the "Did you know?" facts on the loading screen are well-known space facts that still need a NASA source each.</li>
+      <li>Music: the game makes its own background music. There is no music file. The Music button switches it off, and it goes quieter while a character talks.</li>
       <li>Voices: the Voice button makes the voices talk at 2x. A Skip button moves on by one sentence. The game uses your device's built-in voice to read lines aloud. Nothing is recorded or sent anywhere. The voice sounds different on each device, and you can switch it off with the Sound button.</li>
-      <li>Your base is saved in this browser only. There is no account.</li>
+      <li>Your outpost is saved in this browser only. There is no account.</li>
       <li>Daily totals: when you finish the daily mission, the game sends 3 things to a shared counter: the mission date, your stars, and whether your whole crew stayed healthy. It sends no name and nothing about you. The game shows only the totals for the day.</li>
     </ul>
     <div class="row" style="justify-content:flex-end"><button type="button" class="go" data-home>Back to home</button></div>
@@ -323,6 +327,7 @@ details ul{margin:8px 0;padding-left:20px}
     <span class="pill">Meals <b id="food"></b></span>
     <span class="pill">Experiments <b id="sci"></b></span>
     <button type="button" class="snd" aria-pressed="true">Sound on</button>
+    <button type="button" class="mus" aria-pressed="true">Music on</button>
     <button type="button" class="spd" aria-pressed="false">Voice 1x</button>
     <button type="button" id="quit">Home</button>
   </div>
@@ -386,7 +391,7 @@ details ul{margin:8px 0;padding-left:20px}
       <div class="stars" id="stars" role="img"></div>
       <p class="lead" id="endSub"></p>
     </div>
-    <div class="card" id="upCard"><h3>Pick one upgrade for your base</h3><div class="ups" id="ups"></div></div>
+    <div class="card" id="upCard"><h3>Pick one upgrade for your outpost</h3><div class="ups" id="ups"></div></div>
     <div class="card"><h3>What really happened on the Sun</h3><div id="cReal"></div></div>
     <div class="card"><h3>What your plan did</h3><p id="cPlan"></p></div>
     <div class="card" id="totCard" hidden><h3>Crews around the world today</h3><p id="totText"></p></div>
@@ -656,8 +661,45 @@ function beep(f, d, type) { if (!sound) return; try { actx = actx || new (window
 let speed = 1;   // 1 or 2: how fast the voices talk. It does not change the game itself.
 function setSpeed(x) { speed = x; if (typeof B !== 'undefined' && B) { B.speed = x; saveBase(); } document.querySelectorAll('.spd').forEach(b => { b.textContent = 'Voice ' + x + 'x'; b.setAttribute('aria-pressed', String(x === 2)); }); }
 document.querySelectorAll('.spd').forEach(b => b.addEventListener('click', () => setSpeed(speed === 1 ? 2 : 1)));
-function setSound(on) { sound = on; document.querySelectorAll('.snd').forEach(b => { b.textContent = sound ? 'Sound on' : 'Sound off'; b.setAttribute('aria-pressed', String(sound)); }); if (!sound) hush(); }
+function setSound(on) { sound = on; document.querySelectorAll('.snd').forEach(b => { b.textContent = sound ? 'Sound on' : 'Sound off'; b.setAttribute('aria-pressed', String(sound)); }); if (!sound) hush(); if (sound) startMusic(); else stopMusic(); }
 document.querySelectorAll('.snd').forEach(b => b.addEventListener('click', () => setSound(!sound)));
+
+/* ---------- background music: the game makes it itself with Web Audio (slow soft chords and a few twinkling notes).
+   There is no music file, so there is nothing to download and no licence to check. It starts on the first tap or click. ---------- */
+const MUSIC_VOL = 0.06;
+let music = null, musicOn = true;
+function startMusic() {
+  if (music || !musicOn || !sound || document.hidden) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state === 'suspended') actx.resume();
+    const now = actx.currentTime, out = actx.createGain(), soft = actx.createBiquadFilter();
+    out.gain.value = 0; out.gain.setTargetAtTime(MUSIC_VOL, now, 1.2); out.connect(actx.destination);
+    soft.type = 'lowpass'; soft.frequency.value = 900; soft.connect(out);
+    const CHORDS = [[130.81, 196.00, 329.63], [110.00, 164.81, 261.63], [87.31, 174.61, 261.63], [98.00, 146.83, 246.94]];   // C, A minor, F, G
+    const pads = CHORDS[0].map(f => { const o = actx.createOscillator(), g = actx.createGain(); o.type = 'sine'; o.frequency.value = f; g.gain.value = 0.33; o.connect(g); g.connect(soft); o.start(); return o; });
+    let ci = 0;
+    const chordTimer = setInterval(() => { ci = (ci + 1) % CHORDS.length; pads.forEach((o, k) => o.frequency.setTargetAtTime(CHORDS[ci][k], actx.currentTime, 0.8)); }, 8000);
+    const NOTES = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50];   // a five-note scale, so any two notes sound fine together
+    const twinkleTimer = setInterval(() => {
+      if (Math.random() > 0.65) return;
+      const o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime;
+      o.type = 'triangle'; o.frequency.value = pick(NOTES); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.22, t + 0.03); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.2);
+      o.connect(g); g.connect(out); o.start(t); o.stop(t + 2.3);
+    }, 1400);
+    music = { out, pads, chordTimer, twinkleTimer };
+  } catch (e) { music = null; }
+}
+function stopMusic() {
+  if (!music) return; const m = music; music = null; clearInterval(m.chordTimer); clearInterval(m.twinkleTimer);
+  try { m.out.gain.setTargetAtTime(0, actx.currentTime, 0.2); setTimeout(() => { m.pads.forEach(o => { try { o.stop(); } catch (e) { /* already stopped */ } }); try { m.out.disconnect(); } catch (e) { /* ignore */ } }, 900); } catch (e) { /* ignore */ }
+}
+// The music goes quieter while a character is talking.
+function duck(on) { if (music) { try { music.out.gain.setTargetAtTime(on ? MUSIC_VOL * 0.35 : MUSIC_VOL, actx.currentTime, 0.2); } catch (e) { /* ignore */ } } }
+function setMusic(on) { musicOn = on; if (typeof B !== 'undefined' && B) { B.music = on; saveBase(); } document.querySelectorAll('.mus').forEach(b => { b.textContent = on ? 'Music on' : 'Music off'; b.setAttribute('aria-pressed', String(on)); }); if (on) startMusic(); else stopMusic(); }
+document.querySelectorAll('.mus').forEach(b => b.addEventListener('click', () => setMusic(!musicOn)));
+addEventListener('pointerdown', startMusic); addEventListener('keydown', startMusic);
+document.addEventListener('visibilitychange', () => { if (document.hidden) stopMusic(); else startMusic(); });
 
 /* ---------- voices: the device's built-in voice reads each line aloud (Web Speech). No audio files, nothing recorded. ---------- */
 const VOX = { rae: [1.0, 0.92], mei: [1.4, 0.95], arjun: [0.75, 0.92], siti: [1.2, 0.95] };   // [pitch, speed] so each character sounds different
@@ -672,11 +714,11 @@ function speak(text, who, el) {
   if (el) el.classList.add('talking');
   return new Promise(res => {
     let done = false;
-    const fin = () => { if (done) return; done = true; if (tok === speakTok && el) el.classList.remove('talking'); res(tok === speakTok); };
+    const fin = () => { if (done) return; done = true; duck(false); if (tok === speakTok && el) el.classList.remove('talking'); res(tok === speakTok); };
     curFin = fin;
     const read = (calmMotion ? 200 : 700 + plain.length * 55) / speed;   // time to read the line when there is no voice
     if (!sound || !canTalk) { setTimeout(fin, Math.min(read, 4500)); return; }
-    try { const u = new SpeechSynthesisUtterance(plain), v = VOX[who] || VOX.rae; u.pitch = v[0]; u.rate = v[1] * (speed === 2 ? 1.6 : 1); u.lang = 'en-US'; if (voice) u.voice = voice; u.onend = fin; u.onerror = fin; speechSynthesis.speak(u); setTimeout(fin, read + 5000); }
+    try { const u = new SpeechSynthesisUtterance(plain), v = VOX[who] || VOX.rae; u.pitch = v[0]; u.rate = v[1] * (speed === 2 ? 1.6 : 1); u.lang = 'en-US'; if (voice) u.voice = voice; u.onend = fin; u.onerror = fin; duck(true); speechSynthesis.speak(u); setTimeout(fin, read + 5000); }
     catch (e) { setTimeout(fin, Math.min(read, 4500)); }
   });
 }
@@ -748,16 +790,21 @@ const allSick = () => IDS.every(id => S.h[id] === 2);
 const allFine = () => IDS.every(id => S.h[id] === 0);
 // Captain Rae gives the briefings. The three crew members are the ones whose health the game tracks.
 const CAST = Object.assign({ rae: { name: 'Captain Rae', role: 'Mission captain', skin: '#e9bd94', suit: '#7fb4ff' } }, CREW);
-function face(id, st) {
+function face(id, st) {   // an astronaut: white suit and helmet, a round visor with the face inside, and the crew member's own colour on the trim
   if (st === undefined) st = (S && S.h && S.h[id]) || 0;
   const c = CAST[id], m = ['happy', 'worried', 'sick'][st];
-  const mouth = st === 0 ? 'M21 34q6 6 12 0' : st === 1 ? 'M21 36q3-3 6 0t6 0' : 'M21 38q6-6 12 0';
-  const brows = st === 0 ? '' : '<path d="' + (st === 1 ? 'M18 21l6-2M36 21l-6-2' : 'M18 19l6 2M36 19l-6 2') + '" stroke="#3a2416" stroke-width="2" stroke-linecap="round"/>';
-  const band = st === 1 ? '<rect x="13" y="11" width="18" height="6" rx="3" fill="#fff" transform="rotate(-20 22 14)"/>' : '';
-  const star = id === 'rae' ? '<path d="M27 1.5l2.1 4.3 4.7.6-3.4 3.2.9 4.6L27 12l-4.3 2.2.9-4.6-3.4-3.2 4.7-.6z" fill="#ffc145" stroke="#12143a" stroke-width=".8"/>' : '';
-  return '<svg viewBox="0 0 54 54" role="img" aria-label="' + c.name + ' looks ' + m + '"><circle cx="27" cy="27" r="25" fill="' + c.suit + '"/><circle cx="27" cy="28" r="19" fill="' + (st === 2 ? '#b9c79a' : c.skin) + '"/>' + band +
-    '<circle class="eye" cx="21" cy="26" r="2.6" fill="#3a2416"/><circle class="eye" cx="33" cy="26" r="2.6" fill="#3a2416"/>' + brows +
-    '<path class="m-rest" d="' + mouth + '" fill="none" stroke="#3a2416" stroke-width="2.5" stroke-linecap="round"/><ellipse class="m-talk" cx="27" cy="36" rx="5" ry="4" fill="#3a2416"/>' + star + '</svg>';
+  const mouth = st === 0 ? 'M22 28.5q5 5 10 0' : st === 1 ? 'M22 30.5q2.5-2.5 5 0t5 0' : 'M22 32q5-5 10 0';
+  const brows = st === 0 ? '' : '<path d="M19.5 18.8l5-1.6M34.5 18.8l-5-1.6" stroke="#3a2416" stroke-width="1.8" stroke-linecap="round"/>';
+  const band = st === 1 ? '<rect x="15.5" y="11.5" width="14" height="4.6" rx="2.3" fill="#fff" stroke="#c9cde0" stroke-width=".6" transform="rotate(-20 22 14)"/>' : '';
+  const star = id === 'rae' ? '<path transform="translate(27 5) scale(.62) translate(-27 -8)" d="M27 1.5l2.1 4.3 4.7.6-3.4 3.2.9 4.6L27 12l-4.3 2.2.9-4.6-3.4-3.2 4.7-.6z" fill="#ffc145" stroke="#12143a" stroke-width="1"/>' : '';
+  return '<svg viewBox="0 0 54 54" role="img" aria-label="' + c.name + ' looks ' + m + '">' +
+    '<path d="M7 54c0-9.5 9-14 20-14s20 4.5 20 14z" fill="#eef0f7" stroke="#c9cde0" stroke-width="1"/><rect x="17" y="39" width="20" height="5" rx="2.5" fill="' + c.suit + '"/><circle cx="37.5" cy="49" r="2.6" fill="' + c.suit + '"/>' +
+    '<rect x="3" y="19" width="5.5" height="10" rx="2.7" fill="' + c.suit + '"/><rect x="45.5" y="19" width="5.5" height="10" rx="2.7" fill="' + c.suit + '"/>' +
+    '<circle cx="27" cy="23" r="21" fill="#f4f5fb" stroke="#c9cde0" stroke-width="1.2"/>' +
+    '<circle cx="27" cy="24" r="15.5" fill="' + (st === 2 ? '#b9c79a' : c.skin) + '" stroke="' + c.suit + '" stroke-width="3"/>' + band +
+    '<circle class="eye" cx="22" cy="23" r="2.3" fill="#3a2416"/><circle class="eye" cx="32" cy="23" r="2.3" fill="#3a2416"/>' + brows +
+    '<path class="m-rest" d="' + mouth + '" fill="none" stroke="#3a2416" stroke-width="2.2" stroke-linecap="round"/><ellipse class="m-talk" cx="27" cy="30" rx="4.2" ry="3.4" fill="#3a2416"/>' +
+    '<path d="M15.5 17a13 13 0 0 1 8-6.3" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="2.4" stroke-linecap="round"/>' + star + '</svg>';
 }
 const bats = n => Array.from({ length: n }, () => '<button type="button" class="bat" aria-label="Battery"></button>').join('');
 const used = () => ROOMS.reduce((t, k) => t + S.a[k], 0);
@@ -800,7 +847,7 @@ function drawSun() {
   let spot = w.pos && w.pos.vis ? { pos: w.pos, ar: w.ar, est: w.est } : null, firedToday = today.some(f => f.ar === w.ar);
   if (!w.past.length && today.length) { const b = biggest(today), q = place(b.loc); spot = q && q.vis ? { pos: q, ar: b.ar, est: false } : null; firedToday = true; }
   const show = !!spot, x = show ? spot.pos.x : 0, y = show ? spot.pos.y : 0, name = ar => ar ? 'Sunspot ' + ar : 'A sunspot';
-  $('sunTitle').textContent = 'Shift ' + (i + 1) + ': read the Sun';
+  $('sunTitle').textContent = 'Shift ' + (i + 1) + ': check the Sun for storms';
   $('sunPic').innerHTML = '<svg viewBox="0 0 180 180" aria-hidden="true"><defs><radialGradient id="sg"><stop offset="0" stop-color="#ffe08a"/><stop offset=".7" stop-color="#ffb52e"/><stop offset="1" stop-color="#e2731c"/></radialGradient>' +
     '<filter id="gr" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="' + (n % 97) + '"/><feColorMatrix values="0 0 0 0 .45  0 0 0 0 .2  0 0 0 0 0  0 0 0 .35 0"/><feComposite in2="SourceGraphic" operator="in"/></filter>' +
     '<radialGradient id="pg"><stop offset=".45" stop-color="#3a1c00"/><stop offset=".5" stop-color="#8a4a12"/><stop offset="1" stop-color="#b8691c" stop-opacity=".6"/></radialGradient></defs>' +
@@ -830,7 +877,7 @@ function drawSun() {
   $('teach').textContent = TEACH[i];
   // Captain Rae reads the report aloud, one sentence at a time. Each clue appears as she says it.
   $('capFace').innerHTML = face('rae'); $('toPower').classList.remove('ready');
-  const lines = [['Hello crew! Here is your report.', -1], ['You have ' + S.food + ' fresh meals from Earth for today. The crew eats ' + EAT + ' every shift.', -1], ['Experiments are why we came to the Moon. Each experiment adds to your score. Run ' + STAR3 + ' to reach 3 stars.', -1]]
+  const lines = [['Hello crew! Here is today\'s report for our Moon outpost.', -1], ['You have ' + S.food + ' fresh meals from Earth for today. The crew eats ' + EAT + ' every shift.', -1], ['Experiments are why we came to the Moon. Each experiment adds to your score. Run ' + STAR3 + ' to reach 3 stars.', -1]]
     .concat(clues.map((q, k) => [q[0].replace(/<span[\s\S]*<\/span>/, ''), k]), [[TEACH[i], -1], ['Now place your batteries.', -1]]);
   dialogue(lines.flatMap(q => steps('rae', q[0], q[1] >= 0 ? () => $('clues').children[q[1]].classList.remove('wait') : null)),
     { alive: () => S && S.sunKey === key && S.step === 'sun', face: () => $('capFace'), ctl: $('capCtl'), show: st => { $('capText').textContent = st.text; } })
@@ -870,7 +917,7 @@ const TUT = [
   { zone: null, target: '#go', done: () => false, text: 'Every battery is placed. You can never fill every room, so you always have to choose. Now press Start the shift.' }
 ];
 async function startTutorial() {
-  await stage([['rae', 'Welcome to Moon Sweet Moon! I am Captain Rae. Let us do one quick training shift together.']]);
+  await stage([['rae', 'Welcome to Moon Sweet Moon! I am Captain Rae. We live in a small outpost on the Moon. The Sun gives us our power. But the Sun can also send dangerous storms. Let us do one quick training shift together.']]);
   newGame('tutorial', TUT_DAY);
 }
 async function endTutorial(skipped) {
@@ -996,7 +1043,7 @@ async function runShift() {
     if (!miss) { S.blocked++; banner('The storm hit, and the shelter held!'); feed('The shelter blocked the ' + z.word + ' storm.', 'good'); says.arjun = 'The shelter held. Thick walls and power kept the radiation out.'; beep(660, .2); }
     else {
       S.why = 'storm'; S.leaks.push({ shift: S.shift + 1, had: a.shield, need });
-      mini('shield'); banner('The storm got into the base!');
+      mini('shield'); banner('The storm got into the outpost!');
       feed('The shelter had ' + a.shield + (a.shield === 1 ? ' battery' : ' batteries') + ' and needed ' + need + '. Radiation got in.', 'bad');
       for (const id of shuffle(IDS.filter(id => S.h[id] < 2)).slice(0, miss)) { hurt(id); feed(CREW[id].name + ' is ' + STATE[S.h[id]].toLowerCase() + ' now.', 'bad'); }
       says.arjun = 'A ' + z.word + ' storm needs ' + need + (need === 1 ? ' battery' : ' batteries') + ' in the shelter. We had ' + a.shield + '.'; says.siti = 'Radiation makes people sick. Each missing battery hurt one of us.';
@@ -1060,8 +1107,8 @@ function showEnd() {
   $('endTitle').textContent = win ? 'Mission complete! The crew made it.' : 'Mission unsuccessful.';
   speak(win ? 'Mission complete! The crew made it. You earned ' + n + (n === 1 ? ' star.' : ' stars.') : 'Mission unsuccessful. Everyone was too sick to work. Try again tomorrow.', 'rae');
   $('stars').innerHTML = '★'.repeat(n) + '<i>' + '★'.repeat(3 - n) + '</i>'; $('stars').setAttribute('aria-label', n + ' out of 3 stars');
-  $('endSub').textContent = win ? '1 star for finishing. 2 stars for ' + STAR2 + ' experiments. 3 stars for ' + STAR3 + ' experiments and nobody hurt at the end. You ran ' + S.sci + '.' : 'Everyone was too sick to work, so the mission stopped. Your base is still there for the next crew.';
-  if (!daily) $('endSub').textContent += ' Practice missions do not change your base.';
+  $('endSub').textContent = win ? '1 star for finishing. 2 stars for ' + STAR2 + ' experiments. 3 stars for ' + STAR3 + ' experiments and nobody hurt at the end. You ran ' + S.sci + '.' : 'Everyone was too sick to work, so the mission stopped. Your outpost is still there for the next crew.';
+  if (!daily) $('endSub').textContent += ' Practice missions do not change your outpost.';
   const up = win && daily; $('upCard').hidden = !up; $('again').disabled = up;
   if (up) $('ups').innerHTML = shuffle(Object.keys(UPS).filter(k => UPS[k].many || !B.ups[k])).slice(0, 2).map(k => '<button type="button" data-up="' + k + '">' + UPS[k].name + '<small>' + UPS[k].what + '</small></button>').join('');
   const all = S.day.flares, tops = S.truth.map((f, i) => f ? 'shift ' + (i + 1) + ', <b>' + SIZE[f.cls[0]].word + '</b> (' + f.cls + ' at ' + f.t + ' UTC)' : '').filter(Boolean);
@@ -1079,7 +1126,7 @@ function showEnd() {
 $('ups').addEventListener('click', e => {
   const b = e.target.closest('[data-up]'); if (!b || S.picked) return;
   S.picked = true; B.ups[b.dataset.up]++; saveBase();
-  $('ups').innerHTML = '<p>Added to your base: <b>' + UPS[b.dataset.up].name + '</b>.</p>'; $('again').disabled = false;
+  $('ups').innerHTML = '<p>Added to your outpost: <b>' + UPS[b.dataset.up].name + '</b>.</p>'; $('again').disabled = false;
 });
 $('again').addEventListener('click', () => view('home'));
 $('quit').addEventListener('click', () => { if (S.busy) return; if (S.mode === 'tutorial') endTutorial(true); else view('home'); });
@@ -1122,9 +1169,25 @@ async function startMission(mode, given) {
 }
 
 /* ---------- loading, home and the other pages ---------- */
+// Shown one at a time while a Sun photo loads. These are well-known space facts. Each still needs a NASA source linked before the final submission.
+const FACTS = [
+  'Sunlight takes about 8 minutes to travel from the Sun to the Moon.',
+  'The Sun is so big that about a million Earths could fit inside it.',
+  'There is no wind on the Moon, so astronaut footprints can stay there for a very long time.',
+  'Twelve people have walked on the Moon. The first were Neil Armstrong and Buzz Aldrin in 1969.',
+  'A radio message takes a bit more than 1 second to go from Earth to the Moon.',
+  'Solar flares are sorted by size with letters. X is the biggest, and it is 10 times stronger than M.',
+  'Astronauts on the International Space Station have grown lettuce in space, and eaten it.',
+  'A NASA spacecraft called the Solar Dynamics Observatory has watched the Sun since 2010.',
+  'One day on the Moon, from sunrise to sunrise, lasts about a month on Earth.',
+  'The Moon has no air to breathe. That is why your crew needs an air room.'
+];
+let factTimer = 0, lastFact = -1;
+function showFact() { let k; do { k = Math.floor(Math.random() * FACTS.length); } while (k === lastFact); lastFact = k; $('factText').textContent = FACTS[k]; }
 let TODAY = null;
 function view(name) {
-  hush();
+  hush(); clearInterval(factTimer);
+  if (name === 'loading') { showFact(); factTimer = setInterval(showFact, 5000); }
   for (const v of ['loading', 'home', 'how', 'base', 'data', 'game']) $('v-' + v).hidden = v !== name;
   window.scrollTo(0, 0);
   if (name === 'home') drawHome(); if (name === 'base') drawBase(); if (name === 'data') $('dataSrc').textContent = TODAY.note + ' The game holds ' + FL.length + ' NASA flare records.';
@@ -1204,6 +1267,7 @@ function drawSky() {
 }
 drawSky(); addEventListener('resize', drawSky);
 setSpeed(B.speed === 2 ? 2 : 1);
+if (B.music === false) { musicOn = false; document.querySelectorAll('.mus').forEach(b => { b.textContent = 'Music off'; b.setAttribute('aria-pressed', 'false'); }); }
 boot();
 </script>
 </body>
