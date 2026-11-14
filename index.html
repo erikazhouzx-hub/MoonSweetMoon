@@ -74,10 +74,13 @@ button:focus-visible,.dome:focus-visible{outline:3px solid var(--sun);outline-of
 .pill b{color:var(--sun);font-variant-numeric:tabular-nums}
 .hp{width:90px;height:10px;border-radius:5px;background:var(--night);overflow:hidden;border:1px solid var(--line)}
 .hp i{display:block;height:100%;transition:width .6s ease,background .6s ease}
-.snd,.spd,#capSkip{padding:3px 10px;font-size:14px;border-width:1px}
+.snd,.spd,.skp{padding:3px 10px;font-size:14px;border-width:1px}
 .spd[aria-pressed="true"]{background:var(--sun);border-color:var(--sun);color:#2a1d00}
 .math{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .math .tot{border-color:var(--sun)}
+.pill{transition:transform .2s,background .2s}
+.pill.hot{background:var(--sun);border-color:var(--sun);color:#2a1d00;transform:scale(1.18)}
+.pill.hot b{color:#2a1d00}
 
 .col{display:flex;flex-direction:column;gap:12px}
 .splash{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:70px 0}
@@ -231,7 +234,7 @@ details ul{margin:8px 0;padding-left:20px}
     <div class="splash small">
       <h1 class="big">Moon Sweet Moon</h1>
       <p class="lead">Keep your little Moon crew safe from yesterday's real Sun.</p>
-      <div class="row" style="justify-content:center"><button type="button" class="snd" aria-pressed="true">Sound on</button><button type="button" class="spd" aria-pressed="false">Speed 1x</button></div>
+      <div class="row" style="justify-content:center"><button type="button" class="snd" aria-pressed="true">Sound on</button><button type="button" class="spd" aria-pressed="false">Voice 1x</button></div>
     </div>
     <div class="scene tall" role="group" aria-label="Your Moon base"><div class="ground"></div><div class="hdomes">
         <button type="button" class="hd" data-info="Air room: it cleans the air the crew breathes. It needs 2 batteries every shift."><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 18h22a6 6 0 1 0-6-6M6 26h30a6 6 0 1 1-6 6M6 34h14" fill="none" stroke="#9fd8ff" stroke-width="4" stroke-linecap="round"/></svg>Air room</button>
@@ -300,7 +303,7 @@ details ul{margin:8px 0;padding-left:20px}
       <li>Game rules, not data: the storm chance meter, battery counts, meals, experiments, crop growth, upgrades, and the crew rules. They are small whole numbers so a child can count them: 3 crew eat 1 meal each per shift, and 1 lab battery runs 1 experiment. The true part of the crew rules is that a sick crew cannot do all its work.</li>
       <li>The Sun picture is a real photo from NASA's Solar Dynamics Observatory (SDO) for the mission date, fetched through the Helioviewer service. It is taken in ultraviolet light, which our eyes cannot see, so NASA colours it red. Bright patches are the busy regions where flares happen. If the photo cannot load, the game shows a drawing instead. The ring that marks a sunspot is placed from the NASA flare record, or estimated from the Sun's rotation on a day the spot did not fire, so it is approximate.</li>
       <li>Shifts are 8 hours each on the crew's 24 hour clock (UTC). The crew's facts are sample lines that still need checking against NASA.</li>
-      <li>Voices: the game uses your device's built-in voice to read lines aloud. Nothing is recorded or sent anywhere. The voice sounds different on each device, and you can switch it off with the Sound button.</li>
+      <li>Voices: the Voice button makes the voices talk at 2x. A Skip button moves on by one sentence. The game uses your device's built-in voice to read lines aloud. Nothing is recorded or sent anywhere. The voice sounds different on each device, and you can switch it off with the Sound button.</li>
       <li>Your base is saved in this browser only. There is no account.</li>
       <li>Daily totals: when you finish the daily mission, the game sends 3 things to a shared counter: the mission date, your stars, and whether your whole crew stayed healthy. It sends no name and nothing about you. The game shows only the totals for the day.</li>
     </ul>
@@ -313,7 +316,7 @@ details ul{margin:8px 0;padding-left:20px}
     <span class="pill">Meals <b id="food"></b></span>
     <span class="pill">Experiments <b id="sci"></b></span>
     <button type="button" class="snd" aria-pressed="true">Sound on</button>
-    <button type="button" class="spd" aria-pressed="false">Speed 1x</button>
+    <button type="button" class="spd" aria-pressed="false">Voice 1x</button>
     <button type="button" id="quit">Home</button>
   </div>
 
@@ -323,7 +326,7 @@ details ul{margin:8px 0;padding-left:20px}
 
   <section class="stage" id="s-sun">
     <h2 id="sunTitle"></h2>
-    <div class="speaker" id="cap" aria-live="polite"><div class="who" id="capFace"></div><div class="bubble"><b>Captain Rae</b><span id="capText"></span></div><button type="button" id="capSkip">Skip</button></div>
+    <div class="speaker" id="cap" aria-live="polite"><div class="who" id="capFace"></div><div class="bubble"><b>Captain Rae</b><span id="capText"></span></div><button type="button" class="skp" data-skip>Skip</button></div>
     <div class="sunwrap">
       <figure><div id="sunPic"></div><figcaption id="sunCap"></figcaption></figure>
       <div class="clues" id="clues"></div>
@@ -385,7 +388,7 @@ details ul{margin:8px 0;padding-left:20px}
 
   </div>
 </main>
-<div class="talk" id="talk" role="dialog" aria-live="polite" hidden><div class="talkbox" id="talkBox"><div class="who" id="talkFace"></div><div class="bubble"><b id="talkName"></b><span id="talkText"></span></div><div class="row" style="justify-content:center"><button type="button" id="talkSkip">Skip all</button><button type="button" class="spd" aria-pressed="false">Speed 1x</button><button type="button" class="go" id="talkNext">Next</button></div></div></div>
+<div class="talk" id="talk" role="dialog" aria-live="polite" hidden><div class="talkbox" id="talkBox"><div class="who" id="talkFace"></div><div class="bubble"><b id="talkName"></b><span id="talkText"></span></div><div class="row" style="justify-content:center"><button type="button" class="spd" aria-pressed="false">Voice 1x</button><button type="button" class="go" data-skip>Skip</button></div></div></div>
 
 <script>
 /* Real solar flare records from NASA DONKI (CCMC), saved 14 Nov 2026.
@@ -636,14 +639,14 @@ const $ = id => document.getElementById(id);
 const pick = a => a[Math.floor(Math.random() * a.length)];
 const shuffle = a => { const r = a.slice(); for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; } return r; };
 const calmMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-const sleep = ms => new Promise(r => setTimeout(r, (calmMotion ? Math.min(ms, 150) : ms) / speed));
+const sleep = ms => new Promise(r => setTimeout(r, calmMotion ? Math.min(ms, 150) : ms));
 const cap = s => s[0].toUpperCase() + s.slice(1);
 
 /* ---------- sound (only after a click) ---------- */
 let actx = null, sound = true;
 function beep(f, d, type) { if (!sound) return; try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); const o = actx.createOscillator(), g = actx.createGain(); o.type = type || 'sine'; o.frequency.value = f; g.gain.setValueAtTime(0.05, actx.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + d); o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime + d + 0.02); } catch (e) { /* sound is optional */ } }
-let speed = 1;   // 1 or 2: how fast the talking and the shift play
-function setSpeed(x) { speed = x; if (typeof B !== 'undefined' && B) { B.speed = x; saveBase(); } document.querySelectorAll('.spd').forEach(b => { b.textContent = 'Speed ' + x + 'x'; b.setAttribute('aria-pressed', String(x === 2)); }); }
+let speed = 1;   // 1 or 2: how fast the voices talk. It does not change the game itself.
+function setSpeed(x) { speed = x; if (typeof B !== 'undefined' && B) { B.speed = x; saveBase(); } document.querySelectorAll('.spd').forEach(b => { b.textContent = 'Voice ' + x + 'x'; b.setAttribute('aria-pressed', String(x === 2)); }); }
 document.querySelectorAll('.spd').forEach(b => b.addEventListener('click', () => setSpeed(speed === 1 ? 2 : 1)));
 function setSound(on) { sound = on; document.querySelectorAll('.snd').forEach(b => { b.textContent = sound ? 'Sound on' : 'Sound off'; b.setAttribute('aria-pressed', String(sound)); }); if (!sound) hush(); }
 document.querySelectorAll('.snd').forEach(b => b.addEventListener('click', () => setSound(!sound)));
@@ -669,21 +672,43 @@ function speak(text, who, el) {
     catch (e) { setTimeout(fin, Math.min(read, 4500)); }
   });
 }
-// A character steps to the centre of the screen and says their lines one at a time.
-let stageAdv = null, stageSkip = false;
-async function stage(lines) {
-  stageSkip = false; $('talk').hidden = false;
-  for (const [who, text] of lines) {
-    if (stageSkip) break;
-    $('talkFace').innerHTML = face(who); $('talkName').textContent = CAST[who].name + ', ' + CAST[who].role.toLowerCase(); $('talkText').textContent = text;
-    const box = $('talkBox'); box.classList.remove('pop'); void box.offsetWidth; box.classList.add('pop');
-    await Promise.race([speak(text, who, $('talkFace')), new Promise(r => { stageAdv = r; })]);
-    if (!stageSkip) await new Promise(r => setTimeout(r, calmMotion ? 0 : 350 / speed));
-  }
-  stageAdv = null; hush(); $('talk').hidden = true;
+// Lines are said one sentence at a time. A Skip button ends the sentence being said, and the next one starts.
+const sents = t => (String(t).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().match(/[^.!?]+[.!?]+|[^.!?]+$/g) || []).map(x => x.trim()).filter(Boolean);
+const pause = ms => new Promise(r => setTimeout(r, calmMotion ? 0 : ms / speed));
+// Which numbers on screen a sentence is about, so they can light up while it is said.
+function marks(part) {
+  const out = [], add = n => { if (n) out.push(n); };
+  if ($('v-game').hidden) return out;
+  if (/meal/i.test(part)) add($('food').parentElement);
+  if (/experiment/i.test(part)) add($('sci').parentElement);
+  if (/storm chance/i.test(part)) add(document.querySelector('#s-power:not([hidden]) #powTitle .pill'));
+  if (/batter/i.test(part)) add(document.querySelector('#s-power:not([hidden]) #math .tot'));
+  return out;
 }
-$('talkNext').addEventListener('click', () => { hush(); if (stageAdv) stageAdv(); });
-$('talkSkip').addEventListener('click', () => { stageSkip = true; hush(); if (stageAdv) stageAdv(); });
+async function sayLine(text, who, el, alive, onSentence) {
+  for (const part of sents(text)) {
+    if (!alive()) return false;
+    if (onSentence) onSentence(part);
+    const hot = marks(part); hot.forEach(n => n.classList.add('hot'));
+    await speak(part, who, el);
+    hot.forEach(n => n.classList.remove('hot'));
+    if (!alive()) return false;
+    await pause(250);
+  }
+  return true;
+}
+document.addEventListener('click', e => { if (e.target.closest('[data-skip]')) hush(); });
+// A character steps to the centre of the screen and says their lines.
+let stageTok = 0;
+async function stage(lines) {
+  const my = ++stageTok, alive = () => my === stageTok; $('talk').hidden = false;
+  for (const [who, text] of lines) {
+    $('talkFace').innerHTML = face(who); $('talkName').textContent = CAST[who].name + ', ' + CAST[who].role.toLowerCase(); $('talkText').textContent = '';
+    const box = $('talkBox'); box.classList.remove('pop'); void box.offsetWidth; box.classList.add('pop');
+    if (!await sayLine(text, who, $('talkFace'), alive, part => { $('talkText').textContent = part; })) return;
+  }
+  hush(); $('talk').hidden = true;
+}
 
 /* ---------- the base that carries over (this browser only) ---------- */
 const KEY = 'spaceboleh.base.v1';
@@ -788,20 +813,20 @@ function drawSun() {
   $('teach').textContent = TEACH[i];
   // Captain Rae reads the report aloud, one sentence at a time. Each clue appears as she says it.
   $('capFace').innerHTML = face('rae'); $('toPower').classList.remove('ready');
-  const hello = ['Hello crew! Captain Rae here with your Sun report.', 'Shift 2. Here is the latest from the Sun.', 'Last shift. Stay sharp, crew!'][i];
-  const lines = [[hello, -1]].concat(clues.map((q, k) => [q[0].replace(/<span[\s\S]*<\/span>/, ''), k]), [[TEACH[i], -1], ['Now place your batteries. Good luck!', -1]]);
+  const lines = [['Hello crew! Here is your report.', -1], ['You have ' + S.food + ' meals. The crew eats ' + EAT + ' every shift.', -1], ['Run ' + STAR3 + ' experiments to earn 3 stars.', -1]]
+    .concat(clues.map((q, k) => [q[0].replace(/<span[\s\S]*<\/span>/, ''), k]), [[TEACH[i], -1], ['Now place your batteries.', -1]]);
   (async () => {
+    const alive = () => S && S.sunKey === key && S.step === 'sun';
     for (const [text, k] of lines) {
-      if (!S || S.sunKey !== key || S.step !== 'sun') return;
-      $('capText').innerHTML = text; if (k >= 0) $('clues').children[k].classList.remove('wait');
-      if (!await speak(text, 'rae', $('capFace'))) break;
-      await new Promise(r => setTimeout(r, calmMotion ? 0 : 250 / speed));
+      if (!alive()) return;
+      if (k >= 0) $('clues').children[k].classList.remove('wait');
+      if (!await sayLine(text, 'rae', $('capFace'), alive, part => { $('capText').textContent = part; })) return;
     }
-    if (S && S.sunKey === key && S.step === 'sun') { [...$('clues').children].forEach(el => el.classList.remove('wait')); $('toPower').classList.add('ready'); }
+    [...$('clues').children].forEach(el => el.classList.remove('wait')); $('toPower').classList.add('ready');
   })();
 }
 $('toPower').addEventListener('click', () => { beep(520, .1); show('power'); });
-$('capSkip').addEventListener('click', hush);   // stopping the voice ends the briefing and shows every clue
+
 
 // Where this shift's batteries come from, so the number is never a mystery.
 const BASE_POWER = 5;
@@ -837,14 +862,14 @@ function effects() {
 function drawPower() {
   const n = S.power[S.shift] - B.ups.bank;
   $('powTitle').innerHTML = 'Shift ' + (S.shift + 1) + ': place your batteries <span class="pill" style="font-family:var(--body);vertical-align:middle;white-space:nowrap">Storm chance: <b>' + ['', 'low', 'medium', 'high'][S.chance[S.shift]] + '</b></span>';
-  const t = S.tip ? TIPS[S.tip] : S.shift === 0 ? ['arjun', powerLine()] : ['rae', 'Shift ' + (S.shift + 1) + (S.shift === 2 ? ', the last one' : '') + '. The storm chance is ' + ['', 'low', 'medium', 'high'][S.chance[S.shift]] + '. You have ' + powerNow() + ' batteries.'];
+  const t = S.tip ? TIPS[S.tip] : S.shift === 0 ? ['arjun', powerLine()] : ['rae', 'Shift ' + (S.shift + 1) + (S.shift === 2 ? ', the last one' : '') + '. The storm chance is ' + ['', 'low', 'medium', 'high'][S.chance[S.shift]] + '. ' + (S.food ? 'You have ' + S.food + ' meals left' : 'You have no meals left') + ', and ' + S.sci + (S.sci === 1 ? ' experiment' : ' experiments') + ' done. You have ' + powerNow() + ' batteries.'];
   $('math').innerHTML = powerParts().map((x, k) => '<span class="pill">' + x[0] + ' <b>' + (k === 0 ? x[1] : (x[1] > 0 ? '+' : '−') + Math.abs(x[1])) + '</b></span>').join('') + '<span class="pill tot">= <b>' + powerNow() + '</b> batteries</span>';
   const tk = S.tip || 'open' + S.shift;
   if (S.tipKey !== tk) {   // a new speaker steps in: show them, and say the line aloud the first time
     S.tipKey = tk;
-    $('tip').innerHTML = '<div class="who">' + face(t[0]) + '</div><div class="bubble"><b>' + CAST[t[0]].name + ', ' + CAST[t[0]].role.toLowerCase() + '</b><span>' + t[1] + '</span></div>';
+    $('tip').innerHTML = '<div class="who">' + face(t[0]) + '</div><div class="bubble"><b>' + CAST[t[0]].name + ', ' + CAST[t[0]].role.toLowerCase() + '</b><span>' + t[1] + '</span></div><button type="button" class="skp" data-skip>Skip</button>';
     $('tip').classList.remove('pop'); void $('tip').offsetWidth; $('tip').classList.add('pop');
-    if (!S.heard[tk]) { S.heard[tk] = 1; speak(t[1], t[0], $('tip').querySelector('.who')); }
+    if (!S.heard[tk]) { S.heard[tk] = 1; sayLine(t[1], t[0], $('tip').querySelector('.who'), () => S && S.step === 'power' && S.tipKey === tk); } else hush();
   }
   const e = effects();
   for (const k of ROOMS) { $('slot-' + k).innerHTML = bats(S.a[k]); const d = $('slot-' + k).parentElement; d.classList.toggle('lit', S.a[k] > 0); d.classList.toggle('broken', S.broken === k); }
@@ -1079,7 +1104,7 @@ $('howRead').addEventListener('click', async () => {
   for (const el of document.querySelectorAll('#v-how .teach, #v-how .how li, #v-how p:not(.teach)')) {
     if (my !== readTok || $('v-how').hidden) break;
     el.classList.add('reading'); el.scrollIntoView({ block: 'nearest' });
-    const ok = await speak(el.textContent, 'rae'); el.classList.remove('reading');
+    const ok = await sayLine(el.textContent, 'rae', null, () => my === readTok && !$('v-how').hidden); el.classList.remove('reading');
     if (!ok) break;
   }
 });
