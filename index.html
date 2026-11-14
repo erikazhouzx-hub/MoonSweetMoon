@@ -77,6 +77,9 @@ button:focus-visible,.dome:focus-visible{outline:3px solid var(--sun);outline-of
 .snd,.spd,.skp{padding:3px 10px;font-size:14px;border-width:1px}
 .spd[aria-pressed="true"]{background:var(--sun);border-color:var(--sun);color:#2a1d00}
 .math{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ctl{display:flex;flex-direction:column;gap:6px}
+.target{outline:4px solid var(--sun);outline-offset:3px;animation:glow .8s infinite alternate}
+@keyframes glow{to{outline-color:#fff;outline-offset:8px}}
 .math .tot{border-color:var(--sun)}
 .pill{transition:transform .2s,background .2s}
 .pill.hot{background:var(--sun);border-color:var(--sun);color:#2a1d00;transform:scale(1.18)}
@@ -114,6 +117,8 @@ button:focus-visible,.dome:focus-visible{outline:3px solid var(--sun);outline-of
 .ministars{color:var(--sun);letter-spacing:2px} .ministars i{font-style:normal;color:var(--line)}
 .stage a{color:var(--sun)}
 #quit{padding:3px 10px;font-size:14px;border-width:1px}
+.sec{font-size:20px;margin-top:4px}
+#homeCrew{grid-template-columns:repeat(2,1fr)}
 .crewrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .mate{display:flex;gap:8px;align-items:center;background:var(--night);border:2px solid var(--line);border-radius:14px;padding:6px 10px;min-width:0}
 .mate svg{width:42px;height:42px;flex:none}
@@ -215,7 +220,7 @@ details ul{margin:8px 0;padding-left:20px}
   .base,.fx{grid-template-columns:repeat(2,1fr)} .fx{display:none}
   .speaker .who svg{width:70px;height:70px} .bubble{font-size:17px} .dome{min-height:150px} .hdomes{gap:6px} .hd{width:74px;height:74px;font-size:11px} .ups{grid-template-columns:1fr} .steps{font-size:12px} .mate{flex-direction:column;text-align:center;padding:6px 4px} .mate svg{width:34px;height:34px}
 }
-@media (prefers-reduced-motion:reduce){.sky.b,.talking .m-talk,.eye,.talking svg,.pop,.go.ready{animation:none}.dots i{animation:none}.hp i{transition:none}.scene .s.flash,.scene .wave.run,.scene .mini i.hit{animation:none}}
+@media (prefers-reduced-motion:reduce){.target{animation:none}.sky.b,.talking .m-talk,.eye,.talking svg,.pop,.go.ready{animation:none}.dots i{animation:none}.hp i{transition:none}.scene .s.flash,.scene .wave.run,.scene .mini i.hit{animation:none}}
 </style>
 </head>
 <body>
@@ -236,13 +241,15 @@ details ul{margin:8px 0;padding-left:20px}
       <p class="lead">Keep your little Moon crew safe from yesterday's real Sun.</p>
       <div class="row" style="justify-content:center"><button type="button" class="snd" aria-pressed="true">Sound on</button><button type="button" class="spd" aria-pressed="false">Voice 1x</button></div>
     </div>
+    <h2 class="sec">Your Moon base</h2>
     <div class="scene tall" role="group" aria-label="Your Moon base"><div class="ground"></div><div class="hdomes">
         <button type="button" class="hd" data-info="Air room: it cleans the air the crew breathes. It needs 2 batteries every shift."><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 18h22a6 6 0 1 0-6-6M6 26h30a6 6 0 1 1-6 6M6 34h14" fill="none" stroke="#9fd8ff" stroke-width="4" stroke-linecap="round"/></svg>Air room</button>
         <button type="button" class="hd" data-info="Farm: it grows lettuce for the crew's meals. It needs power every shift, or the lettuce wilts."><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 42V22" stroke="#5fe0b7" stroke-width="4" stroke-linecap="round"/><path d="M24 26C12 26 8 18 8 10c10 0 16 4 16 16zM24 22c0-10 6-14 16-14 0 10-6 14-16 14z" fill="#5fe0b7"/></svg>Farm</button>
         <button type="button" class="hd" data-info="Shelter: thick walls that keep solar storms out. Bigger storms need more batteries."><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5l16 6v12c0 10-7 17-16 20C15 40 8 33 8 23V11z" fill="none" stroke="#ffc145" stroke-width="4" stroke-linejoin="round"/></svg>Shelter</button>
-        <button type="button" class="hd" data-info="Lab: where the crew runs experiments. Experiments earn your stars."><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M19 6h10M21 6v12L9 38a3 3 0 0 0 2.6 4.5h24.8A3 3 0 0 0 39 38L27 18V6" fill="none" stroke="#e6a8ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 31h18" stroke="#e6a8ff" stroke-width="4" stroke-linecap="round"/></svg>Lab</button>
+        <button type="button" class="hd" data-info="Lab: experiments are why the crew came to the Moon. Each one adds to your score."><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M19 6h10M21 6v12L9 38a3 3 0 0 0 2.6 4.5h24.8A3 3 0 0 0 39 38L27 18V6" fill="none" stroke="#e6a8ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 31h18" stroke="#e6a8ff" stroke-width="4" stroke-linecap="round"/></svg>Lab</button>
       </div></div>
     <p class="lead" id="domeInfo" aria-live="polite" style="text-align:center;min-height:2.8em">Point at a room, or tap it, to see what it does.</p>
+    <h2 class="sec">Meet the team</h2>
     <div class="crewrow" id="homeCrew"></div>
     <div class="stage" id="homeCard"></div>
     <div class="menu">
@@ -265,10 +272,10 @@ details ul{margin:8px 0;padding-left:20px}
 
     <h3>What each room does</h3>
     <ol class="how">
-      <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 18h22a6 6 0 1 0-6-6M6 26h30a6 6 0 1 1-6 6M6 34h14" fill="none" stroke="#9fd8ff" stroke-width="4" stroke-linecap="round"/></svg><div><b>Air room: needs 2 batteries</b>It keeps the air fresh. With too few, the whole crew gets hurt.</div></li>
-      <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 42V22" stroke="#5fe0b7" stroke-width="4" stroke-linecap="round"/><path d="M24 26C12 26 8 18 8 10c10 0 16 4 16 16zM24 22c0-10 6-14 16-14 0 10-6 14-16 14z" fill="#5fe0b7"/></svg><div><b>Farm: power it every shift</b>The crew eats 3 meals a shift, 1 each. You start with 6 meals, so food runs out in shift 3. Lettuce takes a few shifts to grow, then makes 6 meals. With no power it wilts.</div></li>
+      <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 18h22a6 6 0 1 0-6-6M6 26h30a6 6 0 1 1-6 6M6 34h14" fill="none" stroke="#9fd8ff" stroke-width="4" stroke-linecap="round"/></svg><div><b>Air room: needs 2 batteries</b>It keeps the air fresh. With only 1 battery the air gets thin and 1 crew member gets hurt. With none, the whole crew gets hurt.</div></li>
+      <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 42V22" stroke="#5fe0b7" stroke-width="4" stroke-linecap="round"/><path d="M24 26C12 26 8 18 8 10c10 0 16 4 16 16zM24 22c0-10 6-14 16-14 0 10-6 14-16 14z" fill="#5fe0b7"/></svg><div><b>Farm: power it every shift</b>The crew eats 3 meals a shift, 1 each. Each day starts with 6 fresh meals from Earth, so food runs out in shift 3. Lettuce needs 4 growth steps, and each battery gives 1 step a shift. So 2 batteries means a harvest in 2 shifts. A harvest makes 6 meals. With no power the lettuce wilts.</div></li>
       <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5l16 6v12c0 10-7 17-16 20C15 40 8 33 8 23V11z" fill="none" stroke="#ffc145" stroke-width="4" stroke-linejoin="round"/></svg><div><b>Shelter: 1, 2 or 3 batteries</b>It blocks storms: 1 for a small one, 2 for medium, 3 for big. Each battery it is short hurts one crew member.</div></li>
-      <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M19 6h10M21 6v12L9 38a3 3 0 0 0 2.6 4.5h24.8A3 3 0 0 0 39 38L27 18V6" fill="none" stroke="#e6a8ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 31h18" stroke="#e6a8ff" stroke-width="4" stroke-linecap="round"/></svg><div><b>Lab: 1 experiment per battery</b>Experiments are how you earn stars. But the lab does not keep anyone safe.</div></li>
+      <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M19 6h10M21 6v12L9 38a3 3 0 0 0 2.6 4.5h24.8A3 3 0 0 0 39 38L27 18V6" fill="none" stroke="#e6a8ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 31h18" stroke="#e6a8ff" stroke-width="4" stroke-linecap="round"/></svg><div><b>Lab: 1 experiment per battery</b>Experiments are why the crew came to the Moon, and each one adds to your score. But the lab does not keep anyone safe.</div></li>
     </ol>
 
     <h3>Your crew</h3>
@@ -282,7 +289,7 @@ details ul{margin:8px 0;padding-left:20px}
     <h3>Stars</h3>
     <p>1 star for finishing. 2 stars for 3 experiments. 3 stars for 5 experiments and nobody hurt at the end.</p>
 
-    <div class="row" style="justify-content:flex-end"><button type="button" class="go" id="howGo">Back to home</button></div>
+    <div class="row" style="justify-content:space-between"><button type="button" id="howTrain">Play the training mission</button><button type="button" class="go" id="howGo">Back to home</button></div>
   </section>
 
   <section class="stage view" id="v-base" hidden>
@@ -326,7 +333,7 @@ details ul{margin:8px 0;padding-left:20px}
 
   <section class="stage" id="s-sun">
     <h2 id="sunTitle"></h2>
-    <div class="speaker" id="cap" aria-live="polite"><div class="who" id="capFace"></div><div class="bubble"><b>Captain Rae</b><span id="capText"></span></div><button type="button" class="skp" data-skip>Skip</button></div>
+    <div class="speaker" id="cap" aria-live="polite"><div class="who" id="capFace"></div><div class="bubble"><b>Captain Rae</b><span id="capText"></span></div><span class="ctl" id="capCtl" hidden><button type="button" class="skp" data-back>Back</button><button type="button" class="skp" data-skip>Skip</button></span></div>
     <div class="sunwrap">
       <figure><div id="sunPic"></div><figcaption id="sunCap"></figcaption></figure>
       <div class="clues" id="clues"></div>
@@ -383,12 +390,13 @@ details ul{margin:8px 0;padding-left:20px}
     <div class="card"><h3>What really happened on the Sun</h3><div id="cReal"></div></div>
     <div class="card"><h3>What your plan did</h3><p id="cPlan"></p></div>
     <div class="card" id="totCard" hidden><h3>Crews around the world today</h3><p id="totText"></p></div>
+    <div class="card" id="carryCard" hidden><h3>What carries over to tomorrow</h3><p id="carryText"></p></div>
     <div class="row" style="justify-content:space-between"><button type="button" id="copy">Copy my result</button><span class="lead" id="copyMsg" role="status"></span><button type="button" class="go" id="again">Back to home</button></div>
   </section>
 
   </div>
 </main>
-<div class="talk" id="talk" role="dialog" aria-live="polite" hidden><div class="talkbox" id="talkBox"><div class="who" id="talkFace"></div><div class="bubble"><b id="talkName"></b><span id="talkText"></span></div><div class="row" style="justify-content:center"><button type="button" class="spd" aria-pressed="false">Voice 1x</button><button type="button" class="go" data-skip>Skip</button></div></div></div>
+<div class="talk" id="talk" role="dialog" aria-live="polite" hidden><div class="talkbox" id="talkBox"><div class="who" id="talkFace"></div><div class="bubble"><b id="talkName"></b><span id="talkText"></span></div><div class="row" id="talkCtl" style="justify-content:center"><button type="button" data-back>Back</button><button type="button" class="spd" aria-pressed="false">Voice 1x</button><button type="button" class="go" data-skip>Skip</button></div></div></div>
 
 <script>
 /* Real solar flare records from NASA DONKI (CCMC), saved 14 Nov 2026.
@@ -685,29 +693,36 @@ function marks(part) {
   if (/batter/i.test(part)) add(document.querySelector('#s-power:not([hidden]) #math .tot'));
   return out;
 }
-async function sayLine(text, who, el, alive, onSentence) {
-  for (const part of sents(text)) {
-    if (!alive()) return false;
-    if (onSentence) onSentence(part);
-    const hot = marks(part); hot.forEach(n => n.classList.add('hot'));
-    await speak(part, who, el);
+// One dialogue at a time. steps: [{ who, text, pre }], one sentence each.
+// o: { alive(), face(step) -> element whose mouth moves, show(step), ctl -> element holding the Back and Skip buttons }
+// Skip ends the sentence being said and starts the next. Back goes to the one before. The buttons hide when the talking is over.
+let DLG = null;
+async function dialogue(list, o) {
+  const d = { jump: 0 }; DLG = d; if (o.ctl) o.ctl.hidden = false;
+  let i = 0, ok = true;
+  while (i < list.length) {
+    if (!o.alive() || DLG !== d) { ok = false; break; }
+    const st = list[i]; if (st.pre) st.pre(); if (o.show) o.show(st);
+    const hot = marks(st.text); hot.forEach(n => n.classList.add('hot'));
+    d.jump = 0; await speak(st.text, st.who, o.face ? o.face(st) : null);
     hot.forEach(n => n.classList.remove('hot'));
-    if (!alive()) return false;
-    await pause(250);
+    if (!o.alive() || DLG !== d) { ok = false; break; }
+    if (d.jump < 0) i = Math.max(0, i - 1); else { i++; if (!d.jump) await pause(250); }
   }
-  return true;
+  if (DLG === d) { DLG = null; if (o.ctl) o.ctl.hidden = true; }
+  return ok;
 }
-document.addEventListener('click', e => { if (e.target.closest('[data-skip]')) hush(); });
+document.addEventListener('click', e => { const b = e.target.closest('[data-skip],[data-back]'); if (!b || !DLG) return; DLG.jump = b.hasAttribute('data-back') ? -1 : 1; hush(); });
+const steps = (who, text, pre) => sents(text).map((t, k) => ({ who, text: t, pre: k === 0 ? pre : null }));
 // A character steps to the centre of the screen and says their lines.
 let stageTok = 0;
 async function stage(lines) {
-  const my = ++stageTok, alive = () => my === stageTok; $('talk').hidden = false;
-  for (const [who, text] of lines) {
-    $('talkFace').innerHTML = face(who); $('talkName').textContent = CAST[who].name + ', ' + CAST[who].role.toLowerCase(); $('talkText').textContent = '';
-    const box = $('talkBox'); box.classList.remove('pop'); void box.offsetWidth; box.classList.add('pop');
-    if (!await sayLine(text, who, $('talkFace'), alive, part => { $('talkText').textContent = part; })) return;
-  }
-  hush(); $('talk').hidden = true;
+  const my = ++stageTok; let last = null; $('talk').hidden = false;
+  await dialogue(lines.flatMap(q => steps(q[0], q[1])), { alive: () => my === stageTok, face: () => $('talkFace'), ctl: $('talkCtl'), show: st => {
+    if (st.who !== last) { last = st.who; $('talkFace').innerHTML = face(st.who); $('talkName').textContent = CAST[st.who].name + ', ' + CAST[st.who].role.toLowerCase(); const box = $('talkBox'); box.classList.remove('pop'); void box.offsetWidth; box.classList.add('pop'); }
+    $('talkText').textContent = st.text;
+  } });
+  if (my === stageTok) { hush(); $('talk').hidden = true; }
 }
 
 /* ---------- the base that carries over (this browser only) ---------- */
@@ -758,12 +773,13 @@ function newGame(mode, given) {
   S = { day, w: watch(day), truth, chance, power: shuffle([4, 5, 6]).map(n => n + B.ups.bank), shift: 0, a: { air: 0, farm: 0, shield: 0, lab: 0 }, guess: null,
     h: { mei: 0, arjun: 0, siti: 0 }, food: START_MEALS, sci: 0, crop: B.crop || 0, broken: null, right: 0, wasted: 0, leaks: [], blocked: 0, wilted: 0, why: '', picked: false, busy: false, tip: null, tipKey: null, heard: {} };
   S.mode = mode; if (mode !== 'daily') S.crop = 0;
-  view('game'); show('sun');
+  if (mode === 'tutorial') { S.power = [5, 5, 5].map(x => x + B.ups.bank); S.chance[0] = 3; S.tut = 0; }
+  view('game'); show(mode === 'tutorial' ? 'power' : 'sun');
 }
 
 /* ---------- screens ---------- */
 function show(step) {
-  hush(); S.step = step;
+  hush(); S.step = step; document.querySelectorAll('.target').forEach(el => el.classList.remove('target'));
   for (const k of ['sun', 'power', 'watch', 'end']) $('s-' + k).hidden = k !== step && !(k === 'watch' && step === 'after');
   const idx = { sun: 0, power: 1, watch: 2, after: 3, end: 3 }[step];
   [...$('steps').children].forEach((li, i) => { li.className = step === 'end' ? 'done' : i === idx ? 'on' : i < idx ? 'done' : ''; });
@@ -773,7 +789,8 @@ function show(step) {
   if (step === 'power') { S.tip = null; S.tipKey = null; drawPower(); }
 }
 function hud() {
-  $('sub').textContent = (S.mode === 'daily' ? 'Day ' + B.day : 'Practice') + ' · the Sun on ' + S.day.date + (S.step === 'end' ? '' : ' · shift ' + Math.min(S.shift + 1, 3) + ' of 3');
+  $('sub').textContent = S.mode === 'tutorial' ? 'Training mission · a made-up storm, not real Sun data' : (S.mode === 'daily' ? 'Day ' + B.day : 'Practice') + ' · the Sun on ' + S.day.date + (S.step === 'end' ? '' : ' · shift ' + Math.min(S.shift + 1, 3) + ' of 3');
+  $('quit').textContent = S.mode === 'tutorial' ? 'Skip training' : 'Home';
   $('crewrow').innerHTML = IDS.map(id => { const st = S.h[id]; return '<div class="mate s' + st + '">' + face(id) + '<div><b>' + CREW[id].name + '</b><small>' + CREW[id].role + '</small><span>' + STATE[st] + ': ' + COST[id][st] + '</span></div></div>'; }).join('');
   $('food').textContent = S.food; $('sci').textContent = S.sci < STAR3 ? S.sci + ' of ' + STAR3 : S.sci;
 }
@@ -813,17 +830,11 @@ function drawSun() {
   $('teach').textContent = TEACH[i];
   // Captain Rae reads the report aloud, one sentence at a time. Each clue appears as she says it.
   $('capFace').innerHTML = face('rae'); $('toPower').classList.remove('ready');
-  const lines = [['Hello crew! Here is your report.', -1], ['You have ' + S.food + ' meals. The crew eats ' + EAT + ' every shift.', -1], ['Run ' + STAR3 + ' experiments to earn 3 stars.', -1]]
+  const lines = [['Hello crew! Here is your report.', -1], ['You have ' + S.food + ' fresh meals from Earth for today. The crew eats ' + EAT + ' every shift.', -1], ['Experiments are why we came to the Moon. Each experiment adds to your score. Run ' + STAR3 + ' to reach 3 stars.', -1]]
     .concat(clues.map((q, k) => [q[0].replace(/<span[\s\S]*<\/span>/, ''), k]), [[TEACH[i], -1], ['Now place your batteries.', -1]]);
-  (async () => {
-    const alive = () => S && S.sunKey === key && S.step === 'sun';
-    for (const [text, k] of lines) {
-      if (!alive()) return;
-      if (k >= 0) $('clues').children[k].classList.remove('wait');
-      if (!await sayLine(text, 'rae', $('capFace'), alive, part => { $('capText').textContent = part; })) return;
-    }
-    [...$('clues').children].forEach(el => el.classList.remove('wait')); $('toPower').classList.add('ready');
-  })();
+  dialogue(lines.flatMap(q => steps('rae', q[0], q[1] >= 0 ? () => $('clues').children[q[1]].classList.remove('wait') : null)),
+    { alive: () => S && S.sunKey === key && S.step === 'sun', face: () => $('capFace'), ctl: $('capCtl'), show: st => { $('capText').textContent = st.text; } })
+    .then(ok => { if (ok) { [...$('clues').children].forEach(el => el.classList.remove('wait')); $('toPower').classList.add('ready'); } });
 }
 $('toPower').addEventListener('click', () => { beep(520, .1); show('power'); });
 
@@ -841,19 +852,48 @@ function powerParts() {
 }
 function powerLine() {
   const sun = S.power[Math.min(S.shift, 2)] - B.ups.bank - BASE_POWER;
-  let t = 'Our solar panels make ' + BASE_POWER + ' batteries each shift. ';
-  if (sun < 0) t += 'The Sun is low in the sky here, and a hill is casting a shadow on them, so we lose 1. ';
-  if (sun > 0) t += 'The Sun is shining right on them now, so we get 1 extra. ';
+  let t = 'Solar panels turn sunlight into electricity. In one shift ours fill ' + BASE_POWER + ' batteries. ';
+  if (sun < 0) t += 'But the Sun is low in the sky here, and a hill is casting a shadow on the panels, so we lose 1. ';
+  if (sun > 0) t += 'Right now the Sun is shining straight at the panels, so we get 1 extra. ';
+  if (sun === 0) t += 'The sunlight is steady right now, so we get all ' + BASE_POWER + '. ';
   if (B.ups.bank) t += 'Our bigger battery bank adds ' + B.ups.bank + '. ';
   if (S.h.arjun) t += 'I am ' + STATE[S.h.arjun].toLowerCase() + ', so I cannot keep every panel working. We lose ' + S.h.arjun + '. ';
   return t + 'That gives us ' + powerNow() + ' batteries. Drag them into the rooms.';
 }
+// The training mission for first-time players: one guided shift with a made-up storm. It is not real Sun data.
+const TUT_DAY = { iso: 'training', date: 'a training day', flares: [{ iso: 'training', t: '03:00', cls: 'M1.0', loc: '', ar: null }] };
+const TUT = [
+  { zone: 'air', target: '.dome[data-zone=air]', done: () => S.a.air >= 2, text: 'These yellow batteries are your power. Drag 2 of them into the glowing Air room. The crew needs fresh air to breathe.' },
+  { zone: 'farm', target: '.dome[data-zone=farm]', done: () => S.a.farm >= 1, text: 'Good! Now give the Farm 1 battery. Lettuce needs light to grow into meals.' },
+  { zone: 'shield', target: '.dome[data-zone=shield]', done: () => S.a.shield >= 1, text: 'A storm might come. Put 1 battery in the Shelter to block it.' },
+  { zone: 'lab', target: '.dome[data-zone=lab]', done: () => S.a.lab >= 1 && left() === 0, text: 'Put the rest in the Lab. Experiments are why we came to the Moon, and each one adds to your score.' },
+  { zone: null, target: '#go', done: () => false, text: 'Every battery is placed. You can never fill every room, so you always have to choose. Now press Start the shift.' }
+];
+async function startTutorial() {
+  await stage([['rae', 'Welcome to Moon Sweet Moon! I am Captain Rae. Let us do one quick training shift together.']]);
+  newGame('tutorial', TUT_DAY);
+}
+async function endTutorial(skipped) {
+  B.seenHow = true; saveBase(); hush();
+  if (!skipped) await stage([['rae', 'Training complete! You know how to place batteries and what a storm can do. Now you are ready for the real Sun.']]);
+  const q = pending; pending = null;
+  if (q) startMission(q[0], q[1]); else view('home');
+}
+function powerWhy() {
+  const sun = S.power[Math.min(S.shift, 2)] - B.ups.bank - BASE_POWER, why = [];
+  if (sun < 0) why.push('a shadow is on the solar panels');
+  if (sun > 0) why.push('the Sun is bright on the solar panels');
+  if (B.ups.bank) why.push('your battery bank adds ' + B.ups.bank);
+  if (S.h.arjun) why.push('Kai is ' + STATE[S.h.arjun].toLowerCase());
+  return why.length ? ', because ' + why.join(' and ') : ', the usual number';
+}
+const farmTip = () => 'We eat ' + EAT + ' meals a shift, 1 each. Lettuce needs ' + cropNeed() + ' growth steps, and each battery here gives 1 step a shift. So 2 batteries means a harvest in ' + Math.ceil(cropNeed() / 2) + ' shifts. A harvest makes ' + HARVEST + ' meals.';
 function effects() {
   const a = S.a, e = {};
-  e.air = a.air >= airNeed() ? ['ok', 'The air is fresh'] : ['warn', 'Needs ' + (airNeed() - a.air) + ' more ' + (airNeed() - a.air === 1 ? 'battery' : 'batteries') + ', or the whole crew gets hurt'];
+  e.air = a.air >= airNeed() ? ['ok', 'The air is fresh'] : ['warn', a.air === 0 ? 'No air power: the whole crew gets hurt' : 'Needs ' + (airNeed() - a.air) + ' more battery, or 1 crew member gets hurt'];
   if (a.farm === 0) e.farm = S.crop > 0 ? ['warn', 'No power: lettuce wilts!'] : ['off', 'Nothing planted yet'];
   else if (S.h.mei === 2) e.farm = ['mid', 'Nova is sick: no growth'];
-  else e.farm = S.crop + grow(a.farm) >= cropNeed() ? ['ok', 'Harvest this shift!'] : ['mid', 'Lettuce grows to step ' + (S.crop + grow(a.farm)) + ' of ' + cropNeed() + (S.h.mei ? ' (slowly)' : '')];
+  else { const g = grow(a.farm), now = S.crop + g, need = cropNeed(), more = Math.ceil((need - now) / g); e.farm = now >= need ? ['ok', 'Harvest this shift: ' + HARVEST + ' meals!'] : ['mid', 'Lettuce reaches step ' + now + ' of ' + need + '. Harvest in ' + more + ' more ' + (more === 1 ? 'shift' : 'shifts') + ' at this power.']; }
   const open = ['C', 'M', 'X'].find(L => a.shield < needFor(L));
   e.shield = !open ? ['ok', 'Blocks every storm'] : [a.shield ? 'mid' : 'warn', 'A ' + SIZE[open].word + ' storm would hurt ' + (needFor(open) - a.shield) + (needFor(open) - a.shield === 1 ? ' crew member' : ' crew members')];
   e.lab = a.lab ? ['ok', 'Runs ' + a.lab + (a.lab === 1 ? ' experiment' : ' experiments')] : ['off', 'No experiments this shift'];
@@ -862,14 +902,18 @@ function effects() {
 function drawPower() {
   const n = S.power[S.shift] - B.ups.bank;
   $('powTitle').innerHTML = 'Shift ' + (S.shift + 1) + ': place your batteries <span class="pill" style="font-family:var(--body);vertical-align:middle;white-space:nowrap">Storm chance: <b>' + ['', 'low', 'medium', 'high'][S.chance[S.shift]] + '</b></span>';
-  const t = S.tip ? TIPS[S.tip] : S.shift === 0 ? ['arjun', powerLine()] : ['rae', 'Shift ' + (S.shift + 1) + (S.shift === 2 ? ', the last one' : '') + '. The storm chance is ' + ['', 'low', 'medium', 'high'][S.chance[S.shift]] + '. ' + (S.food ? 'You have ' + S.food + ' meals left' : 'You have no meals left') + ', and ' + S.sci + (S.sci === 1 ? ' experiment' : ' experiments') + ' done. You have ' + powerNow() + ' batteries.'];
+  const tut = S.mode === 'tutorial' ? TUT[S.tut = TUT.findIndex(x => !x.done())] : null;
+  const t = tut ? ['rae', tut.text] : S.tip ? (S.tip === 'farm' ? ['mei', farmTip()] : TIPS[S.tip]) : S.shift === 0 ? ['arjun', powerLine()]
+    : ['rae', 'Shift ' + (S.shift + 1) + (S.shift === 2 ? ', the last one' : '') + '. The storm chance is ' + ['', 'low', 'medium', 'high'][S.chance[S.shift]] + '. ' + (S.food ? 'You have ' + S.food + ' meals left' : 'You have no meals left') + ', and ' + S.sci + (S.sci === 1 ? ' experiment' : ' experiments') + ' done. You have ' + powerNow() + ' batteries' + powerWhy() + '.'];
+  document.querySelectorAll('.target').forEach(el => el.classList.remove('target'));
+  if (tut) document.querySelector(tut.target).classList.add('target');
   $('math').innerHTML = powerParts().map((x, k) => '<span class="pill">' + x[0] + ' <b>' + (k === 0 ? x[1] : (x[1] > 0 ? '+' : '−') + Math.abs(x[1])) + '</b></span>').join('') + '<span class="pill tot">= <b>' + powerNow() + '</b> batteries</span>';
-  const tk = S.tip || 'open' + S.shift;
+  const tk = tut ? 'tut' + S.tut : S.tip || 'open' + S.shift;
   if (S.tipKey !== tk) {   // a new speaker steps in: show them, and say the line aloud the first time
     S.tipKey = tk;
-    $('tip').innerHTML = '<div class="who">' + face(t[0]) + '</div><div class="bubble"><b>' + CAST[t[0]].name + ', ' + CAST[t[0]].role.toLowerCase() + '</b><span>' + t[1] + '</span></div><button type="button" class="skp" data-skip>Skip</button>';
+    $('tip').innerHTML = '<div class="who">' + face(t[0]) + '</div><div class="bubble"><b>' + CAST[t[0]].name + ', ' + CAST[t[0]].role.toLowerCase() + '</b><span>' + t[1] + '</span></div><span class="ctl" hidden><button type="button" class="skp" data-back>Back</button><button type="button" class="skp" data-skip>Skip</button></span>';
     $('tip').classList.remove('pop'); void $('tip').offsetWidth; $('tip').classList.add('pop');
-    if (!S.heard[tk]) { S.heard[tk] = 1; sayLine(t[1], t[0], $('tip').querySelector('.who'), () => S && S.step === 'power' && S.tipKey === tk); } else hush();
+    if (!S.heard[tk]) { S.heard[tk] = 1; dialogue(steps(t[0], t[1]), { alive: () => S && S.step === 'power' && S.tipKey === tk, face: () => $('tip').querySelector('.who'), ctl: $('tip').querySelector('.ctl') }); } else hush();
   }
   const e = effects();
   for (const k of ROOMS) { $('slot-' + k).innerHTML = bats(S.a[k]); const d = $('slot-' + k).parentElement; d.classList.toggle('lit', S.a[k] > 0); d.classList.toggle('broken', S.broken === k); }
@@ -880,6 +924,7 @@ function drawPower() {
 }
 function move(from, to) {
   if (from === to) return;
+  if (S.mode === 'tutorial' && to !== 'tray' && TUT[S.tut].zone !== to) { $('msg').textContent = TUT[S.tut].zone ? 'Try the glowing room first.' : 'Now press Start the shift.'; return; }
   if (to !== 'tray') S.tip = to;
   if (to !== 'tray' && S.broken === to) { $('msg').textContent = 'The ' + RNAME[to] + ' is broken this shift.'; drawPower(); return; }
   if (from === 'tray') { if (left() <= 0) { $('msg').textContent = 'No batteries left. Take one out of a room first.'; drawPower(); return; } } else { if (S.a[from] <= 0) return; S.a[from]--; }
@@ -921,9 +966,9 @@ function emergency(f) {
   return new Promise(res => {
     const from = ['lab', 'farm', 'air'].filter(k => S.a[k] > 0), need = needFor(f.cls[0]);
     if (!from.length || S.a.shield >= need) { res(null); return; }
-    let n = 7; const el = $('emerg');
+    let n = S.mode === 'tutorial' ? 30 : 7; const el = $('emerg');
     el.innerHTML = '<div class="row" style="justify-content:space-between"><b>Quick! Move 1 battery to the shelter?</b><span class="count" id="cnt">' + n + '</span></div><p class="lead">The shelter needs ' + need + (need === 1 ? ' battery' : ' batteries') + ' for a ' + SIZE[f.cls[0]].word + ' storm. It has ' + S.a.shield + '.</p><div class="row">' +
-      from.map(k => '<button type="button" data-em="' + k + '">Take from the ' + RNAME[k] + '</button>').join('') + '<button type="button" data-em="none">Keep my plan</button></div>';
+      from.map(k => '<button type="button" data-em="' + k + '">Take from the ' + RNAME[k] + '</button>').join('') + '<button type="button" data-em="none">Keep my plan</button></div>' + (S.mode === 'tutorial' ? '<p><b>Captain Rae:</b> This is your last-chance move. Take 1 battery from the lab, and the shelter will hold.</p>' : '');
     el.hidden = false;
     const done = v => { clearInterval(tick); el.hidden = true; el.onclick = null; res(v); };
     const tick = setInterval(() => { n--; const c = $('cnt'); if (c) c.textContent = n; beep(700, .05, 'square'); if (n <= 0) done(null); }, 1000);
@@ -963,7 +1008,12 @@ async function runShift() {
   }
   hud(); await sleep(800);
   const airOk = a.air >= airNeed();
-  if (!airOk) { S.why = 'air'; IDS.forEach(hurt); feed('The air got thin. Everyone feels worse.', 'bad'); says.siti = 'People need fresh air every minute. Thin air hurts everyone.'; hud(); await sleep(700); }
+  if (!airOk) {   // some air power but not enough hurts one crew member; none at all hurts everyone
+    S.why = 'air';
+    if (a.air === 0) { IDS.forEach(hurt); feed('The air room had no power. Everyone feels worse.', 'bad'); says.siti = 'People need fresh air every minute. With no power in the air room, everyone gets hurt.'; }
+    else { const v = pick(IDS.filter(id => S.h[id] < 2)); if (v) { hurt(v); feed('The air got thin. ' + CREW[v].name + ' is ' + STATE[S.h[v]].toLowerCase() + ' now.', 'bad'); } says.siti = 'The air room had too little power. The air got thin, and one of us got hurt.'; }
+    hud(); await sleep(700);
+  }
   if (a.farm === 0) {
     if (S.crop > 0) { S.crop = 0; S.wilted++; feed('The lettuce wilted.', 'bad'); says.mei = 'Oh no, my lettuce wilted. Plants need light every shift.'; }
     else says.mei = 'Nothing is growing. Food takes time, so start early.';
@@ -988,16 +1038,16 @@ async function runShift() {
   says.siti = says.siti || (allFine() ? 'Everyone feels good.' : 'Fresh air, food and rest help the crew heal.');
   const c = S.chance[S.shift], note = f && c === 1 ? 'The forecast said low, but a storm came. A forecast is only a best guess.' : !f && c === 3 ? 'The forecast said high, but no storm came. A forecast is only a best guess.' : '';
   S.shift++; S.a = { air: 0, farm: 0, shield: 0, lab: 0 };
-  const over = S.shift >= 3 || allSick();
+  const over = S.shift >= 3 || allSick() || S.mode === 'tutorial';
   hud(); show('after');
   $('says').innerHTML = ['arjun', 'mei', 'siti'].map(id => '<div class="say">' + face(id) + '<div><b>' + CREW[id].name + '</b>' + says[id] + '</div></div>').join('') + (note ? '<p class="teach">' + note + '</p>' : '');
   // Each crew member steps to the centre and reports, one at a time.
   await stage(['arjun', 'mei', 'siti'].map(id => [id, says[id]]).concat(note ? [['rae', note]] : []));
-  $('after').hidden = false; $('next').textContent = over ? 'See how you did' : 'Next shift'; $('next').dataset.over = over ? '1' : '';
+  $('after').hidden = false; $('next').textContent = S.mode === 'tutorial' ? 'Finish training' : over ? 'See how you did' : 'Next shift'; $('next').dataset.over = over ? '1' : '';
   S.busy = false; $('next').focus();
 }
 // The full Sun report is only at the start of the mission. Later shifts go straight to the batteries, where Captain Rae gives the storm chance.
-$('next').addEventListener('click', () => { if ($('next').dataset.over) showEnd(); else show(S.shift === 0 ? 'sun' : 'power'); window.scrollTo(0, 0); });
+$('next').addEventListener('click', () => { if (S.mode === 'tutorial') { endTutorial(false); return; } if ($('next').dataset.over) showEnd(); else show(S.shift === 0 ? 'sun' : 'power'); window.scrollTo(0, 0); });
 
 /* ---------- the end ---------- */
 const starCount = () => allSick() ? 0 : 1 + (S.sci >= STAR2 ? 1 : 0) + (S.sci >= STAR3 && allFine() ? 1 : 0);
@@ -1005,6 +1055,7 @@ function showEnd() {
   const win = !allSick(), n = starCount(), daily = S.mode === 'daily';
   if (daily) { B.day++; B.crop = win ? S.crop : 0; B.last = S.day.iso; B.lastStars = n; B.log = (B.log || []).concat({ iso: S.day.iso, stars: n }).slice(-30); saveBase(); }
   show('end'); $('sub').textContent = (daily ? 'Day ' + (B.day - 1) : 'Practice') + ' · the Sun on ' + S.day.date; $('copyMsg').textContent = ''; $('totCard').hidden = true;
+  $('carryCard').hidden = !daily; $('carryText').textContent = 'Your upgrades stay. ' + (B.crop ? 'Your lettuce stays at growth step ' + B.crop + '. ' : '') + 'Meals do not carry over: every day starts with ' + START_MEALS + ' fresh meals from Earth.';
   if (daily) sendResult(S.day.iso, n, allFine()).then(() => getTotals(S.day.iso)).then(t => { const x = totalsText(t); if (x && S && S.step === 'end') { $('totText').textContent = x; $('totCard').hidden = false; } });
   $('endTitle').textContent = win ? 'Mission complete! The crew made it.' : 'Mission unsuccessful.';
   speak(win ? 'Mission complete! The crew made it. You earned ' + n + (n === 1 ? ' star.' : ' stars.') : 'Mission unsuccessful. Everyone was too sick to work. Try again tomorrow.', 'rae');
@@ -1031,7 +1082,7 @@ $('ups').addEventListener('click', e => {
   $('ups').innerHTML = '<p>Added to your base: <b>' + UPS[b.dataset.up].name + '</b>.</p>'; $('again').disabled = false;
 });
 $('again').addEventListener('click', () => view('home'));
-$('quit').addEventListener('click', () => { if (!S.busy) view('home'); });
+$('quit').addEventListener('click', () => { if (S.busy) return; if (S.mode === 'tutorial') endTutorial(true); else view('home'); });
 $('copy').addEventListener('click', () => {
   const n = starCount(), text = 'Moon Sweet Moon, the Sun on ' + S.day.date + ': ' + '★'.repeat(n) + '☆'.repeat(3 - n) + ', ' + S.sci + ' experiments';
   try { navigator.clipboard.writeText(text).then(() => { $('copyMsg').textContent = 'Copied.'; }, () => { $('copyMsg').textContent = text; }); } catch (e) { $('copyMsg').textContent = text; }
@@ -1063,7 +1114,7 @@ function preload(url) {
 // Open a mission only once its first Sun photo is ready (or after 8 seconds, when the game falls back to a drawing).
 let pending = null;
 async function startMission(mode, given) {
-  if (!B.seenHow) { pending = [mode, given]; view('how'); return; }
+  if (!B.seenHow) { pending = [mode, given]; startTutorial(); return; }   // first-time players get the training mission, which they can skip
   const pool = DAYS.filter(d => !S || d !== S.day), busy = pool.filter(d => d.flares.length), quiet = pool.filter(d => !d.flares.length);
   const day = given || pick(Math.random() < 0.75 || !quiet.length ? busy : quiet), first = PHOTOS.get(photoUrl(day.iso, 0));
   if (!first || !first.ok) { $('loadMsg').textContent = 'Getting the Sun photo for ' + day.date + '…'; view('loading'); await Promise.race([preload(photoUrl(day.iso, 0)), wait(8000)]); }
@@ -1076,12 +1127,11 @@ function view(name) {
   hush();
   for (const v of ['loading', 'home', 'how', 'base', 'data', 'game']) $('v-' + v).hidden = v !== name;
   window.scrollTo(0, 0);
-  if (name === 'how') $('howGo').textContent = pending ? 'Got it, let\'s play' : 'Back to home';
   if (name === 'home') drawHome(); if (name === 'base') drawBase(); if (name === 'data') $('dataSrc').textContent = TODAY.note + ' The game holds ' + FL.length + ' NASA flare records.';
 }
 const starStr = n => '<span class="ministars" role="img" aria-label="' + n + ' out of 3 stars">' + '★'.repeat(n) + '<i>' + '★'.repeat(3 - n) + '</i></span>';
 function drawHome() {
-  $('homeCrew').innerHTML = IDS.map(id => '<div class="mate">' + face(id, 0) + '<div><b>' + CREW[id].name + '</b><small>' + CREW[id].role + '</small><span>' + cap(COST[id][0]) + '</span></div></div>').join('');
+  $('homeCrew').innerHTML = ['rae'].concat(IDS).map(id => '<div class="mate">' + face(id, 0) + '<div><b>' + CAST[id].name + '</b><small>' + CAST[id].role + '</small><span>' + (id === 'rae' ? 'Gives you the Sun report' : cap(COST[id][0])) + '</span></div></div>').join('');
   const done = B.last === TODAY.day.iso;
   $('homeCard').innerHTML = '<div class="speaker"><div class="who">' + face('rae', 0) + '</div><div class="bubble"><b>Captain Rae</b><span>' + (done ? 'Good work today, crew. See you tomorrow!' : 'The Sun report is ready. Shall we begin?') + '</span></div></div><h2>Today\'s mission</h2><p>' + (TODAY.src === 'archive' ? 'A saved day: the Sun on ' : 'Yesterday\'s Sun: ') + '<b>' + TODAY.day.date + '</b></p><span class="tag" style="align-self:flex-start;margin:0">' + TODAY.note + '</span>' +
     (done ? '<p>' + starStr(B.lastStars || 0) + ' Done for today. A new Sun arrives tomorrow.</p><p class="lead" id="homeTot"></p>' : '') +
@@ -1093,18 +1143,19 @@ function drawBase() {
   const log = B.log || [], stars = log.reduce((t, r) => t + r.stars, 0), ups = Object.keys(UPS).filter(k => B.ups[k]);
   $('baseBody').innerHTML = '<div class="stats"><div class="stat"><b>' + log.length + '</b><span>daily missions played</span></div><div class="stat"><b>' + stars + '</b><span>stars earned</span></div><div class="stat"><b>' + ups.reduce((t, k) => t + B.ups[k], 0) + '</b><span>upgrades</span></div></div>' +
     '<div class="card"><h3>Upgrades</h3>' + (ups.length ? '<ul class="plain">' + ups.map(k => '<li>' + UPS[k].name + (B.ups[k] > 1 ? ' ×' + B.ups[k] : '') + ': ' + UPS[k].what.toLowerCase() + '</li>').join('') + '</ul>' : '<p>None yet. Win a daily mission to pick one.</p>') + '</div>' +
-    '<div class="card"><h3>Farm</h3><p>' + (B.crop ? 'Lettuce is growing: ' + B.crop + ' of ' + cropNeed() + '.' : 'Nothing is growing right now.') + '</p></div>' +
+    '<div class="card"><h3>Farm</h3><p>' + (B.crop ? 'Lettuce is growing: ' + B.crop + ' of ' + cropNeed() + '.' : 'Nothing is growing right now.') + ' Meals do not carry over: every day starts with ' + START_MEALS + ' fresh meals from Earth.</p></div>' +
     '<div class="card"><h3>Recent missions</h3>' + (log.length ? '<ul class="plain">' + log.slice(-7).reverse().map(r => '<li>The Sun on ' + nice(r.iso) + ' ' + starStr(r.stars) + '</li>').join('') + '</ul>' : '<p>No missions yet.</p>') + '</div>';
 }
 $('mHow').addEventListener('click', () => { pending = null; view('how'); });
-$('howGo').addEventListener('click', () => { B.seenHow = true; saveBase(); const q = pending; pending = null; if (q) startMission(q[0], q[1]); else view('home'); });
+$('howGo').addEventListener('click', () => view('home'));
+$('howTrain').addEventListener('click', () => { pending = null; startTutorial(); });
 let readTok = 0;
 $('howRead').addEventListener('click', async () => {
   const my = ++readTok;
   for (const el of document.querySelectorAll('#v-how .teach, #v-how .how li, #v-how p:not(.teach)')) {
     if (my !== readTok || $('v-how').hidden) break;
     el.classList.add('reading'); el.scrollIntoView({ block: 'nearest' });
-    const ok = await sayLine(el.textContent, 'rae', null, () => my === readTok && !$('v-how').hidden); el.classList.remove('reading');
+    const ok = await dialogue(steps('rae', el.textContent), { alive: () => my === readTok && !$('v-how').hidden }); el.classList.remove('reading');
     if (!ok) break;
   }
 });
