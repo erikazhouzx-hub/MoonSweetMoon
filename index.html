@@ -10,7 +10,7 @@
 <style>
 :root{
   /* layout: slim status bar, a 4-step tracker, then ONE stage card that shows only the current step */
-  --deep:#12143a; --night:#1b1f4b; --panel:#272c66; --line:#3f4594;
+  --deep:#080a22; --night:rgba(22,26,72,.84); --panel:rgba(44,50,118,.88); --line:#4a51a8;
   --ink:#f6f3ff; --muted:#bcb9e4;
   --sun:#ffc145; --coral:#ff6b5e; --mint:#5fe0b7;
   --display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
@@ -19,7 +19,39 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--deep);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.4}
+html{background:#05061a}
+body{color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.4;min-height:100vh;background:
+  radial-gradient(900px 600px at 88% -8%, rgba(125,80,255,.38), transparent 62%),
+  radial-gradient(800px 560px at -12% 28%, rgba(20,150,220,.24), transparent 62%),
+  radial-gradient(760px 560px at 62% 112%, rgba(255,95,150,.20), transparent 62%),
+  #05061a;background-attachment:fixed}
+.sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.sky.b{animation:tw 3.4s ease-in-out infinite alternate}
+@keyframes tw{from{opacity:.2}to{opacity:1}}
+main{position:relative;z-index:1}
+.m-talk{display:none}
+.talking .m-rest{display:none}
+.talking .m-talk{display:block;animation:yap .2s infinite alternate;transform-box:fill-box;transform-origin:center}
+@keyframes yap{from{transform:scaleY(.25)}to{transform:scaleY(1.2)}}
+.eye{animation:blink 4.4s infinite;transform-box:fill-box;transform-origin:center}
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+.talking svg{animation:bob .45s infinite alternate}
+@keyframes bob{to{transform:translateY(-4px)}}
+.speaker{display:flex;gap:14px;align-items:center;justify-content:center}
+.speaker .who svg{width:96px;height:96px;display:block}
+.bubble{position:relative;background:var(--ink);color:#1b1f4b;border-radius:18px;padding:10px 16px;font-size:19px;font-weight:700;line-height:1.3;min-height:66px;flex:1;max-width:470px;display:flex;flex-direction:column;justify-content:center}
+.bubble::before{content:"";position:absolute;left:-9px;top:50%;margin-top:-9px;border:9px solid transparent;border-right-color:var(--ink);border-left:0}
+.bubble b{font-family:var(--display);font-size:14px;color:#5a47c9;display:block}
+.pop{animation:pop .35s ease}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.go.ready{animation:pulse .9s infinite alternate}
+@keyframes pulse{to{transform:scale(1.07)}}
+.talk{position:fixed;inset:0;z-index:40;background:rgba(5,6,26,.8);display:flex;align-items:center;justify-content:center;padding:16px}
+.talkbox{display:flex;flex-direction:column;align-items:center;gap:14px;max-width:480px;width:100%;text-align:center}
+.talkbox .who svg{width:150px;height:150px;display:block}
+.talkbox .bubble{font-size:22px;max-width:none;width:100%;flex:none;align-items:center;padding:14px 18px}
+.talkbox .bubble::before{left:50%;top:-9px;margin:0 0 0 -9px;border:9px solid transparent;border-bottom-color:var(--ink);border-top:0}
+.reading{outline:3px solid var(--sun);outline-offset:3px;border-radius:10px}
 main{max-width:720px;margin:0 auto;padding:16px 16px 40px;display:flex;flex-direction:column;gap:12px}
 h1,h2,h3{font-family:var(--display);margin:0;line-height:1.15;text-wrap:balance}
 h1{font-size:24px} h2{font-size:24px} h3{font-size:17px}
@@ -42,7 +74,7 @@ button:focus-visible,.dome:focus-visible{outline:3px solid var(--sun);outline-of
 .pill b{color:var(--sun);font-variant-numeric:tabular-nums}
 .hp{width:90px;height:10px;border-radius:5px;background:var(--night);overflow:hidden;border:1px solid var(--line)}
 .hp i{display:block;height:100%;transition:width .6s ease,background .6s ease}
-#snd{padding:3px 10px;font-size:14px;border-width:1px}
+.snd{padding:3px 10px;font-size:14px;border-width:1px}
 
 .col{display:flex;flex-direction:column;gap:12px}
 .splash{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:70px 0}
@@ -98,7 +130,8 @@ button:focus-visible,.dome:focus-visible{outline:3px solid var(--sun);outline-of
 .photo svg{position:absolute;inset:0;width:100%;height:100%}
 .sunwrap figure{margin:0;text-align:center;font-size:14px;color:var(--muted)}
 .clues{display:flex;flex-direction:column;gap:8px}
-.clue{background:var(--panel);border-radius:12px;padding:8px 12px}
+.clue{background:var(--panel);border-radius:12px;padding:8px 12px;transition:opacity .4s,transform .4s}
+.clue.wait{opacity:0;transform:translateY(8px)}
 .clue small{display:block;font-size:12px;color:var(--muted);margin-top:2px}
 .chance{display:inline-flex;gap:4px;vertical-align:middle;margin-left:6px}
 .chance i{width:22px;height:10px;border-radius:5px;background:var(--deep)}
@@ -172,12 +205,13 @@ details ul{margin:8px 0;padding-left:20px}
 @media (max-width:600px){
   .sunwrap{grid-template-columns:1fr;justify-items:center}
   .base,.fx{grid-template-columns:repeat(2,1fr)} .fx{display:none}
-  .dome{min-height:150px} .hdomes{gap:6px} .hd{width:74px;height:74px;font-size:11px} .ups{grid-template-columns:1fr} .steps{font-size:12px} .mate{flex-direction:column;text-align:center;padding:6px 4px} .mate svg{width:34px;height:34px}
+  .speaker .who svg{width:70px;height:70px} .bubble{font-size:17px} .dome{min-height:150px} .hdomes{gap:6px} .hd{width:74px;height:74px;font-size:11px} .ups{grid-template-columns:1fr} .steps{font-size:12px} .mate{flex-direction:column;text-align:center;padding:6px 4px} .mate svg{width:34px;height:34px}
 }
-@media (prefers-reduced-motion:reduce){.dots i{animation:none}.hp i{transition:none}.scene .s.flash,.scene .wave.run,.scene .mini i.hit{animation:none}}
+@media (prefers-reduced-motion:reduce){.sky.b,.talking .m-talk,.eye,.talking svg,.pop,.go.ready{animation:none}.dots i{animation:none}.hp i{transition:none}.scene .s.flash,.scene .wave.run,.scene .mini i.hit{animation:none}}
 </style>
 </head>
 <body>
+<canvas class="sky" id="sky" aria-hidden="true"></canvas><canvas class="sky b" id="sky2" aria-hidden="true"></canvas>
 <main>
   <section class="view" id="v-loading">
     <div class="splash">
@@ -192,6 +226,7 @@ details ul{margin:8px 0;padding-left:20px}
     <div class="splash small">
       <h1 class="big">Moon Sweet Moon</h1>
       <p class="lead">Keep your little Moon crew safe from yesterday's real Sun.</p>
+      <button type="button" class="snd" aria-pressed="true">Sound on</button>
     </div>
     <div class="scene tall" role="img" aria-label="Your Moon base: an air room, a farm, a shelter and a lab"><div class="s"></div><div class="ground"></div><div class="hdomes">
         <div class="hd"><svg viewBox="0 0 48 48"><path d="M6 18h22a6 6 0 1 0-6-6M6 26h30a6 6 0 1 1-6 6M6 34h14" fill="none" stroke="#9fd8ff" stroke-width="4" stroke-linecap="round"/></svg>Air room</div>
@@ -209,14 +244,14 @@ details ul{margin:8px 0;padding-left:20px}
   </section>
 
   <section class="stage view" id="v-how" hidden>
-    <h2>How to play</h2>
+    <div class="row" style="justify-content:space-between"><h2>How to play</h2><button type="button" id="howRead">Read it to me</button></div>
     <p class="teach">Your job: keep 3 crew members healthy for 3 shifts, and run experiments to earn stars.</p>
 
     <h3>Every shift has 3 steps</h3>
     <ol class="how">
       <li><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="14" fill="#c8321e"/><circle cx="24" cy="22" r="4" fill="#ffe08a"/><circle cx="24" cy="22" r="7" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 2"/></svg><div><b>1. Look at the Sun</b>A ringed bright patch has fired before, so it may fire again. The storm chance tells you how careful to be.</div></li>
-      <li><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="13" y="8" width="14" height="26" rx="4" fill="#ffc145"/><rect x="17" y="4" width="6" height="5" rx="2" fill="#ffc145"/></svg><div><b>2. Share your batteries</b>Drag them into the 4 rooms. You never have enough for all four, so you must choose.</div></li>
-      <li><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M23 3L8 23h10l-2 14 16-21H21z" fill="#ff6b5e"/></svg><div><b>3. Watch what happens</b>If the Sun flashes, a storm is coming. You get a few seconds to rush 1 battery to the shelter.</div></li>
+      <li><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="13" y="8" width="14" height="26" rx="4" fill="#ffc145"/><rect x="17" y="4" width="6" height="5" rx="2" fill="#ffc145"/></svg><div><b>2. Place your batteries</b>Batteries are your power. You get 4 to 6, but the four rooms want more than that. Drag each battery into a room. One room will always go short, so you choose which.</div></li>
+      <li><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M23 3L8 23h10l-2 14 16-21H21z" fill="#ff6b5e"/></svg><div><b>3. Watch the shift</b>It plays by itself. If the Sun flashes, a storm is on its way. You get 7 seconds to move 1 battery into the shelter as a last-chance save.</div></li>
     </ol>
 
     <h3>What each room does</h3>
@@ -258,6 +293,7 @@ details ul{margin:8px 0;padding-left:20px}
       <li>Game rules, not data: the storm chance meter, battery counts, meals, experiments, crop growth, upgrades, and the crew rules. They are small whole numbers so a child can count them: 3 crew eat 1 meal each per shift, and 1 lab battery runs 1 experiment. The true part of the crew rules is that a sick crew cannot do all its work.</li>
       <li>The Sun picture is a real photo from NASA's Solar Dynamics Observatory (SDO) for the mission date, fetched through the Helioviewer service. It is taken in ultraviolet light, which our eyes cannot see, so NASA colours it red. Bright patches are the busy regions where flares happen. If the photo cannot load, the game shows a drawing instead. The ring that marks a sunspot is placed from the NASA flare record, or estimated from the Sun's rotation on a day the spot did not fire, so it is approximate.</li>
       <li>Shifts are 8 hours each on the crew's 24 hour clock (UTC). The crew's facts are sample lines that still need checking against NASA.</li>
+      <li>Voices: the game uses your device's built-in voice to read lines aloud. Nothing is recorded or sent anywhere. The voice sounds different on each device, and you can switch it off with the Sound button.</li>
       <li>Your base is saved in this browser only. There is no account.</li>
       <li>Daily totals: when you finish the daily mission, the game sends 3 things to a shared counter: the mission date, your stars, and whether your whole crew stayed healthy. It sends no name and nothing about you. The game shows only the totals for the day.</li>
     </ul>
@@ -269,27 +305,28 @@ details ul{margin:8px 0;padding-left:20px}
     <div class="name"><h1>Moon Sweet Moon</h1><small id="sub"></small></div>
     <span class="pill">Meals <b id="food"></b></span>
     <span class="pill">Experiments <b id="sci"></b></span>
-    <button type="button" id="snd" aria-pressed="true">Sound on</button>
+    <button type="button" class="snd" aria-pressed="true">Sound on</button>
     <button type="button" id="quit">Home</button>
   </div>
 
   <div class="crewrow" id="crewrow" aria-live="polite"></div>
 
-  <ol class="steps" id="steps"><li>1 Read the Sun</li><li>2 Power the base</li><li>3 Watch</li><li>4 What happened</li></ol>
+  <ol class="steps" id="steps"><li>1 Read the Sun</li><li>2 Place batteries</li><li>3 Watch</li><li>4 What happened</li></ol>
 
   <section class="stage" id="s-sun">
     <h2 id="sunTitle"></h2>
+    <div class="speaker" id="cap" aria-live="polite"><div class="who" id="capFace"></div><div class="bubble"><b>Captain Rae</b><span id="capText"></span></div></div>
     <div class="sunwrap">
       <figure><div id="sunPic"></div><figcaption id="sunCap"></figcaption></figure>
       <div class="clues" id="clues"></div>
     </div>
     <p class="teach" id="teach"></p>
-    <div class="row" style="justify-content:flex-end"><button type="button" class="go" id="toPower">Power the base</button></div>
+    <div class="row" style="justify-content:flex-end"><button type="button" class="go" id="toPower">Let's go!</button></div>
   </section>
 
   <section class="stage" id="s-power" hidden>
     <h2 id="powTitle"></h2>
-    <div class="tip" id="tip" aria-live="polite"></div>
+    <div class="speaker" id="tip" aria-live="polite"></div>
     <div class="base">
       <div class="dome zone" data-zone="air" tabindex="0" role="button" aria-label="Air room. Press to add a battery.">
         <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 18h22a6 6 0 1 0-6-6M6 26h30a6 6 0 1 1-6 6M6 34h14" fill="none" stroke="#9fd8ff" stroke-width="4" stroke-linecap="round"/></svg>
@@ -339,6 +376,7 @@ details ul{margin:8px 0;padding-left:20px}
 
   </div>
 </main>
+<div class="talk" id="talk" role="dialog" aria-live="polite" hidden><div class="talkbox" id="talkBox"><div class="who" id="talkFace"></div><div class="bubble"><b id="talkName"></b><span id="talkText"></span></div><div class="row"><button type="button" id="talkSkip">Skip</button><button type="button" class="go" id="talkNext">Next</button></div></div></div>
 
 <script>
 /* Real solar flare records from NASA DONKI (CCMC), saved 14 Nov 2026.
@@ -595,7 +633,44 @@ const cap = s => s[0].toUpperCase() + s.slice(1);
 /* ---------- sound (only after a click) ---------- */
 let actx = null, sound = true;
 function beep(f, d, type) { if (!sound) return; try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); const o = actx.createOscillator(), g = actx.createGain(); o.type = type || 'sine'; o.frequency.value = f; g.gain.setValueAtTime(0.05, actx.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + d); o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime + d + 0.02); } catch (e) { /* sound is optional */ } }
-$('snd').addEventListener('click', () => { sound = !sound; $('snd').textContent = sound ? 'Sound on' : 'Sound off'; $('snd').setAttribute('aria-pressed', String(sound)); });
+function setSound(on) { sound = on; document.querySelectorAll('.snd').forEach(b => { b.textContent = sound ? 'Sound on' : 'Sound off'; b.setAttribute('aria-pressed', String(sound)); }); if (!sound) hush(); }
+document.querySelectorAll('.snd').forEach(b => b.addEventListener('click', () => setSound(!sound)));
+
+/* ---------- voices: the device's built-in voice reads each line aloud (Web Speech). No audio files, nothing recorded. ---------- */
+const VOX = { rae: [1.0, 0.92], mei: [1.4, 0.95], arjun: [0.75, 0.92], siti: [1.2, 0.95] };   // [pitch, speed] so each character sounds different
+const canTalk = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+let voice = null, speakTok = 0;
+function pickVoice() { try { const vs = speechSynthesis.getVoices().filter(v => /^en/i.test(v.lang)); voice = vs.find(v => /Samantha|Google US English|Google UK English Female|Aria|Jenny|Zira|Karen|Moira/i.test(v.name)) || vs[0] || null; } catch (e) { voice = null; } }
+if (canTalk) { pickVoice(); try { speechSynthesis.addEventListener('voiceschanged', pickVoice); } catch (e) { /* older browsers */ } }
+function hush() { speakTok++; if (canTalk) { try { speechSynthesis.cancel(); } catch (e) { /* ignore */ } } document.querySelectorAll('.talking').forEach(n => n.classList.remove('talking')); }
+// Say one line. The face inside `el` moves its mouth while the line plays. Resolves true if the line finished, false if it was cut off.
+function speak(text, who, el) {
+  hush(); const tok = speakTok, plain = String(text).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  if (el) el.classList.add('talking');
+  return new Promise(res => {
+    let done = false;
+    const fin = () => { if (done) return; done = true; if (tok === speakTok && el) el.classList.remove('talking'); res(tok === speakTok); };
+    const read = calmMotion ? 200 : 700 + plain.length * 55;   // time to read the line when there is no voice
+    if (!sound || !canTalk) { setTimeout(fin, Math.min(read, 4500)); return; }
+    try { const u = new SpeechSynthesisUtterance(plain), v = VOX[who] || VOX.rae; u.pitch = v[0]; u.rate = v[1]; u.lang = 'en-US'; if (voice) u.voice = voice; u.onend = fin; u.onerror = fin; speechSynthesis.speak(u); setTimeout(fin, read + 5000); }
+    catch (e) { setTimeout(fin, Math.min(read, 4500)); }
+  });
+}
+// A character steps to the centre of the screen and says their lines one at a time.
+let stageAdv = null, stageSkip = false;
+async function stage(lines) {
+  stageSkip = false; $('talk').hidden = false;
+  for (const [who, text] of lines) {
+    if (stageSkip) break;
+    $('talkFace').innerHTML = face(who); $('talkName').textContent = CAST[who].name + ', ' + CAST[who].role.toLowerCase(); $('talkText').textContent = text;
+    const box = $('talkBox'); box.classList.remove('pop'); void box.offsetWidth; box.classList.add('pop');
+    await Promise.race([speak(text, who, $('talkFace')), new Promise(r => { stageAdv = r; })]);
+    if (!stageSkip) await new Promise(r => setTimeout(r, calmMotion ? 0 : 350));
+  }
+  stageAdv = null; hush(); $('talk').hidden = true;
+}
+$('talkNext').addEventListener('click', () => { hush(); if (stageAdv) stageAdv(); });
+$('talkSkip').addEventListener('click', () => { stageSkip = true; hush(); if (stageAdv) stageAdv(); });
 
 /* ---------- the base that carries over (this browser only) ---------- */
 const KEY = 'spaceboleh.base.v1';
@@ -618,13 +693,18 @@ const ILL = {
 const IDS = Object.keys(CREW);
 const allSick = () => IDS.every(id => S.h[id] === 2);
 const allFine = () => IDS.every(id => S.h[id] === 0);
+// Captain Rae gives the briefings. The three crew members are the ones whose health the game tracks.
+const CAST = Object.assign({ rae: { name: 'Captain Rae', role: 'Mission captain', skin: '#e9bd94', suit: '#7fb4ff' } }, CREW);
 function face(id, st) {
-  if (st === undefined) st = S ? S.h[id] : 0;
-  const c = CREW[id], m = ['happy', 'worried', 'sick'][st];
+  if (st === undefined) st = (S && S.h && S.h[id]) || 0;
+  const c = CAST[id], m = ['happy', 'worried', 'sick'][st];
   const mouth = st === 0 ? 'M21 34q6 6 12 0' : st === 1 ? 'M21 36q3-3 6 0t6 0' : 'M21 38q6-6 12 0';
   const brows = st === 0 ? '' : '<path d="' + (st === 1 ? 'M18 21l6-2M36 21l-6-2' : 'M18 19l6 2M36 19l-6 2') + '" stroke="#3a2416" stroke-width="2" stroke-linecap="round"/>';
   const band = st === 1 ? '<rect x="13" y="11" width="18" height="6" rx="3" fill="#fff" transform="rotate(-20 22 14)"/>' : '';
-  return '<svg viewBox="0 0 54 54" role="img" aria-label="' + c.name + ' looks ' + m + '"><circle cx="27" cy="27" r="25" fill="' + c.suit + '"/><circle cx="27" cy="28" r="19" fill="' + (st === 2 ? '#b9c79a' : c.skin) + '"/>' + band + '<circle cx="21" cy="26" r="2.6" fill="#3a2416"/><circle cx="33" cy="26" r="2.6" fill="#3a2416"/>' + brows + '<path d="' + mouth + '" fill="none" stroke="#3a2416" stroke-width="2.5" stroke-linecap="round"/></svg>';
+  const star = id === 'rae' ? '<path d="M27 1.5l2.1 4.3 4.7.6-3.4 3.2.9 4.6L27 12l-4.3 2.2.9-4.6-3.4-3.2 4.7-.6z" fill="#ffc145" stroke="#12143a" stroke-width=".8"/>' : '';
+  return '<svg viewBox="0 0 54 54" role="img" aria-label="' + c.name + ' looks ' + m + '"><circle cx="27" cy="27" r="25" fill="' + c.suit + '"/><circle cx="27" cy="28" r="19" fill="' + (st === 2 ? '#b9c79a' : c.skin) + '"/>' + band +
+    '<circle class="eye" cx="21" cy="26" r="2.6" fill="#3a2416"/><circle class="eye" cx="33" cy="26" r="2.6" fill="#3a2416"/>' + brows +
+    '<path class="m-rest" d="' + mouth + '" fill="none" stroke="#3a2416" stroke-width="2.5" stroke-linecap="round"/><ellipse class="m-talk" cx="27" cy="36" rx="5" ry="4" fill="#3a2416"/>' + star + '</svg>';
 }
 const bats = n => Array.from({ length: n }, () => '<button type="button" class="bat" aria-label="Battery"></button>').join('');
 const used = () => ROOMS.reduce((t, k) => t + S.a[k], 0);
@@ -638,21 +718,21 @@ function newGame(mode, given) {
   const truth = [0, 1, 2].map(i => { const f = day.flares.filter(x => Math.floor(parseInt(x.t, 10) / 8) === i); return f.length ? biggest(f) : null; });
   const chance = truth.map(f => { const r = Math.random(); return f ? (r < 0.75 ? 3 : 2) : (r < 0.65 ? 1 : r < 0.95 ? 2 : 3); });
   S = { day, w: watch(day), truth, chance, power: shuffle([4, 5, 6]).map(n => n + B.ups.bank), shift: 0, a: { air: 0, farm: 0, shield: 0, lab: 0 }, guess: null,
-    h: { mei: 0, arjun: 0, siti: 0 }, food: START_MEALS, sci: 0, crop: B.crop || 0, broken: null, right: 0, wasted: 0, leaks: [], blocked: 0, wilted: 0, why: '', picked: false, busy: false, tip: null };
+    h: { mei: 0, arjun: 0, siti: 0 }, food: START_MEALS, sci: 0, crop: B.crop || 0, broken: null, right: 0, wasted: 0, leaks: [], blocked: 0, wilted: 0, why: '', picked: false, busy: false, tip: null, tipKey: null, heard: {} };
   S.mode = mode; if (mode !== 'daily') S.crop = 0;
   view('game'); show('sun');
 }
 
 /* ---------- screens ---------- */
 function show(step) {
-  S.step = step;
+  hush(); S.step = step;
   for (const k of ['sun', 'power', 'watch', 'end']) $('s-' + k).hidden = k !== step && !(k === 'watch' && step === 'after');
   const idx = { sun: 0, power: 1, watch: 2, after: 3, end: 3 }[step];
   [...$('steps').children].forEach((li, i) => { li.className = step === 'end' ? 'done' : i === idx ? 'on' : i < idx ? 'done' : ''; });
   $('steps').hidden = step === 'end';
   hud();
   if (step === 'sun') drawSun();
-  if (step === 'power') { S.tip = null; drawPower(); }
+  if (step === 'power') { S.tip = null; S.tipKey = null; drawPower(); }
 }
 function hud() {
   $('sub').textContent = (S.mode === 'daily' ? 'Day ' + B.day : 'Practice') + ' · the Sun on ' + S.day.date + (S.step === 'end' ? '' : ' · shift ' + Math.min(S.shift + 1, 3) + ' of 3');
@@ -691,8 +771,21 @@ function drawSun() {
   if (i > 0) clues.push([today.length ? 'Earlier today the Sun fired ' + (today.length === 1 ? 'a ' + SIZE[today[0].cls[0]].word + ' flare.' : today.length + ' flares, the biggest one ' + SIZE[biggest(today).cls[0]].word + '.') : 'The Sun has been quiet so far today.', 'Real NASA record']);
   const c = S.chance[i];
   clues.push(['Storm chance this shift: <b>' + ['', 'low', 'medium', 'high'][c] + '</b><span class="chance" aria-hidden="true">' + [1, 2, 3].map(k => '<i class="' + (k <= c ? 'on' : '') + '"></i>').join('') + '</span>', 'Game forecast, not real data']);
-  $('clues').innerHTML = clues.map(q => '<div class="clue">' + q[0] + '<small>' + q[1] + '</small></div>').join('');
+  $('clues').innerHTML = clues.map(q => '<div class="clue wait">' + q[0] + '<small>' + q[1] + '</small></div>').join('');
   $('teach').textContent = TEACH[i];
+  // Captain Rae reads the report aloud, one sentence at a time. Each clue appears as she says it.
+  $('capFace').innerHTML = face('rae'); $('toPower').classList.remove('ready');
+  const hello = ['Hello crew! Captain Rae here with your Sun report.', 'Shift 2. Here is the latest from the Sun.', 'Last shift. Stay sharp, crew!'][i];
+  const lines = [[hello, -1]].concat(clues.map((q, k) => [q[0].replace(/<span[\s\S]*<\/span>/, ''), k]), [[TEACH[i], -1], ['Now place your batteries. Good luck!', -1]]);
+  (async () => {
+    for (const [text, k] of lines) {
+      if (!S || S.sunKey !== key || S.step !== 'sun') return;
+      $('capText').innerHTML = text; if (k >= 0) $('clues').children[k].classList.remove('wait');
+      if (!await speak(text, 'rae', $('capFace'))) break;
+      await new Promise(r => setTimeout(r, calmMotion ? 0 : 250));
+    }
+    if (S && S.sunKey === key && S.step === 'sun') { [...$('clues').children].forEach(el => el.classList.remove('wait')); $('toPower').classList.add('ready'); }
+  })();
 }
 $('toPower').addEventListener('click', () => { beep(520, .1); show('power'); });
 
@@ -709,9 +802,15 @@ function effects() {
 }
 function drawPower() {
   const n = S.power[S.shift] - B.ups.bank;
-  $('powTitle').innerHTML = 'Shift ' + (S.shift + 1) + ': power the base <span class="pill" style="font-family:var(--body);vertical-align:middle;white-space:nowrap">Storm chance: <b>' + ['', 'low', 'medium', 'high'][S.chance[S.shift]] + '</b></span>';
+  $('powTitle').innerHTML = 'Shift ' + (S.shift + 1) + ': place your batteries <span class="pill" style="font-family:var(--body);vertical-align:middle;white-space:nowrap">Storm chance: <b>' + ['', 'low', 'medium', 'high'][S.chance[S.shift]] + '</b></span>';
   const t = S.tip ? TIPS[S.tip] : ['arjun', (S.h.arjun ? 'I am ' + STATE[S.h.arjun].toLowerCase() + ', so I cannot keep every panel working. ' : n === 4 ? 'Shadow on the solar panels. ' : n === 6 ? 'Bright sun on the panels! ' : '') + 'We have ' + powerNow() + ' batteries this shift. Drag them into the rooms.'];
-  $('tip').innerHTML = face(t[0]) + '<div><b>' + CREW[t[0]].name + ', ' + CREW[t[0]].role.toLowerCase() + '</b>' + t[1] + '</div>';
+  const tk = S.tip || 'open' + S.shift;
+  if (S.tipKey !== tk) {   // a new speaker steps in: show them, and say the line aloud the first time
+    S.tipKey = tk;
+    $('tip').innerHTML = '<div class="who">' + face(t[0]) + '</div><div class="bubble"><b>' + CAST[t[0]].name + ', ' + CAST[t[0]].role.toLowerCase() + '</b><span>' + t[1] + '</span></div>';
+    $('tip').classList.remove('pop'); void $('tip').offsetWidth; $('tip').classList.add('pop');
+    if (!S.heard[tk]) { S.heard[tk] = 1; speak(t[1], t[0], $('tip').querySelector('.who')); }
+  }
   const e = effects();
   for (const k of ROOMS) { $('slot-' + k).innerHTML = bats(S.a[k]); const d = $('slot-' + k).parentElement; d.classList.toggle('lit', S.a[k] > 0); d.classList.toggle('broken', S.broken === k); }
   $('crop').innerHTML = Array.from({ length: cropNeed() }, (_, i) => '<i class="' + (i < S.crop ? 'on' : '') + '"></i>').join('');
@@ -772,32 +871,33 @@ function emergency(f) {
   });
 }
 $('go').addEventListener('click', runShift);
+function banner(t) { $('banner').textContent = t; speak(t, 'rae'); }
 async function runShift() {
   if (S.busy || left() > 0) return; S.busy = true;
   const f = S.truth[S.shift], a = S.a, says = { mei: '', arjun: '', siti: '' }, start = { ...S.h }, hurtNow = {};
   const hurt = id => { if (S.h[id] < 2) { S.h[id]++; hurtNow[id] = 1; } };
   $('feed').innerHTML = ''; $('after').hidden = true; $('emerg').hidden = true; $('wSun').className = 's'; $('wave').className = 'wave';
-  show('watch'); mini(); $('banner').textContent = 'The shift begins…';
+  show('watch'); mini(); banner('The shift begins…');
   await sleep(900);
   if (f) {
     const z = SIZE[f.cls[0]];
     $('wSun').classList.add('flash'); beep(880, .4, 'triangle');
-    $('banner').textContent = 'Flash! ' + (f.ar ? 'Sunspot ' + f.ar : 'A sunspot') + ' fired a ' + z.word + ' flare. The storm is on its way.';
+    banner('Flash! ' + (f.ar ? 'Sunspot ' + f.ar : 'A sunspot') + ' fired a ' + z.word + ' flare. The storm is on its way.');
     await sleep(1400);
     const em = await emergency(f);
     if (em) { a[em]--; a.shield++; mini(); feed('You rushed 1 battery from the ' + RNAME[em] + ' to the shelter.'); }
     $('wave').classList.add('run'); beep(140, .8, 'sawtooth'); await sleep(1100);
     const need = needFor(f.cls[0]), miss = Math.max(0, need - a.shield);
-    if (!miss) { S.blocked++; $('banner').textContent = 'The storm hit, and the shelter held!'; feed('The shelter blocked the ' + z.word + ' storm.', 'good'); says.arjun = 'The shelter held. Thick walls and power kept the radiation out.'; beep(660, .2); }
+    if (!miss) { S.blocked++; banner('The storm hit, and the shelter held!'); feed('The shelter blocked the ' + z.word + ' storm.', 'good'); says.arjun = 'The shelter held. Thick walls and power kept the radiation out.'; beep(660, .2); }
     else {
       S.why = 'storm'; S.leaks.push({ shift: S.shift + 1, had: a.shield, need });
-      mini('shield'); $('banner').textContent = 'The storm got into the base!';
+      mini('shield'); banner('The storm got into the base!');
       feed('The shelter had ' + a.shield + (a.shield === 1 ? ' battery' : ' batteries') + ' and needed ' + need + '. Radiation got in.', 'bad');
       for (const id of shuffle(IDS.filter(id => S.h[id] < 2)).slice(0, miss)) { hurt(id); feed(CREW[id].name + ' is ' + STATE[S.h[id]].toLowerCase() + ' now.', 'bad'); }
       says.arjun = 'A ' + z.word + ' storm needs ' + need + (need === 1 ? ' battery' : ' batteries') + ' in the shelter. We had ' + a.shield + '.'; says.siti = 'Radiation makes people sick. Each missing battery hurt one of us.';
     }
   } else {
-    $('banner').textContent = 'The Sun stayed quiet this shift.';
+    banner('The Sun stayed quiet this shift.');
     if (a.shield >= 2) { S.wasted += a.shield; feed('The shelter power was not needed.'); says.arjun = 'No storm came. That shelter power could have run experiments.'; }
     else says.arjun = 'A quiet shift. Good time to grow food and run experiments.';
   }
@@ -831,6 +931,8 @@ async function runShift() {
   const over = S.shift >= 3 || allSick();
   hud(); show('after');
   $('says').innerHTML = ['arjun', 'mei', 'siti'].map(id => '<div class="say">' + face(id) + '<div><b>' + CREW[id].name + '</b>' + says[id] + '</div></div>').join('') + (note ? '<p class="teach">' + note + '</p>' : '');
+  // Each crew member steps to the centre and reports, one at a time.
+  await stage(['arjun', 'mei', 'siti'].map(id => [id, says[id]]).concat(note ? [['rae', note]] : []));
   $('after').hidden = false; $('next').textContent = over ? 'See how you did' : 'Next shift'; $('next').dataset.over = over ? '1' : '';
   S.busy = false; $('next').focus();
 }
@@ -844,6 +946,7 @@ function showEnd() {
   show('end'); $('sub').textContent = (daily ? 'Day ' + (B.day - 1) : 'Practice') + ' · the Sun on ' + S.day.date; $('copyMsg').textContent = ''; $('totCard').hidden = true;
   if (daily) sendResult(S.day.iso, n, allFine()).then(() => getTotals(S.day.iso)).then(t => { const x = totalsText(t); if (x && S && S.step === 'end') { $('totText').textContent = x; $('totCard').hidden = false; } });
   $('endTitle').textContent = win ? 'Mission complete! The crew made it.' : 'Mission unsuccessful.';
+  speak(win ? 'Mission complete! The crew made it. You earned ' + n + (n === 1 ? ' star.' : ' stars.') : 'Mission unsuccessful. Everyone was too sick to work. Try again tomorrow.', 'rae');
   $('stars').innerHTML = '★'.repeat(n) + '<i>' + '★'.repeat(3 - n) + '</i>'; $('stars').setAttribute('aria-label', n + ' out of 3 stars');
   $('endSub').textContent = win ? '1 star for finishing. 2 stars for ' + STAR2 + ' experiments. 3 stars for ' + STAR3 + ' experiments and nobody hurt at the end. You ran ' + S.sci + '.' : 'Everyone was too sick to work, so the mission stopped. Your base is still there for the next crew.';
   if (!daily) $('endSub').textContent += ' Practice missions do not change your base.';
@@ -910,6 +1013,7 @@ async function startMission(mode, given) {
 /* ---------- loading, home and the other pages ---------- */
 let TODAY = null;
 function view(name) {
+  hush();
   for (const v of ['loading', 'home', 'how', 'base', 'data', 'game']) $('v-' + v).hidden = v !== name;
   window.scrollTo(0, 0);
   if (name === 'how') $('howGo').textContent = pending ? 'Got it, let\'s play' : 'Back to home';
@@ -919,7 +1023,7 @@ const starStr = n => '<span class="ministars" role="img" aria-label="' + n + ' o
 function drawHome() {
   $('homeCrew').innerHTML = IDS.map(id => '<div class="mate">' + face(id, 0) + '<div><b>' + CREW[id].name + '</b><small>' + CREW[id].role + '</small><span>' + cap(COST[id][0]) + '</span></div></div>').join('');
   const done = B.last === TODAY.day.iso;
-  $('homeCard').innerHTML = '<h2>Today\'s mission</h2><p>' + (TODAY.src === 'archive' ? 'A saved day: the Sun on ' : 'Yesterday\'s Sun: ') + '<b>' + TODAY.day.date + '</b></p><span class="tag" style="align-self:flex-start;margin:0">' + TODAY.note + '</span>' +
+  $('homeCard').innerHTML = '<div class="speaker"><div class="who">' + face('rae', 0) + '</div><div class="bubble"><b>Captain Rae</b><span>' + (done ? 'Good work today, crew. See you tomorrow!' : 'The Sun report is ready. Shall we begin?') + '</span></div></div><h2>Today\'s mission</h2><p>' + (TODAY.src === 'archive' ? 'A saved day: the Sun on ' : 'Yesterday\'s Sun: ') + '<b>' + TODAY.day.date + '</b></p><span class="tag" style="align-self:flex-start;margin:0">' + TODAY.note + '</span>' +
     (done ? '<p>' + starStr(B.lastStars || 0) + ' Done for today. A new Sun arrives tomorrow.</p><p class="lead" id="homeTot"></p>' : '') +
     '<div class="row">' + (done ? '' : '<button type="button" class="go" data-act="daily">Play</button>') + '<button type="button" data-act="practice">Practice on a past day</button></div>';
   if (done) getTotals(TODAY.day.iso).then(t => { const el = $('homeTot'); if (el) el.textContent = totalsText(t); });
@@ -934,6 +1038,16 @@ function drawBase() {
 }
 $('mHow').addEventListener('click', () => { pending = null; view('how'); });
 $('howGo').addEventListener('click', () => { B.seenHow = true; saveBase(); const q = pending; pending = null; if (q) startMission(q[0], q[1]); else view('home'); });
+let readTok = 0;
+$('howRead').addEventListener('click', async () => {
+  const my = ++readTok;
+  for (const el of document.querySelectorAll('#v-how .teach, #v-how .how li, #v-how p:not(.teach)')) {
+    if (my !== readTok || $('v-how').hidden) break;
+    el.classList.add('reading'); el.scrollIntoView({ block: 'nearest' });
+    const ok = await speak(el.textContent, 'rae'); el.classList.remove('reading');
+    if (!ok) break;
+  }
+});
 $('mBase').addEventListener('click', () => view('base'));
 $('mData').addEventListener('click', () => view('data'));
 document.querySelectorAll('[data-home]').forEach(b => b.addEventListener('click', () => view('home')));
@@ -967,6 +1081,16 @@ async function boot() {
   await sleep(Math.max(0, 1300 - (Date.now() - t0)));
   view('home');
 }
+// A starry sky behind everything: one still layer and one that twinkles.
+let skyW = 0;
+function drawSky() {
+  if (innerWidth === skyW) return; skyW = innerWidth;
+  for (const [id, count, lo, hi] of [['sky', 240, 0.5, 1.5], ['sky2', 70, 1.1, 2.4]]) {
+    const c = $(id), w = c.width = innerWidth, h = c.height = Math.max(innerHeight, 900), g = c.getContext('2d');
+    for (let k = 0; k < count; k++) { const r = Math.random(); g.globalAlpha = 0.35 + Math.random() * 0.65; g.fillStyle = r < 0.12 ? '#ffd9a0' : r < 0.26 ? '#a9c8ff' : '#ffffff'; g.beginPath(); g.arc(Math.random() * w, Math.random() * h, lo + Math.random() * (hi - lo), 0, 6.3); g.fill(); }
+  }
+}
+drawSky(); addEventListener('resize', drawSky);
 boot();
 </script>
 </body>
