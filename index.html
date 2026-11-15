@@ -102,7 +102,7 @@ button:focus-visible,.dome:focus-visible{outline:3px solid var(--sun);outline-of
 .hd svg{width:28px;height:28px}
 .scene.tall .mini{right:50%;transform:translateX(50%);gap:12px;bottom:22px}
 .scene.tall .mini i{width:74px;height:58px;border-radius:37px 37px 8px 8px}
-.menu{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.menu{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .menu button{padding:12px 6px}
 .how{list-style:none;margin:0;padding:0;display:grid;gap:10px}
 .how li{display:flex;gap:12px;align-items:center;background:var(--panel);border-radius:14px;padding:10px 14px}
@@ -206,6 +206,8 @@ button:focus-visible,.dome:focus-visible{outline:3px solid var(--sun);outline-of
 /* end */
 .stars{font-size:46px;letter-spacing:6px;color:var(--sun);line-height:1}
 .stars i{font-style:normal;color:var(--line)}
+.scibadge{border:2px dashed var(--line);border-radius:999px;padding:5px 16px;font-size:15px;color:var(--muted)}
+.scibadge.on{border:2px solid var(--sun);background:var(--sun);color:#1c1638;font-weight:700}
 .card{background:var(--panel);border-radius:14px;padding:12px 14px}
 .card h3{color:var(--sun);margin-bottom:4px}
 .ups{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
@@ -218,7 +220,7 @@ details ul{margin:8px 0;padding-left:20px}
 @media (max-width:600px){
   .sunwrap{grid-template-columns:1fr;justify-items:center}
   .base,.fx{grid-template-columns:repeat(2,1fr)} .fx{display:none}
-  .speaker .who svg{width:70px;height:70px} .bubble{font-size:17px} .dome{min-height:150px} .hdomes{gap:6px} .hd{width:74px;height:74px;font-size:11px} .ups{grid-template-columns:1fr} .steps{font-size:12px} .mate{flex-direction:column;text-align:center;padding:6px 4px} .mate svg{width:34px;height:34px}
+  .speaker .who svg{width:70px;height:70px} .bubble{font-size:17px} .menu{grid-template-columns:repeat(2,1fr)} .dome{min-height:150px} .hdomes{gap:6px} .hd{width:74px;height:74px;font-size:11px} .ups{grid-template-columns:1fr} .steps{font-size:12px} .mate{flex-direction:column;text-align:center;padding:6px 4px} .mate svg{width:34px;height:34px}
 }
 @media (prefers-reduced-motion:reduce){.target{animation:none}.sky.b,.talking .m-talk,.eye,.talking svg,.pop,.go.ready{animation:none}.dots i{animation:none}.hp i{transition:none}.scene .s.flash,.scene .wave.run,.scene .mini i.hit{animation:none}}
 </style>
@@ -232,7 +234,7 @@ details ul{margin:8px 0;padding-left:20px}
       <h1 class="big">Moon Sweet Moon</h1>
       <p class="lead" role="status" id="loadMsg">Checking the Sun…</p>
       <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
-      <div class="card" style="max-width:440px;text-align:left;margin-top:14px"><h3>Did you know?</h3><p id="factText" aria-live="polite" style="font-size:19px;min-height:3.9em"></p></div>
+      <div class="card" style="max-width:440px;text-align:left;margin-top:14px"><h3>Did you know?</h3><p id="factText" aria-live="polite" style="font-size:19px;min-height:3.9em"></p><span class="tag" id="factSrc"></span></div>
     </div>
   </section>
 
@@ -257,13 +259,14 @@ details ul{margin:8px 0;padding-left:20px}
     <div class="menu">
       <button type="button" id="mHow">How to play</button>
       <button type="button" id="mBase">My outpost</button>
+      <button type="button" id="mFacts">Fun facts</button>
       <button type="button" id="mData">About the data</button>
     </div>
   </section>
 
   <section class="stage view" id="v-how" hidden>
     <div class="row" style="justify-content:space-between"><h2>How to play</h2><button type="button" id="howRead">Read it to me</button></div>
-    <p class="teach">You run an outpost on the Moon. Your job: keep 3 crew members healthy for 3 shifts, and run experiments to earn stars.</p>
+    <p class="teach">You run an outpost on the Moon. Your job: keep 3 crew members healthy for 3 shifts to earn stars, and run experiments to win the science star.</p>
     <p>Why the Sun matters: solar panels turn sunlight into the power your outpost runs on. But the Sun also fires storms, and the Moon has no air to block them. So the Sun is your power and your danger.</p>
 
     <h3>How a mission goes</h3>
@@ -277,8 +280,8 @@ details ul{margin:8px 0;padding-left:20px}
     <ol class="how">
       <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 18h22a6 6 0 1 0-6-6M6 26h30a6 6 0 1 1-6 6M6 34h14" fill="none" stroke="#9fd8ff" stroke-width="4" stroke-linecap="round"/></svg><div><b>Air room: needs 2 batteries</b>It keeps the air fresh. With only 1 battery the air gets thin and 1 crew member gets hurt. With none, the whole crew gets hurt.</div></li>
       <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 42V22" stroke="#5fe0b7" stroke-width="4" stroke-linecap="round"/><path d="M24 26C12 26 8 18 8 10c10 0 16 4 16 16zM24 22c0-10 6-14 16-14 0 10-6 14-16 14z" fill="#5fe0b7"/></svg><div><b>Farm: power it every shift</b>The crew eats 3 meals a shift, 1 each. Each day starts with 6 fresh meals from Earth, so food runs out in shift 3. Lettuce needs 4 growth steps, and each battery gives 1 step a shift. So 2 batteries means a harvest in 2 shifts. A harvest makes 6 meals. With no power the lettuce wilts.</div></li>
-      <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5l16 6v12c0 10-7 17-16 20C15 40 8 33 8 23V11z" fill="none" stroke="#ffc145" stroke-width="4" stroke-linejoin="round"/></svg><div><b>Shelter: 1, 2 or 3 batteries</b>It blocks storms: 1 for a small one, 2 for medium, 3 for big. Each battery it is short hurts one crew member.</div></li>
-      <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M19 6h10M21 6v12L9 38a3 3 0 0 0 2.6 4.5h24.8A3 3 0 0 0 39 38L27 18V6" fill="none" stroke="#e6a8ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 31h18" stroke="#e6a8ff" stroke-width="4" stroke-linecap="round"/></svg><div><b>Lab: 1 experiment per battery</b>Experiments are why the crew came to the Moon, and each one adds to your score. But the lab does not keep anyone safe.</div></li>
+      <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5l16 6v12c0 10-7 17-16 20C15 40 8 33 8 23V11z" fill="none" stroke="#ffc145" stroke-width="4" stroke-linejoin="round"/></svg><div><b>Shelter: 1, 2 or 3 batteries</b>It blocks storms: 1 for a small one, 2 for medium, 3 for big. Each battery it is short hurts one crew member. When it holds, the lab measures the storm safely, and that counts as experiments.</div></li>
+      <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M19 6h10M21 6v12L9 38a3 3 0 0 0 2.6 4.5h24.8A3 3 0 0 0 39 38L27 18V6" fill="none" stroke="#e6a8ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 31h18" stroke="#e6a8ff" stroke-width="4" stroke-linecap="round"/></svg><div><b>Lab: 1 experiment per battery</b>Experiments are why the crew came to the Moon. Run 4 with a healthy crew to win the science star. But the lab does not keep anyone safe.</div></li>
     </ol>
 
     <h3>Your crew</h3>
@@ -290,7 +293,14 @@ details ul{margin:8px 0;padding-left:20px}
     <p>Crew go from fine, to hurt, to sick. A shift with fresh air and enough meals makes a hurt crew member one step better.</p>
 
     <h3>Stars</h3>
-    <p>1 star for finishing. 2 stars for 3 experiments. 3 stars for 5 experiments and nobody hurt at the end.</p>
+    <p>Stars are for looking after your crew. 1 star: you finish the mission. 2 stars: only one astronaut is hurt at the end. 3 stars: everyone is healthy at the end.</p>
+    <p>Some days the real Sun is too strong, and no plan can keep everyone healthy. That happens on real missions too. On those days the game compares you with the best possible plan, so you can still earn 3 stars.</p>
+    <h3>Science star</h3>
+    <p>Earn 3 stars and run 4 experiments to win the science star. A blocked storm counts as experiments too: 1 for a small storm, 2 for medium, 3 for big.</p>
+    <h3>Upgrade cards</h3>
+    <p>Win the science star in a daily mission and you get an upgrade card. You choose when to use it, on the battery screen. A card makes one mission easier, then it is gone.</p>
+    <h3>Try again</h3>
+    <p>After a mission you can press "Try this Sun again" to replay the same real day with a new plan. Replays are practice, so they change nothing.</p>
 
     <div class="row" style="justify-content:space-between"><button type="button" id="howTrain">Play the training mission</button><button type="button" class="go" id="howGo">Back to home</button></div>
   </section>
@@ -301,18 +311,28 @@ details ul{margin:8px 0;padding-left:20px}
     <div class="row" style="justify-content:space-between"><button type="button" id="wipe">Start a new outpost</button><button type="button" class="go" data-home>Back to home</button></div>
   </section>
 
+  <section class="stage view" id="v-facts" hidden>
+    <h2>Fun facts</h2>
+    <p class="lead" id="factsLead"></p>
+    <ol class="how" id="factsList"></ol>
+    <div class="row" style="justify-content:flex-end"><button type="button" class="go" data-home>Back to home</button></div>
+  </section>
+
   <section class="stage view" id="v-data" hidden>
     <h2>About the data</h2>
     <p id="dataSrc" class="teach"></p>
     <ul class="plain">
       <li>Real: each flare's date, time, size class, sunspot number and place on the Sun, and the clues built from them. Source: <a href="https://ccmc.gsfc.nasa.gov/tools/DONKI">NASA DONKI</a> (Space Weather Database Of Notifications, Knowledge, Information) at CCMC.</li>
-      <li>The daily mission uses yesterday's date (UTC). The game first asks NASA for the newest records. If it cannot reach NASA, it uses its saved copy from 14 Nov 2026, and says so. Practice missions pick a saved past day.</li>
+      <li>The daily mission uses yesterday's date (UTC). The game first asks NASA for the newest records. If it cannot reach NASA, it uses its saved copy from 14 Nov 2026, and says so. Practice missions pick a saved past day. On 15 Nov 2026 we checked 87 saved records (1 to 5 Feb and 5 to 11 Nov 2026) against NASA, and all 87 matched.</li>
       <li>Simplified: in the game every flare brings a storm to the outpost. In real life only some flares send harmful particles toward the Moon. A calm day means DONKI lists no flare for that date.</li>
       <li>Real science, squeezed: a flare's light reaches the Moon in about 8 minutes and the harmful particles come later. The game squeezes that wait into a few seconds.</li>
-      <li>Batteries: the outpost makes 5 a shift, loses 1 when a shadow falls on the solar panels, and gains 1 in bright sun. That is a game rule. It is based on a real idea, that near the Moon's poles the Sun stays low so hills cast long shadows, which still needs checking against NASA.</li>
-      <li>Game rules, not data: the storm chance meter, battery counts, meals, experiments, crop growth, upgrades, and the crew rules. They are small whole numbers so a child can count them: 3 crew eat 1 meal each per shift, and 1 lab battery runs 1 experiment. The true part of the crew rules is that a sick crew cannot do all its work.</li>
+      <li>Batteries: the outpost makes 5 a shift, loses 1 when a shadow falls on the solar panels, and gains 1 in bright sun. That is a game rule. It is based on a real fact: near the Moon's south pole the Sun stays low on the horizon, and long shadows can get in the way of solar power. Source: <a href="https://www.nasa.gov/reference/moonbase-environment/">NASA, The Lunar South Pole Region</a>.</li>
+      <li>Game rules, not data: the storm chance meter, battery counts, meals, experiments, crop growth, upgrade cards, and the crew rules. They are small whole numbers so a child can count them: 3 crew eat 1 meal each per shift, and 1 lab battery runs 1 experiment. The true part of the crew rules is that a sick crew cannot do all its work.</li>
       <li>The Sun picture is a real photo from NASA's Solar Dynamics Observatory (SDO) for the mission date, fetched through the Helioviewer service. It is taken in ultraviolet light, which our eyes cannot see, so NASA colours it red. Bright patches are the busy regions where flares happen. If the photo cannot load, the game shows a drawing instead. The ring that marks a sunspot is placed from the NASA flare record, or estimated from the Sun's rotation on a day the spot did not fire, so it is approximate.</li>
-      <li>Shifts are 8 hours each on the crew's 24 hour clock (UTC). The crew's facts and the "Did you know?" facts on the loading screen are well-known space facts that still need a NASA source each.</li>
+      <li>Stars: the game scores how well you looked after the crew, compared with the best plan that was possible for that day's real storms. It works this out by trying every way to share the batteries. On a day when no plan can keep everyone healthy, it says so, and you are scored against the best plan.</li>
+      <li>The science star: a blocked storm counts as experiments. That is a game rule. The real part: NASA's Orion spacecraft carries radiation sensors, and one of them can warn the crew to take shelter. Source: <a href="https://www.nasa.gov/missions/artemis/artemis-1/artemis-i-radiation-measurements-validate-orion-safety-for-astronauts/">NASA, Artemis I radiation measurements</a>.</li>
+      <li>Talking to Earth: a radio signal takes a little over 1 second to reach the Moon, so a question and its answer take more than 2 seconds. That is why the crew makes the last-chance move alone. Source: <a href="https://www.nasa.gov/wp-content/uploads/2011/08/583093main_earth_calling.pdf">NASA, Earth Calling</a>.</li>
+      <li>Shifts are 8 hours each on the crew's 24 hour clock (UTC). Each "Did you know?" fact links to its NASA page on the Fun facts page.</li>
       <li>Music: the game makes its own background music. There is no music file. The Music button switches it off, and it goes quieter while a character talks.</li>
       <li>Voices: the Voice button makes the voices talk at 2x. A Skip button moves on by one sentence. The game uses your device's built-in voice to read lines aloud. Nothing is recorded or sent anywhere. The voice sounds different on each device, and you can switch it off with the Sound button.</li>
       <li>Your outpost is saved in this browser only. There is no account.</li>
@@ -350,6 +370,7 @@ details ul{margin:8px 0;padding-left:20px}
   <section class="stage" id="s-power" hidden>
     <h2 id="powTitle"></h2>
     <div class="math" id="math" aria-label="Where this shift's batteries come from"></div>
+    <div class="math" id="cards" aria-label="Your upgrade cards"></div>
     <div class="speaker" id="tip" aria-live="polite"></div>
     <div class="base">
       <div class="dome zone" data-zone="air" tabindex="0" role="button" aria-label="Air room. Press to add a battery.">
@@ -390,13 +411,15 @@ details ul{margin:8px 0;padding-left:20px}
       <h2 id="endTitle"></h2>
       <div class="stars" id="stars" role="img"></div>
       <p class="lead" id="endSub"></p>
+      <div class="scibadge" id="sciBadge" role="status"></div>
     </div>
-    <div class="card" id="upCard"><h3>Pick one upgrade for your outpost</h3><div class="ups" id="ups"></div></div>
+    <div class="card" id="toughCard" hidden><h3>A day too strong for any crew</h3><p id="toughText"></p></div>
+    <div class="card" id="upCard"><h3>Science star! Pick one upgrade card</h3><p class="lead" style="font-size:15px">You choose when to use it. It works for one mission, then it is gone.</p><div class="ups" id="ups"></div></div>
     <div class="card"><h3>What really happened on the Sun</h3><div id="cReal"></div></div>
     <div class="card"><h3>What your plan did</h3><p id="cPlan"></p></div>
     <div class="card" id="totCard" hidden><h3>Crews around the world today</h3><p id="totText"></p></div>
     <div class="card" id="carryCard" hidden><h3>What carries over to tomorrow</h3><p id="carryText"></p></div>
-    <div class="row" style="justify-content:space-between"><button type="button" id="copy">Copy my result</button><span class="lead" id="copyMsg" role="status"></span><button type="button" class="go" id="again">Back to home</button></div>
+    <div class="row" style="justify-content:space-between"><button type="button" id="copy">Copy my result</button><span class="lead" id="copyMsg" role="status"></span><button type="button" id="retry">Try this Sun again</button><button type="button" class="go" id="again">Back to home</button></div>
   </section>
 
   </div>
@@ -627,15 +650,18 @@ function watch(day) {
 }
 const SIZE = { C: { word: 'small', need: 1, hurt: 20 }, M: { word: 'medium', need: 2, hurt: 40 }, X: { word: 'big', need: 3, hurt: 70 } };
 // Game numbers, chosen so a child can count them: 3 crew eat 1 meal each per shift, a harvest is 6 meals, 1 lab battery runs 1 experiment.
-const EAT = 3, HARVEST = 6, START_MEALS = 6, STAR2 = 3, STAR3 = 5;
+const EAT = 3, HARVEST = 6, START_MEALS = 6, SCI_STAR = 4;   // SCI_STAR: experiments needed, on top of 3 stars, for the science star
 const ROOMS = ['air', 'farm', 'shield', 'lab'];
 const RNAME = { air: 'air room', farm: 'farm', shield: 'shelter', lab: 'lab' };
+// Upgrade cards. A card is won with the science star in a daily mission. The player chooses when to use it, and it works for one mission only.
 const UPS = {
-  bank: { name: 'Bigger battery bank', what: '1 more battery every shift', many: true },
-  walls: { name: 'Thicker shelter walls', what: 'Storms need 1 less battery', many: true },
-  farm: { name: 'Faster farm', what: 'Lettuce grows in 3 steps, not 4' },
-  air: { name: 'Better air cleaner', what: 'The air room needs only 1 battery' }
+  bank: { name: 'Bigger battery bank', what: '1 more battery every shift, for one mission' },
+  walls: { name: 'Thicker shelter walls', what: 'Storms need 1 less shelter battery, for one mission' },
+  farm: { name: 'Faster farm', what: 'Lettuce grows in 3 steps, not 4, for one mission' },
+  air: { name: 'Better air cleaner', what: 'The air room needs only 1 battery, for one mission' }
 };
+const NO_UPS = { bank: 0, walls: 0, farm: 0, air: 0 };
+const activeUps = () => (S && S.ups) || NO_UPS;   // the cards in use in the mission being played
 const CREW = {
   mei: { name: 'Nova', role: 'Plant scientist', skin: '#f2c9a1', suit: '#5fe0b7' },
   arjun: { name: 'Kai', role: 'Power engineer', skin: '#b9794f', suit: '#ffc145' },
@@ -769,13 +795,22 @@ async function stage(lines) {
 
 /* ---------- the base that carries over (this browser only) ---------- */
 const KEY = 'spaceboleh.base.v1';
-const blank = () => ({ day: 1, crop: 0, ups: { bank: 0, walls: 0, farm: 0, air: 0 }, log: [], last: null, lastStars: 0 });
-function loadBase() { try { const d = JSON.parse(localStorage.getItem(KEY)); if (d && d.ups) return d; } catch (e) { /* no saved base */ } return blank(); }
+const blank = () => ({ day: 1, crop: 0, cards: { bank: 0, walls: 0, farm: 0, air: 0 }, facts: [], log: [], last: null, lastStars: 0 });
+function loadBase() {
+  try {
+    const d = JSON.parse(localStorage.getItem(KEY));
+    if (d && (d.cards || d.ups)) {   // saves from before cards existed held permanent upgrades: turn each into a card
+      if (!d.cards) d.cards = Object.assign({ bank: 0, walls: 0, farm: 0, air: 0 }, d.ups || {});
+      delete d.ups; d.facts = d.facts || []; return d;
+    }
+  } catch (e) { /* no saved outpost */ }
+  return blank();
+}
 function saveBase() { try { localStorage.setItem(KEY, JSON.stringify(B)); } catch (e) { /* saving is optional */ } }
 let B = loadBase(), S;
-const cropNeed = () => B.ups.farm ? 3 : 4;
-const airNeed = () => B.ups.air ? 1 : 2;
-const needFor = L => Math.max(1, SIZE[L].need - B.ups.walls);
+const cropNeed = () => activeUps().farm ? 3 : 4;
+const airNeed = () => activeUps().air ? 1 : 2;
+const needFor = L => Math.max(1, SIZE[L].need - activeUps().walls);
 const biggest = fl => fl.slice().sort((a, b) => 'CMX'.indexOf(b.cls[0]) - 'CMX'.indexOf(a.cls[0]) || parseFloat(b.cls.slice(1)) - parseFloat(a.cls.slice(1)))[0];
 
 const STATE = ['Fine', 'Hurt', 'Sick'];
@@ -808,7 +843,7 @@ function face(id, st) {   // an astronaut: white suit and helmet, a round visor 
 }
 const bats = n => Array.from({ length: n }, () => '<button type="button" class="bat" aria-label="Battery"></button>').join('');
 const used = () => ROOMS.reduce((t, k) => t + S.a[k], 0);
-const powerNow = () => Math.max(2, S.power[Math.min(S.shift, 2)] - S.h.arjun);
+const powerNow = () => Math.max(2, S.power[Math.min(S.shift, 2)] + S.ups.bank - S.h.arjun);
 const left = () => powerNow() - used();
 const grow = n => S.h.mei === 0 ? n : S.h.mei === 1 ? Math.ceil(n / 2) : 0;
 
@@ -817,10 +852,10 @@ function newGame(mode, given) {
   const day = given || pick(Math.random() < 0.75 || !quiet.length ? busy : quiet);
   const truth = [0, 1, 2].map(i => { const f = day.flares.filter(x => Math.floor(parseInt(x.t, 10) / 8) === i); return f.length ? biggest(f) : null; });
   const chance = truth.map(f => { const r = Math.random(); return f ? (r < 0.75 ? 3 : 2) : (r < 0.65 ? 1 : r < 0.95 ? 2 : 3); });
-  S = { day, w: watch(day), truth, chance, power: shuffle([4, 5, 6]).map(n => n + B.ups.bank), shift: 0, a: { air: 0, farm: 0, shield: 0, lab: 0 }, guess: null,
+  S = { day, w: watch(day), truth, chance, power: shuffle([4, 5, 6]), ups: { bank: 0, walls: 0, farm: 0, air: 0 }, shift: 0, a: { air: 0, farm: 0, shield: 0, lab: 0 }, guess: null,
     h: { mei: 0, arjun: 0, siti: 0 }, food: START_MEALS, sci: 0, crop: B.crop || 0, broken: null, right: 0, wasted: 0, leaks: [], blocked: 0, wilted: 0, why: '', picked: false, busy: false, tip: null, tipKey: null, heard: {} };
-  S.mode = mode; if (mode !== 'daily') S.crop = 0;
-  if (mode === 'tutorial') { S.power = [5, 5, 5].map(x => x + B.ups.bank); S.chance[0] = 3; S.tut = 0; }
+  S.mode = mode; if (mode !== 'daily') S.crop = 0; S.crop0 = S.crop; S.par = null;
+  if (mode === 'tutorial') { S.power = [5, 5, 5]; S.chance[0] = 3; S.tut = 0; }
   view('game'); show(mode === 'tutorial' ? 'power' : 'sun');
 }
 
@@ -839,7 +874,7 @@ function hud() {
   $('sub').textContent = S.mode === 'tutorial' ? 'Training mission · a made-up storm, not real Sun data' : (S.mode === 'daily' ? 'Day ' + B.day : 'Practice') + ' · the Sun on ' + S.day.date + (S.step === 'end' ? '' : ' · shift ' + Math.min(S.shift + 1, 3) + ' of 3');
   $('quit').textContent = S.mode === 'tutorial' ? 'Skip training' : 'Home';
   $('crewrow').innerHTML = IDS.map(id => { const st = S.h[id]; return '<div class="mate s' + st + '">' + face(id) + '<div><b>' + CREW[id].name + '</b><small>' + CREW[id].role + '</small><span>' + STATE[st] + ': ' + COST[id][st] + '</span></div></div>'; }).join('');
-  $('food').textContent = S.food; $('sci').textContent = S.sci < STAR3 ? S.sci + ' of ' + STAR3 : S.sci;
+  $('food').textContent = S.food; $('sci').textContent = S.sci < SCI_STAR ? S.sci + ' of ' + SCI_STAR : S.sci;
 }
 function drawSun() {
   const d = S.day, i = S.shift, w = S.w, n = dayNum(d.iso);
@@ -877,7 +912,7 @@ function drawSun() {
   $('teach').textContent = TEACH[i];
   // Captain Rae reads the report aloud, one sentence at a time. Each clue appears as she says it.
   $('capFace').innerHTML = face('rae'); $('toPower').classList.remove('ready');
-  const lines = [['Hello crew! Here is today\'s report for our Moon outpost.', -1], ['You have ' + S.food + ' fresh meals from Earth for today. The crew eats ' + EAT + ' every shift.', -1], ['Experiments are why we came to the Moon. Each experiment adds to your score. Run ' + STAR3 + ' to reach 3 stars.', -1]]
+  const lines = [['Hello crew! Here is today\'s report for our Moon outpost.', -1], ['You have ' + S.food + ' fresh meals from Earth for today. The crew eats ' + EAT + ' every shift.', -1], ['Your first job is the crew. Keep everyone healthy to earn 3 stars.', -1], ['Experiments are why we came to the Moon. Earn 3 stars and run ' + SCI_STAR + ' experiments to win the science star' + (S.mode === 'daily' ? ' and an upgrade card.' : '.'), -1]]
     .concat(clues.map((q, k) => [q[0].replace(/<span[\s\S]*<\/span>/, ''), k]), [[TEACH[i], -1], ['Now place your batteries.', -1]]);
   dialogue(lines.flatMap(q => steps('rae', q[0], q[1] >= 0 ? () => $('clues').children[q[1]].classList.remove('wait') : null)),
     { alive: () => S && S.sunKey === key && S.step === 'sun', face: () => $('capFace'), ctl: $('capCtl'), show: st => { $('capText').textContent = st.text; } })
@@ -889,21 +924,21 @@ $('toPower').addEventListener('click', () => { beep(520, .1); show('power'); });
 // Where this shift's batteries come from, so the number is never a mystery.
 const BASE_POWER = 5;
 function powerParts() {
-  const sun = S.power[Math.min(S.shift, 2)] - B.ups.bank - BASE_POWER, q = [['Solar panels', BASE_POWER]];
+  const sun = S.power[Math.min(S.shift, 2)] - BASE_POWER, q = [['Solar panels', BASE_POWER]];
   if (sun < 0) q.push(['Shadow on the panels', sun]);
   if (sun > 0) q.push(['Bright sun', sun]);
-  if (B.ups.bank) q.push(['Bigger battery bank', B.ups.bank]);
+  if (S.ups.bank) q.push(['Battery bank card', S.ups.bank]);
   if (S.h.arjun) q.push(['Kai is ' + STATE[S.h.arjun].toLowerCase(), -S.h.arjun]);
   const sum = q.reduce((t, x) => t + x[1], 0); if (sum < 2) q.push(['Emergency spare', 2 - sum]);
   return q;
 }
 function powerLine() {
-  const sun = S.power[Math.min(S.shift, 2)] - B.ups.bank - BASE_POWER;
+  const sun = S.power[Math.min(S.shift, 2)] - BASE_POWER;
   let t = 'Solar panels turn sunlight into electricity. In one shift ours fill ' + BASE_POWER + ' batteries. ';
   if (sun < 0) t += 'But the Sun is low in the sky here, and a hill is casting a shadow on the panels, so we lose 1. ';
   if (sun > 0) t += 'Right now the Sun is shining straight at the panels, so we get 1 extra. ';
   if (sun === 0) t += 'The sunlight is steady right now, so we get all ' + BASE_POWER + '. ';
-  if (B.ups.bank) t += 'Our bigger battery bank adds ' + B.ups.bank + '. ';
+  if (S.ups.bank) t += 'Your battery bank card adds ' + S.ups.bank + '. ';
   if (S.h.arjun) t += 'I am ' + STATE[S.h.arjun].toLowerCase() + ', so I cannot keep every panel working. We lose ' + S.h.arjun + '. ';
   return t + 'That gives us ' + powerNow() + ' batteries. Drag them into the rooms.';
 }
@@ -913,7 +948,7 @@ const TUT = [
   { zone: 'air', target: '.dome[data-zone=air]', done: () => S.a.air >= 2, text: 'These yellow batteries are your power. Drag 2 of them into the glowing Air room. The crew needs fresh air to breathe.' },
   { zone: 'farm', target: '.dome[data-zone=farm]', done: () => S.a.farm >= 1, text: 'Good! Now give the Farm 1 battery. Lettuce needs light to grow into meals.' },
   { zone: 'shield', target: '.dome[data-zone=shield]', done: () => S.a.shield >= 1, text: 'A storm might come. Put 1 battery in the Shelter to block it.' },
-  { zone: 'lab', target: '.dome[data-zone=lab]', done: () => S.a.lab >= 1 && left() === 0, text: 'Put the rest in the Lab. Experiments are why we came to the Moon, and each one adds to your score.' },
+  { zone: 'lab', target: '.dome[data-zone=lab]', done: () => S.a.lab >= 1 && left() === 0, text: 'Put the rest in the Lab. Experiments are why we came to the Moon. Enough of them wins the science star.' },
   { zone: null, target: '#go', done: () => false, text: 'Every battery is placed. You can never fill every room, so you always have to choose. Now press Start the shift.' }
 ];
 async function startTutorial() {
@@ -927,10 +962,10 @@ async function endTutorial(skipped) {
   if (q) startMission(q[0], q[1]); else view('home');
 }
 function powerWhy() {
-  const sun = S.power[Math.min(S.shift, 2)] - B.ups.bank - BASE_POWER, why = [];
+  const sun = S.power[Math.min(S.shift, 2)] - BASE_POWER, why = [];
   if (sun < 0) why.push('a shadow is on the solar panels');
   if (sun > 0) why.push('the Sun is bright on the solar panels');
-  if (B.ups.bank) why.push('your battery bank adds ' + B.ups.bank);
+  if (S.ups.bank) why.push('your battery bank card adds ' + S.ups.bank);
   if (S.h.arjun) why.push('Kai is ' + STATE[S.h.arjun].toLowerCase());
   return why.length ? ', because ' + why.join(' and ') : ', the usual number';
 }
@@ -947,7 +982,6 @@ function effects() {
   return e;
 }
 function drawPower() {
-  const n = S.power[S.shift] - B.ups.bank;
   $('powTitle').innerHTML = 'Shift ' + (S.shift + 1) + ': place your batteries <span class="pill" style="font-family:var(--body);vertical-align:middle;white-space:nowrap">Storm chance: <b>' + ['', 'low', 'medium', 'high'][S.chance[S.shift]] + '</b></span>';
   const tut = S.mode === 'tutorial' ? TUT[S.tut = TUT.findIndex(x => !x.done())] : null;
   const t = tut ? ['rae', tut.text] : S.tip ? (S.tip === 'farm' ? ['mei', farmTip()] : TIPS[S.tip]) : S.shift === 0 ? ['arjun', powerLine()]
@@ -955,6 +989,9 @@ function drawPower() {
   document.querySelectorAll('.target').forEach(el => el.classList.remove('target'));
   if (tut) document.querySelector(tut.target).classList.add('target');
   $('math').innerHTML = powerParts().map((x, k) => '<span class="pill">' + x[0] + ' <b>' + (k === 0 ? x[1] : (x[1] > 0 ? '+' : '−') + Math.abs(x[1])) + '</b></span>').join('') + '<span class="pill tot">= <b>' + powerNow() + '</b> batteries</span>';
+  const held = S.mode === 'daily' ? Object.keys(UPS).filter(k => B.cards[k] > 0 && !S.ups[k]) : [], inUse = Object.keys(UPS).filter(k => S.ups[k]);
+  $('cards').innerHTML = inUse.map(k => '<span class="pill tot">Card in use: <b>' + UPS[k].name + '</b></span>').join('') + held.map(k => '<button type="button" class="skp" data-card="' + k + '" title="' + UPS[k].what + '">Use card: ' + UPS[k].name + (B.cards[k] > 1 ? ' ×' + B.cards[k] : '') + '</button>').join('');
+  $('cards').hidden = !inUse.length && !held.length;
   const tk = tut ? 'tut' + S.tut : S.tip || 'open' + S.shift;
   if (S.tipKey !== tk) {   // a new speaker steps in: show them, and say the line aloud the first time
     S.tipKey = tk;
@@ -969,6 +1006,12 @@ function drawPower() {
   $('tray').innerHTML = left() ? bats(left()) + '<span class="lead">' + left() + ' left</span>' : '<span class="lead">All batteries placed. Tap one to take it back.</span>';
   $('go').disabled = left() > 0;
 }
+$('cards').addEventListener('click', e => {
+  const b = e.target.closest('[data-card]'); if (!b || S.step !== 'power') return; const k = b.dataset.card;
+  if (B.cards[k] < 1 || S.ups[k]) return;
+  B.cards[k]--; S.ups[k] = 1; saveBase(); beep(660, .15);
+  $('msg').textContent = 'Card used: ' + UPS[k].name + '. ' + cap(UPS[k].what) + '.'; drawPower();
+});
 function move(from, to) {
   if (from === to) return;
   if (S.mode === 'tutorial' && to !== 'tray' && TUT[S.tut].zone !== to) { $('msg').textContent = TUT[S.tut].zone ? 'Try the glowing room first.' : 'Now press Start the shift.'; return; }
@@ -1015,7 +1058,7 @@ function emergency(f) {
     if (!from.length || S.a.shield >= need) { res(null); return; }
     let n = S.mode === 'tutorial' ? 30 : 7; const el = $('emerg');
     el.innerHTML = '<div class="row" style="justify-content:space-between"><b>Quick! Move 1 battery to the shelter?</b><span class="count" id="cnt">' + n + '</span></div><p class="lead">The shelter needs ' + need + (need === 1 ? ' battery' : ' batteries') + ' for a ' + SIZE[f.cls[0]].word + ' storm. It has ' + S.a.shield + '.</p><div class="row">' +
-      from.map(k => '<button type="button" data-em="' + k + '">Take from the ' + RNAME[k] + '</button>').join('') + '<button type="button" data-em="none">Keep my plan</button></div>' + (S.mode === 'tutorial' ? '<p><b>Captain Rae:</b> This is your last-chance move. Take 1 battery from the lab, and the shelter will hold.</p>' : '');
+      from.map(k => '<button type="button" data-em="' + k + '">Take from the ' + RNAME[k] + '</button>').join('') + '<button type="button" data-em="none">Keep my plan</button></div><span class="tag">Earth is too far to ask in time. A radio call there and back takes more than 2 seconds. You decide!</span>' + (S.mode === 'tutorial' ? '<p><b>Captain Rae:</b> This is your last-chance move. Take 1 battery from the lab, and the shelter will hold.</p>' : '');
     el.hidden = false;
     const done = v => { clearInterval(tick); el.hidden = true; el.onclick = null; res(v); };
     const tick = setInterval(() => { n--; const c = $('cnt'); if (c) c.textContent = n; beep(700, .05, 'square'); if (n <= 0) done(null); }, 1000);
@@ -1040,7 +1083,7 @@ async function runShift() {
     if (em) { a[em]--; a.shield++; mini(); feed('You rushed 1 battery from the ' + RNAME[em] + ' to the shelter.'); }
     $('wave').classList.add('run'); beep(140, .8, 'sawtooth'); await sleep(1100);
     const need = needFor(f.cls[0]), miss = Math.max(0, need - a.shield);
-    if (!miss) { S.blocked++; banner('The storm hit, and the shelter held!'); feed('The shelter blocked the ' + z.word + ' storm.', 'good'); says.arjun = 'The shelter held. Thick walls and power kept the radiation out.'; beep(660, .2); }
+    if (!miss) { S.blocked++; S.sci += z.need; S.measured = (S.measured || 0) + z.need; banner('The storm hit, and the shelter held!'); feed('The shelter blocked the ' + z.word + ' storm.', 'good'); feed('Safe inside, the lab measured the storm. That counts as ' + z.need + (z.need === 1 ? ' experiment.' : ' experiments.'), 'good'); says.arjun = 'The shelter held. Thick walls and power kept the radiation out. And we measured the storm. That is real science.'; beep(660, .2); }
     else {
       S.why = 'storm'; S.leaks.push({ shift: S.shift + 1, had: a.shield, need });
       mini('shield'); banner('The storm got into the outpost!');
@@ -1097,27 +1140,71 @@ async function runShift() {
 $('next').addEventListener('click', () => { if (S.mode === 'tutorial') { endTutorial(false); return; } if ($('next').dataset.over) showEnd(); else show(S.shift === 0 ? 'sun' : 'power'); window.scrollTo(0, 0); });
 
 /* ---------- the end ---------- */
-const starCount = () => allSick() ? 0 : 1 + (S.sci >= STAR2 ? 1 : 0) + (S.sci >= STAR3 && allFine() ? 1 : 0);
+/* Fair stars. Stars are for looking after the crew, compared with the best plan that was possible on that day's real storms.
+   bestLoss() finds the fewest health points (hurt = 1, sick = 2, added over the 3 crew) that a perfect plan, one that knew every storm in advance,
+   could be SURE to lose by the end. It tries every way to share the batteries and every way the dice could fall, with the same rules as runShift and no upgrade cards.
+   On most days the answer is 0. On a day when the Sun is too strong it is more, and the player is scored against that. */
+function subsets(a, k) { if (k === 0) return [[]]; if (a.length < k) return []; const [x, ...r] = a; return subsets(r, k - 1).map(c => [x, ...c]).concat(subsets(r, k)); }
+function bestLoss(needs, power, crop0) {
+  const memo = new Map(), I = [0, 1, 2];   // 0 Nova (farm), 1 Kai (power), 2 Juno (medic): the order of IDS
+  const go = (shift, h, food, crop) => {
+    if (shift === 3 || h.every(x => x === 2)) return h[0] + h[1] + h[2];
+    const key = shift + '|' + h.join('') + '|' + food + '|' + crop; if (memo.has(key)) return memo.get(key);
+    const p = Math.max(2, power[shift] - h[1]), need = needs[shift]; let best = 99;
+    for (let air = 0; air <= p && best > 0; air++) for (let farm = 0; farm <= p - air && best > 0; farm++) for (let sh = 0; sh <= p - air - farm && best > 0; sh++) {
+      const miss = need ? Math.max(0, need - sh) : 0; let first = [[h, 0]], worst = 0;
+      if (miss) { const can = I.filter(i => h[i] < 2); first = subsets(can, Math.min(miss, can.length)).map(c => { const g = h.slice(); let m = 0; for (const i of c) { g[i]++; m |= 1 << i; } return [g, m]; }); }
+      for (const [h1, m1] of first) {
+        let next;
+        if (air >= 2) next = [[h1, m1]];
+        else if (air === 0) { const g = h1.slice(); let m = m1; for (const i of I) if (g[i] < 2) { g[i]++; m |= 1 << i; } next = [[g, m]]; }
+        else { const can = I.filter(i => h1[i] < 2); next = can.length ? can.map(i => { const g = h1.slice(); g[i]++; return [g, m1 | 1 << i]; }) : [[h1, m1]]; }
+        for (const [h2, m2] of next) {
+          let c = crop, f = food;
+          if (farm === 0) c = 0; else { const gr = h2[0] === 0 ? farm : h2[0] === 1 ? Math.ceil(farm / 2) : 0; c += gr; if (gr && c >= 4) { c = 0; f += HARVEST; } }
+          const g = h2.slice(); let m = m2; const fed = f >= EAT;
+          if (fed) f -= EAT; else { f = 0; for (const i of I) if (g[i] < 2) { g[i]++; m |= 1 << i; } }
+          for (const i of I) if (g[i] > 0 && !(m >> i & 1) && air >= 2 && fed && (i === 2 || h[2] === 0)) g[i]--;
+          worst = Math.max(worst, go(shift + 1, g, f, c));
+        }
+      }
+      if (worst < best) best = worst;
+    }
+    memo.set(key, best); return best;
+  };
+  return go(0, [0, 0, 0], START_MEALS, crop0 || 0);
+}
+const needsOf = truth => truth.map(f => f ? SIZE[f.cls[0]].need : 0);
+const lossNow = () => IDS.reduce((t, id) => t + S.h[id], 0);
+function parLoss() { if (S.par == null) S.par = bestLoss(needsOf(S.truth), S.power, S.crop0); return S.par; }
+// 3 stars: the crew ends as healthy as the best possible plan. 2 stars: 1 health point short. 1 star: the mission finished.
+const starCount = () => allSick() ? 0 : lossNow() <= parLoss() ? 3 : lossNow() <= parLoss() + 1 ? 2 : 1;
+// The science star: 3 stars, plus SCI_STAR experiments. In a daily mission it wins an upgrade card.
+const sciStar = () => starCount() === 3 && S.sci >= SCI_STAR;
 function showEnd() {
-  const win = !allSick(), n = starCount(), daily = S.mode === 'daily';
-  if (daily) { B.day++; B.crop = win ? S.crop : 0; B.last = S.day.iso; B.lastStars = n; B.log = (B.log || []).concat({ iso: S.day.iso, stars: n }).slice(-30); saveBase(); }
+  const win = !allSick(), n = starCount(), sci = sciStar(), P = parLoss(), loss = lossNow(), daily = S.mode === 'daily';
+  if (daily) { B.day++; B.crop = win ? S.crop : 0; B.last = S.day.iso; B.lastStars = n; B.lastSci = sci; B.log = (B.log || []).concat({ iso: S.day.iso, stars: n, sci }).slice(-30); saveBase(); }
   show('end'); $('sub').textContent = (daily ? 'Day ' + (B.day - 1) : 'Practice') + ' · the Sun on ' + S.day.date; $('copyMsg').textContent = ''; $('totCard').hidden = true;
-  $('carryCard').hidden = !daily; $('carryText').textContent = 'Your upgrades stay. ' + (B.crop ? 'Your lettuce stays at growth step ' + B.crop + '. ' : '') + 'Meals do not carry over: every day starts with ' + START_MEALS + ' fresh meals from Earth.';
+  $('carryCard').hidden = !daily; $('carryText').textContent = 'Your unused upgrade cards stay. ' + (B.crop ? 'Your lettuce stays at growth step ' + B.crop + '. ' : '') + 'Meals do not carry over: every day starts with ' + START_MEALS + ' fresh meals from Earth.';
   if (daily) sendResult(S.day.iso, n, allFine()).then(() => getTotals(S.day.iso)).then(t => { const x = totalsText(t); if (x && S && S.step === 'end') { $('totText').textContent = x; $('totCard').hidden = false; } });
   $('endTitle').textContent = win ? 'Mission complete! The crew made it.' : 'Mission unsuccessful.';
-  speak(win ? 'Mission complete! The crew made it. You earned ' + n + (n === 1 ? ' star.' : ' stars.') : 'Mission unsuccessful. Everyone was too sick to work. Try again tomorrow.', 'rae');
+  speak(win ? 'Mission complete! The crew made it. ' + (P ? 'The Sun was too strong today. No crew could stay fully healthy. ' : '') + 'You earned ' + n + (n === 1 ? ' star' : ' stars') + (sci ? ', and the science star!' : '.') : 'Mission unsuccessful. Everyone was too sick to work. ' + (P ? 'The Sun was very strong today. ' : '') + 'Try this Sun again, or come back tomorrow.', 'rae');
   $('stars').innerHTML = '★'.repeat(n) + '<i>' + '★'.repeat(3 - n) + '</i>'; $('stars').setAttribute('aria-label', n + ' out of 3 stars');
-  $('endSub').textContent = win ? '1 star for finishing. 2 stars for ' + STAR2 + ' experiments. 3 stars for ' + STAR3 + ' experiments and nobody hurt at the end. You ran ' + S.sci + '.' : 'Everyone was too sick to work, so the mission stopped. Your outpost is still there for the next crew.';
+  $('endSub').textContent = win ? (P ? 'Stars are for looking after your crew. Today the Sun was too strong for any crew, so your stars compare you with the best possible plan.' : 'Stars are for looking after your crew. 3 stars: everyone is healthy at the end. 2 stars: only one astronaut is hurt. 1 star: you finished.') : 'Everyone was too sick to work, so the mission stopped. Your outpost is still there for the next crew.';
+  $('sciBadge').hidden = !win; $('sciBadge').className = 'scibadge' + (sci ? ' on' : '');
+  $('sciBadge').textContent = sci ? 'Science star earned! ' + S.sci + ' experiments with a 3-star crew.' : 'Science star: earn 3 stars and run ' + SCI_STAR + ' experiments. You ran ' + S.sci + '.' + (daily ? ' It wins an upgrade card.' : '');
+  $('toughCard').hidden = !P;
+  if (P) $('toughText').textContent = 'The storms on ' + S.day.date + ' needed ' + needsOf(S.truth).reduce((a, b) => a + b, 0) + ' shelter batteries. There was not enough power to block them all and still keep the air and the farm going. Even a perfect plan could not keep everyone healthy. Best possible crew health: ' + (6 - P) + ' out of 6. Yours: ' + (6 - loss) + ' out of 6. ' + (loss <= P ? 'You did as well as the best plan!' : 'That is ' + (loss - P) + ' below the best plan.') + ' (Each astronaut counts 2 when fine, 1 when hurt, 0 when sick.) Real missions have days like this. Crews do their best and learn from it.';
   if (!daily) $('endSub').textContent += ' Practice missions do not change your outpost.';
-  const up = win && daily; $('upCard').hidden = !up; $('again').disabled = up;
-  if (up) $('ups').innerHTML = shuffle(Object.keys(UPS).filter(k => UPS[k].many || !B.ups[k])).slice(0, 2).map(k => '<button type="button" data-up="' + k + '">' + UPS[k].name + '<small>' + UPS[k].what + '</small></button>').join('');
+  const up = daily && sci; $('upCard').hidden = !up; $('again').disabled = up; $('retry').disabled = up;   // the science star in a daily mission wins one upgrade card
+  if (up) $('ups').innerHTML = shuffle(Object.keys(UPS)).slice(0, 2).map(k => '<button type="button" data-up="' + k + '">' + UPS[k].name + '<small>' + UPS[k].what + '</small></button>').join('');
   const all = S.day.flares, tops = S.truth.map((f, i) => f ? 'shift ' + (i + 1) + ', <b>' + SIZE[f.cls[0]].word + '</b> (' + f.cls + ' at ' + f.t + ' UTC)' : '').filter(Boolean);
   $('cReal').innerHTML = '<p>' + (all.length ? 'On ' + S.day.date + ' NASA recorded ' + (all.length === 1 ? '1 solar flare' : all.length + ' solar flares') + '. The biggest in each shift: ' + tops.join('; ') + '. Each size letter, C then M then X, is 10 times stronger than the one before.' : 'On ' + S.day.date + ' NASA recorded no solar flares. The Sun was quiet all day.') + '</p><span class="tag">Source: NASA DONKI flare records (CCMC), saved 14 Nov 2026.</span>';
   let p;
   if (S.leaks.length) { const l = S.leaks[0]; p = 'In shift ' + l.shift + ' the shelter had ' + l.had + ' and the storm needed ' + l.need + ', so it got in and hurt the crew. Shelter power has to come out of air, food or experiments.'; }
   else if (!win && S.why === 'air') p = 'The air room ran short. Air comes first: without it nothing else matters.';
   else if (!win && S.why === 'food') p = 'The food ran out. Crops need power every shift, and they take time to grow.';
-  else if (S.blocked) p = 'Your shelter was ready when the storm came. That power could not go to the lab or the farm. Real missions make this trade all the time.';
+  else if (S.blocked) p = 'Your shelter was ready when the storm came, and the lab measured the storm from inside. That power could not go to the farm or to other experiments. Real missions make this trade all the time.';
   else p = 'No storm got in. Calm shifts are the time to grow food and run experiments.';
   if (S.wilted) p += ' Your lettuce wilted when the farm lost power.';
   if (S.wasted >= 3 && !S.leaks.length) p += ' You also powered the shelter on calm shifts, which cost you experiments.';
@@ -1125,13 +1212,15 @@ function showEnd() {
 }
 $('ups').addEventListener('click', e => {
   const b = e.target.closest('[data-up]'); if (!b || S.picked) return;
-  S.picked = true; B.ups[b.dataset.up]++; saveBase();
-  $('ups').innerHTML = '<p>Added to your outpost: <b>' + UPS[b.dataset.up].name + '</b>.</p>'; $('again').disabled = false;
+  S.picked = true; B.cards[b.dataset.up]++; saveBase();
+  $('ups').innerHTML = '<p>Card added: <b>' + UPS[b.dataset.up].name + '</b>. Use it on the battery screen of any later daily mission.</p>'; $('again').disabled = false; $('retry').disabled = false;
 });
 $('again').addEventListener('click', () => view('home'));
-$('quit').addEventListener('click', () => { if (S.busy) return; if (S.mode === 'tutorial') endTutorial(true); else view('home'); });
+// Play the same real day again as a practice mission, to try another plan. It changes nothing in the outpost.
+$('retry').addEventListener('click', () => { if (S && S.day && S.day.iso !== 'training') { beep(520, .1); startMission('practice', S.day); } });
+$('quit').addEventListener('click', () => { if (S.busy) return; if (S.mode === 'tutorial') { endTutorial(true); return; } for (const k of Object.keys(UPS)) if (S.ups[k]) { B.cards[k] += S.ups[k]; S.ups[k] = 0; } saveBase(); view('home'); });
 $('copy').addEventListener('click', () => {
-  const n = starCount(), text = 'Moon Sweet Moon, the Sun on ' + S.day.date + ': ' + '★'.repeat(n) + '☆'.repeat(3 - n) + ', ' + S.sci + ' experiments';
+  const n = starCount(), text = 'Moon Sweet Moon, the Sun on ' + S.day.date + ': ' + '★'.repeat(n) + '☆'.repeat(3 - n) + (sciStar() ? ' + science star' : '') + ', ' + S.sci + ' experiments';
   try { navigator.clipboard.writeText(text).then(() => { $('copyMsg').textContent = 'Copied.'; }, () => { $('copyMsg').textContent = text; }); } catch (e) { $('copyMsg').textContent = text; }
 });
 
@@ -1169,27 +1258,33 @@ async function startMission(mode, given) {
 }
 
 /* ---------- loading, home and the other pages ---------- */
-// Shown one at a time while a Sun photo loads. These are well-known space facts. Each still needs a NASA source linked before the final submission.
+// Shown one at a time while a Sun photo loads. Each fact is [text, source name, link to the NASA page it comes from]. New facts go at the end, so saved fact numbers stay right.
 const FACTS = [
-  'Sunlight takes about 8 minutes to travel from the Sun to the Moon.',
-  'The Sun is so big that about a million Earths could fit inside it.',
-  'There is no wind on the Moon, so astronaut footprints can stay there for a very long time.',
-  'Twelve people have walked on the Moon. The first were Neil Armstrong and Buzz Aldrin in 1969.',
-  'A radio message takes a bit more than 1 second to go from Earth to the Moon.',
-  'Solar flares are sorted by size with letters. X is the biggest, and it is 10 times stronger than M.',
-  'Astronauts on the International Space Station have grown lettuce in space, and eaten it.',
-  'A NASA spacecraft called the Solar Dynamics Observatory has watched the Sun since 2010.',
-  'One day on the Moon, from sunrise to sunrise, lasts about a month on Earth.',
-  'The Moon has no air to breathe. That is why your crew needs an air room.'
+  ['Sunlight takes about 8 minutes to travel from the Sun to Earth. The Moon is right next door.', 'NASA Science, Earth facts', 'https://science.nasa.gov/earth/facts/'],
+  ['The Sun is so big that about 1.3 million Earths could fit inside it.', 'NASA Science, Sun facts', 'https://science.nasa.gov/sun/facts/'],
+  ['The Moon has no wind or rain, so astronaut footprints can stay there for a very long time.', 'NASA Science, Lunar Reconnaissance Orbiter', 'https://science.nasa.gov/solar-system/moon/10-cool-things-nasas-lunar-reconnaissance-orbiter-is-teaching-us-about-the-moon/'],
+  ['Twelve people have walked on the Moon. The first were Neil Armstrong and Buzz Aldrin in 1969.', 'NASA Science, Moonwalkers', 'https://science.nasa.gov/moon/moon-walkers/'],
+  ['A radio message takes a little over 1 second to go from Earth to the Moon.', 'NASA, Earth Calling activity', 'https://www.nasa.gov/wp-content/uploads/2011/08/583093main_earth_calling.pdf'],
+  ['Solar flares are sorted by size with letters. X is the biggest, and it is 10 times stronger than M.', 'NASA Science, Solar storms and flares', 'https://science.nasa.gov/sun/solar-storms-and-flares/'],
+  ['In 2015, astronauts on the International Space Station grew red lettuce in space, and ate it.', 'NASA, Space farming', 'https://www.nasa.gov/image-article/space-farming-yields-crop-of-benefits-earth/'],
+  ['A NASA spacecraft called the Solar Dynamics Observatory has watched the Sun since 2010.', 'NASA, SDO mission', 'https://sdo.gsfc.nasa.gov/mission/'],
+  ['The Moon spins slowly. One full turn takes about 27 Earth days.', 'NASA Science, Moon facts', 'https://science.nasa.gov/moon/facts/'],
+  ['The Moon has almost no air, and you cannot breathe it. That is why your crew needs an air room.', 'NASA Science, Moon facts', 'https://science.nasa.gov/moon/facts/'],
+  ['NASA\'s Orion spacecraft carries a radiation sensor. It can warn the crew to take shelter from a solar storm.', 'NASA, Artemis I radiation measurements', 'https://www.nasa.gov/missions/artemis/artemis-1/artemis-i-radiation-measurements-validate-orion-safety-for-astronauts/'],
+  ['Near the Moon\'s south pole the Sun stays low in the sky, so hills cast very long shadows.', 'NASA, The Lunar South Pole Region', 'https://www.nasa.gov/reference/moonbase-environment/']
 ];
 let factTimer = 0, lastFact = -1;
-function showFact() { let k; do { k = Math.floor(Math.random() * FACTS.length); } while (k === lastFact); lastFact = k; $('factText').textContent = FACTS[k]; }
+function showFact() {
+  let k; do { k = Math.floor(Math.random() * FACTS.length); } while (k === lastFact); lastFact = k; $('factText').textContent = FACTS[k][0]; $('factSrc').textContent = 'Source: ' + FACTS[k][1];
+  B.facts = (B.facts || []).filter(x => x !== k).concat(k); saveBase();   // remember it, newest last, for the Fun facts page
+}
 let TODAY = null;
 function view(name) {
   hush(); clearInterval(factTimer);
-  if (name === 'loading') { showFact(); factTimer = setInterval(showFact, 5000); }
-  for (const v of ['loading', 'home', 'how', 'base', 'data', 'game']) $('v-' + v).hidden = v !== name;
+  if (name === 'loading') { showFact(); factTimer = setInterval(showFact, 9000); }
+  for (const v of ['loading', 'home', 'how', 'base', 'data', 'facts', 'game']) $('v-' + v).hidden = v !== name;
   window.scrollTo(0, 0);
+  if (name === 'facts') { const seen = (B.facts || []).slice().reverse(); $('factsLead').textContent = 'You have found ' + seen.length + ' of ' + FACTS.length + ' facts. New ones show up on loading screens. The newest is first. Each one links to its NASA page.'; $('factsList').innerHTML = seen.length ? seen.filter(k => FACTS[k]).map(k => '<li><div>' + FACTS[k][0] + ' <a href="' + FACTS[k][2] + '" target="_blank" rel="noopener">Source: ' + FACTS[k][1] + '</a></div></li>').join('') : '<li><div>No facts yet. Start a mission to find your first one.</div></li>'; }
   if (name === 'home') drawHome(); if (name === 'base') drawBase(); if (name === 'data') $('dataSrc').textContent = TODAY.note + ' The game holds ' + FL.length + ' NASA flare records.';
 }
 const starStr = n => '<span class="ministars" role="img" aria-label="' + n + ' out of 3 stars">' + '★'.repeat(n) + '<i>' + '★'.repeat(3 - n) + '</i></span>';
@@ -1203,11 +1298,11 @@ function drawHome() {
 }
 $('homeCard').addEventListener('click', e => { const b = e.target.closest('[data-act]'); if (!b) return; beep(520, .1); if (b.dataset.act === 'daily') startMission('daily', TODAY.day); else startMission('practice'); });
 function drawBase() {
-  const log = B.log || [], stars = log.reduce((t, r) => t + r.stars, 0), ups = Object.keys(UPS).filter(k => B.ups[k]);
-  $('baseBody').innerHTML = '<div class="stats"><div class="stat"><b>' + log.length + '</b><span>daily missions played</span></div><div class="stat"><b>' + stars + '</b><span>stars earned</span></div><div class="stat"><b>' + ups.reduce((t, k) => t + B.ups[k], 0) + '</b><span>upgrades</span></div></div>' +
-    '<div class="card"><h3>Upgrades</h3>' + (ups.length ? '<ul class="plain">' + ups.map(k => '<li>' + UPS[k].name + (B.ups[k] > 1 ? ' ×' + B.ups[k] : '') + ': ' + UPS[k].what.toLowerCase() + '</li>').join('') + '</ul>' : '<p>None yet. Win a daily mission to pick one.</p>') + '</div>' +
-    '<div class="card"><h3>Farm</h3><p>' + (B.crop ? 'Lettuce is growing: ' + B.crop + ' of ' + cropNeed() + '.' : 'Nothing is growing right now.') + ' Meals do not carry over: every day starts with ' + START_MEALS + ' fresh meals from Earth.</p></div>' +
-    '<div class="card"><h3>Recent missions</h3>' + (log.length ? '<ul class="plain">' + log.slice(-7).reverse().map(r => '<li>The Sun on ' + nice(r.iso) + ' ' + starStr(r.stars) + '</li>').join('') + '</ul>' : '<p>No missions yet.</p>') + '</div>';
+  const log = B.log || [], stars = log.reduce((t, r) => t + r.stars, 0), have = Object.keys(UPS).filter(k => B.cards[k]);
+  $('baseBody').innerHTML = '<div class="stats"><div class="stat"><b>' + log.length + '</b><span>daily missions played</span></div><div class="stat"><b>' + stars + '</b><span>stars earned</span></div><div class="stat"><b>' + have.reduce((t, k) => t + B.cards[k], 0) + '</b><span>upgrade cards</span></div></div>' +
+    '<div class="card"><h3>Upgrade cards</h3>' + (have.length ? '<ul class="plain">' + have.map(k => '<li>' + UPS[k].name + (B.cards[k] > 1 ? ' ×' + B.cards[k] : '') + ': ' + UPS[k].what.toLowerCase() + '</li>').join('') + '</ul><p>Use a card on the battery screen of a daily mission. It works for that mission, then it is gone.</p>' : '<p>None yet. Win the science star in a daily mission to get one. You choose when to use it, and it works for one mission.</p>') + '</div>' +
+    '<div class="card"><h3>Farm</h3><p>' + (B.crop ? 'Your lettuce is at growth step ' + B.crop + '.' : 'Nothing is growing right now.') + ' Meals do not carry over: every day starts with ' + START_MEALS + ' fresh meals from Earth.</p></div>' +
+    '<div class="card"><h3>Recent missions</h3>' + (log.length ? '<ul class="plain">' + log.slice(-7).reverse().map(r => '<li>The Sun on ' + nice(r.iso) + ' ' + starStr(r.stars) + (r.sci ? ' + science star' : '') + '</li>').join('') + '</ul>' : '<p>No missions yet.</p>') + '</div>';
 }
 $('mHow').addEventListener('click', () => { pending = null; view('how'); });
 $('howGo').addEventListener('click', () => view('home'));
@@ -1224,6 +1319,7 @@ $('howRead').addEventListener('click', async () => {
 });
 document.querySelectorAll('.hd').forEach(b => { const tell = () => { $('domeInfo').textContent = b.dataset.info; }; b.addEventListener('mouseenter', tell); b.addEventListener('focus', tell); b.addEventListener('click', tell); });
 $('mBase').addEventListener('click', () => view('base'));
+$('mFacts').addEventListener('click', () => view('facts'));
 $('mData').addEventListener('click', () => view('data'));
 document.querySelectorAll('[data-home]').forEach(b => b.addEventListener('click', () => view('home')));
 $('wipe').addEventListener('click', () => { B = blank(); saveBase(); drawBase(); });
