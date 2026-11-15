@@ -41,7 +41,7 @@ About 3 real days in 4 have no storm (22 of the last 30 days in the saved data),
 
 - **Captain's order of the day.** One extra goal, picked from the date, the same for everyone: Early harvest, Big experiment, Think of tomorrow, or Science day. Each one needs a different plan, and each comes with a one-line reason.
 - **Fair orders.** The order never depends on the day's storms, so it gives nothing away. We checked every storm pattern and battery order in advance. If the Sun makes an order impossible, the game says so and it does not count against the player.
-- **A Moon land to build on.** Finishing the order in a daily mission wins a building: a tall solar mast, a radiation sensor, a space garden, a radio dish, an ice drill, a Moon rover and a Sun telescope. On the My outpost page the player picks the building and taps an empty spot on a picture of their Moon land to build it there, and can move it later. The land also shows on the home page. Tapping a building shows a real fact with a link to its NASA page.
+- **A Moon land to build on.** Finishing the order in a daily mission wins a building: a tall solar mast, a radiation sensor, a space garden, a radio dish, an ice drill, a Moon rover and a Sun telescope. On the home page the player picks the building and taps an empty spot on a picture of their Moon land to build it there, and can move it later. Tapping a building shows a real fact with a link to its NASA page.
 - **Days in a row.** The home page counts how many days in a row the player has finished the daily mission.
 - **Space pets.** A pet joins the Moon land after the first daily mission, then one more for every 3 days played in a row. The four pets are real species that NASA has studied in space, each with a real fact and a link to its NASA page:
 
@@ -84,7 +84,7 @@ How we tested the scoring:
 - **Captain Rae is ground staff.** She works at Mission Control on Earth and sends the Sun report and the order of the day. A radio call to Earth and back takes more than 2 seconds, so in the last-chance move the crew decides alone.
 - **The farm needs power every shift in a row.** The crew and Captain Rae remind the player while lettuce is growing.
 - **Crew health has one clear scale.** ♥♥ fine, ♥♡ hurt (1 step down), ♡♡ sick (2 steps down). A good shift heals 1 step, so hurt needs 1 good shift and sick needs 2. Each crew member's cost follows the same scale: if Nova is hurt the lettuce needs 1 more growth step (sick: 2 more), if Kai is hurt the outpost gets 1 fewer battery (sick: 2 fewer), and if Juno is hurt or sick she can only heal herself, then heals everyone at once when she is fine.
-- **Mission log.** The My outpost page lists every day played, with the stars, the crew's health and whether the order was done.
+- **Mission log.** The My outpost page is the history page: it lists every day played, with the stars, the crew's health and whether the order was done.
 - **A promised harvest always happens.** The farm goes by Nova's health at the start of the shift, so "Harvest this shift" on the battery screen stays true even if a storm hurts her during that shift. Her injury slows the farm from the next shift.
 - **The training mission teaches the last-chance move.** Captain Rae explains out loud that rushing batteries to the shelter costs 1 extra.
 
